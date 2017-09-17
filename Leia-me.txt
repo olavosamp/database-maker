@@ -1,0 +1,36 @@
+﻿Extrator de frames
+08/04/2017
+
+O script getFrames( videoPath, timeFramesPath) lê um arquivo de vídeo e salva frames de acordo com a classificação de um arquivo csv. Um frame é salvo a cada 20, no formato JPG. As imagens são salvas na pasta '.\images', com nome '<nome do video> ID<ID> <classe> FRAME<frame>.jpg', onde ID é o número da entrada no arquivo csv, classe é a classe à qual o frame pertence e frame é a numeração do frame dentro da sua entrada.
+
+Ex: PIDF-1 PO MRL-021_parte1.mpg ID1 tubo FRAME18.jpg
+
+
+-Arquivo CSV:
+
+A primeira linha contém o cabeçalho. Cada entrada corresponde a um intervalo do vídeo que tem uma classe. Os dados devem ser separados por vírgula, sem espaço.
+
+VideoName: Nome do vídeo, contendo ou não a extensão.
+Class: Classe dos frames nesse intervalo. Elas são: tubo, nada e conf (de confuso, mas é mais rápido escrever só quatro letras)
+StartTime, EndTime: Os tempos de início e fim do intervalo, respectivamente. O formato é HHMMSS (para ser mais rápido de escrever)
+ID: O número da entrada, para identificação.
+
+Ex:
+VideoName,Class,StartTime,EndTime,Id
+PIDF-1 PO MRL-021_parte1.mpg,tubo,000000,000455,01
+PIDF-1 PO MRL-021_parte1.mpg,nada,000455,000507,02
+PIDF-1 PO MRL-021_parte1.mpg,tubo,000507,000716,03
+PIDF-1 PO MRL-021_parte1.mpg,conf,000716,000800,04
+
+-Restrições:
+Os métodos do VideoReader só suportam os seguintes formatos (no Windows) (requer os codecs apropriados):
+
+    .asf - ASF File
+    .asx - ASX File
+    .avi - AVI File
+    .m4v - MPEG-4 Video
+    .mj2 - Motion JPEG2000
+    .mov - QuickTime movie
+    .mp4 - MPEG-4
+    .mpg - MPEG-1
+    .wmv - Windows Media Video

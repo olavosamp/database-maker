@@ -1,3 +1,15 @@
+# Frame Results
+images/
+*.jpg
+*.jpeg
+*.png
+
+# Matlab
+*.asv
+
+# Test script
+test.*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
