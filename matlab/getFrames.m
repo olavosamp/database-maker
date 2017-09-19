@@ -17,13 +17,15 @@ function totalFrames = getFrames( videoPath, timeFramesPath)
     classesCount = zeros(length(classes),1);
     
     videoObj = VideoReader(videoPath);
-    frameRate = videoObj.FrameRate;     % Get video Frame Rate
-    %framePeriod = 20/frameRate;         % Save one every 20 frames
+    frameRate = ceil(videoObj.FrameRate);     % Get video Frame Rate
+    framePeriod = 20/frameRate;         % Save one every 20 frames
 
     disp(['Video: ' string(table.VideoName(1))])
     disp(['Frame rate: ' num2str(frameRate)])
+    disp(['Frame period: ' num2str(framePeriod)])
     
-    dirPath = sprintf('.\\%s', string(table.VideoName(1)));
+%     dirPath = sprintf('.\\%s', string(table.VideoName(1)));
+    dirPath = sprintf('.\\test');
     mkdir(dirPath);
 
     totalFrames = 0;
@@ -38,13 +40,15 @@ function totalFrames = getFrames( videoPath, timeFramesPath)
         eventStart = timeConverter(string(eventStart));
         eventEnd = timeConverter(string(eventEnd));
         
+        fprintf('\nID%d eventStart: %f\n', table.Id(i), eventStart)
+        
         % Reduce capture rate if the event is very long
-        tLimit = 600;       % 10 minutes
-        if (eventEnd - eventStart) >= tLimit
-            framePeriod = 40/frameRate;
-        else
-            framePeriod = 20/frameRate;
-        end
+%         tLimit = 600;       % 10 minutes
+%         if (eventEnd - eventStart) >= tLimit
+%             framePeriod = 40/frameRate;
+%         else
+%             framePeriod = 20/frameRate;
+%         end
         
         frameTime = eventStart;
 
@@ -53,7 +57,7 @@ function totalFrames = getFrames( videoPath, timeFramesPath)
         
         disp(['Reading entry No ' num2str(table.Id(i))])
         frameCount = 0;
-        while frameTime < (eventEnd - 0.5)
+        while frameTime < eventEnd
             videoObj.CurrentTime = frameTime;
             frame = readFrame(videoObj);
 

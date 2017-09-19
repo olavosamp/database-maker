@@ -1,0 +1,22 @@
+﻿PIDF-1 PO MRL-021_parte2.mpg
+
+Estão ocorrendo erros nos tempo de início e término das entries.
+
+Entry ID 16
+Tempo de inicio deveria ser 00:44:50, mas o programa começa em ~44:28, 22s antes.
+Tempo de término deveria ser 00:45:17, mas o real é em ~44:54, 23s antes.
+
+Entry ID 17
+Tempo de inicio deveria ser 00:45:17, mas o programa começa em ~44:56, 21s antes.
+Tempo de término deveria ser 00:46:39, mas o real é em ~46:12, 27s antes.
+
+Entry ID 18
+Tempo de inicio deveria ser 00:46:39, mas o programa começa em ~46:12, 27s antes.
+Tempo de término deveria ser 00:53:11, mas o real é em ~52:45, 26s antes.
+
+O programa começa essa entry cedo demais, levando a classificação errada de muitos frames.
+
+PIDF-1 PO MRL-021_parte2.mpg,nada,004639,005311,18
+
+Tempo de início deveria ser 00:46:39, mas o programa começa na marcação 22:24:03 do vídeo: entre os tempos 44:51 e 44:57 (incerto devido a atrasos de atualização da marcação do RV).
+O problema persiste para períodos de captura de 20/frameRate e 40/frameRate.
