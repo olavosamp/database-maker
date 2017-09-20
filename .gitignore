@@ -8,8 +8,8 @@ images/
 *.asv
 
 # Test
-test.*
-./*.csv
+*test.*
+*teste.*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
