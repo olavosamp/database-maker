@@ -82,6 +82,7 @@ def getFrames(videoPath, csvPath):
 			# print("\n", imgPath)
 
 			# print("ID{:2d} Frame {:3d}".format(ID, frameCount[i]))
+			# TODO: Add condition: write only if frame is not empty/video.read() does not fail
 			errWrite = cv2.imwrite(imgPath, frame)
 
 			# Error handling
