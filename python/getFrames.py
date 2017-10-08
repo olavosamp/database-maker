@@ -80,10 +80,19 @@ def getFrames(videoPath, csvPath):
 			# Saved image name/path
 			imgPath = "{}\\{} ID{:d} FRAME{:d} {}.jpg".format( dirPath, videoName, ID, frameCount[i], frameClass)
 			# print("\n", imgPath)
-
 			# print("ID{:2d} Frame {:3d}".format(ID, frameCount[i]))
-			# TODO: Add condition: write only if frame is not empty/video.read() does not fail
-			errWrite = cv2.imwrite(imgPath, frame)
+			
+			if errRead and errSet:
+				# Write frame to file
+				errWrite = cv2.imwrite(imgPath, frame)
+
+				# Count class occurrences
+				if frameClass == 'tubo':
+					tuboCount = tuboCount + 1
+				elif frameClass == 'nada':
+					nadaCount = nadaCount + 1
+				elif frameClass == 'conf':
+					confCount = confCount + 1
 
 			# Error handling
 			if not(errWrite) or not(errRead) or not(errSet):
@@ -100,13 +109,7 @@ def getFrames(videoPath, csvPath):
 			frameTime = frameTime + framePeriod
 			frameCount[i] = frameCount[i] + 1
 
-			# Count class occurrences
-			if frameClass == 'tubo':
-				tuboCount = tuboCount + 1
-			elif frameClass == 'nada':
-				nadaCount = nadaCount + 1
-			elif frameClass == 'conf':
-				confCount = confCount + 1
+
 
 		print("ID{}: {} frames".format(ID, frameCount[i]))
 		frameTotal = np.sum(frameCount)
@@ -127,7 +130,7 @@ def getFrames(videoPath, csvPath):
 	print("   Conf: ", confCount)
 
 	runTime = np.divide(runTime, 1000)
-	print("\nRun time: {} (for contiguous classification, should be the same as video run time)".format(np.sum(runTime)))
+	print("\nRun time: {} seconds (for contiguous classification, should be the same as video run time)".format(np.sum(runTime)))
 	print("   Mean: ", np.mean(runTime))
 	print("   Std: ", np.std(runTime))
 
