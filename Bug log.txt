@@ -1,6 +1,8 @@
-﻿PIDF-1 PO MRL-021_parte2.mpg
-
+﻿1. Erro dos tempos Matlab
+Matlab
 Estão ocorrendo erros nos tempo de início e término das entries.
+
+Para o video PIDF-1 PO MRL-021_parte2.mpg:
 
 Entry ID 16
 Tempo de inicio deveria ser 00:44:50, mas o programa começa em ~44:28, 22s antes.
@@ -20,3 +22,14 @@ PIDF-1 PO MRL-021_parte2.mpg,nada,004639,005311,18
 
 Tempo de início deveria ser 00:46:39, mas o programa começa na marcação 22:24:03 do vídeo: entre os tempos 44:51 e 44:57 (incerto devido a atrasos de atualização da marcação do RV).
 O problema persiste para períodos de captura de 20/frameRate e 40/frameRate.
+
+Nota: Versão em python não apresenta esse problema
+
+2. Player erra os tempos
+PIDF-1 PO MRL-021_parte3.mpg não é lido corretamente por nenhum player(Windows Media Player, VLC, MPC) corretamente.
+
+A função de aumento de velocidade não aumenta a velocidade, ao invés disso apenas estica o tempo de reprodução e reposiciona o video em outro trecho.
+
+Mesmo sem mudar a velocidade, tentar acessar um determinado trecho (por ex, 00:10:00) tem um resultado sempre um resultado diferente, o player não vai para o mesmo frame sempre, como deveria.
+
+Isso torna o trabalho de classificação impraticável, pois todos os trechos ficam errados com essa imprecisão.
