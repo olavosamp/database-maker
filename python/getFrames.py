@@ -36,6 +36,10 @@ def getFrames(videoPath, csvPath):
 		print("Directory already exists or invalid path")
 		print(OSError)
 		print()
+	try:
+		os.makedirs("..\\images\\Totals")
+	except OSError:
+		print()
 
 	tuboCount  = 0
 	nadaCount  = 0
@@ -129,10 +133,18 @@ def getFrames(videoPath, csvPath):
 	print("   Nada: ", nadaCount)
 	print("   Conf: ", confCount)
 
+	# Save frame totals
+	logPath = "..\\csv\\Totals\\{}.txt".format( videoName)
+	file = open(logPath, 'w')
+	file.writelines(["Tubo, Nada, Confuso, Total\n", "{}, {}, {}, {}".format(tuboCount, nadaCount, confCount, frameTotal)])
+	file.close()
+
 	runTime = np.divide(runTime, 1000)
 	print("\nRun time: {} seconds (for contiguous classification, should be the same as video run time)".format(np.sum(runTime)))
 	print("   Mean: ", np.mean(runTime))
 	print("   Std: ", np.std(runTime))
+
+	print("\nTotals saved at {}".format(logPath))
 
 	video.release()
 	return frameTotal
