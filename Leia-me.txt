@@ -34,3 +34,19 @@ Os métodos do VideoReader só suportam os seguintes formatos (no Windows) (requ
     .mp4 - MPEG-4
     .mpg - MPEG-1
     .wmv - Windows Media Video
+
+-Configuração de Ambiente:
+
+O script extrator de frames requer opencv3, python3.5, pandas e suas dependências. Para instalá-los em um ambiente virtual usando Anaconda, siga os passos abaixo.
+
+No prompt do Anaconda, execute os seguintes comando:
+1) 	conda create -n opencvenv python=3.5
+
+2)	conda install -c menpo opencv3
+
+3)	conda install pandas
+
+3) Pronto! Execute o script python abaixo para verificar a instalação
+
+	import cv2
+	print(cv2.__version__)

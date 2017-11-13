@@ -74,7 +74,7 @@ def getFrames(videoPath, csvPath):
 		if framePeriod < tMin:
 			framePeriod = tMin
 		
-		print("ID{:2d} framePeriod {:.3f}".format(ID, framePeriod))
+		print("\nID{:2d} framePeriod {:.3f}".format(ID, framePeriod))
 		frameTime = eventStart
 		while(frameTime < eventEnd):
 			# Set video time and read next frame

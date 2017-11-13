@@ -30,6 +30,6 @@ PIDF-1 PO MRL-021_parte3.mpg não é lido corretamente por nenhum player(Windows
 
 A função de aumento de velocidade não aumenta a velocidade, ao invés disso apenas estica o tempo de reprodução e reposiciona o video em outro trecho.
 
-Mesmo sem mudar a velocidade, tentar acessar um determinado trecho (por ex, 00:10:00) tem um resultado sempre um resultado diferente, o player não vai para o mesmo frame sempre, como deveria.
+Mesmo sem mudar a velocidade, tentar acessar um determinado trecho (por ex, 00:10:00) tem sempre um resultado diferente: o player não vai para o mesmo frame, como deveria.
 
 Isso torna o trabalho de classificação impraticável, pois todos os trechos ficam errados com essa imprecisão.
