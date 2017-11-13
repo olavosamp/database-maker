@@ -1,5 +1,2 @@
-Tubo:	13077
-Nada:	4573
-Conf:	4309
-Total:	21959
-DESATUALIZADO
+Tubo,Nada,Conf,Total
+14927,5360,4463,24750

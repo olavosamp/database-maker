@@ -21,7 +21,7 @@ def getFrames(videoPath, csvPath):
 	# Interval between captured frames, in ms
 	# framePeriod = (20/frameRate)*1000
 
-	# Number of 
+	# Number of class events
 	numEntries = data.loc[:,'Id'].count()
 
 	videoName = "testVideo1"
@@ -134,9 +134,9 @@ def getFrames(videoPath, csvPath):
 	print("   Conf: ", confCount)
 
 	# Save frame totals
-	logPath = "..\\csv\\Totals\\{}.txt".format( videoName)
+	logPath = "..\\csv\\Totals\\{}.csv".format( videoName)
 	file = open(logPath, 'w')
-	file.writelines(["Tubo, Nada, Confuso, Total\n", "{}, {}, {}, {}".format(tuboCount, nadaCount, confCount, frameTotal)])
+	file.writelines(["Tubo,Nada,Conf,Total\n", "{},{},{},{}".format(tuboCount, nadaCount, confCount, frameTotal)])
 	file.close()
 
 	runTime = np.divide(runTime, 1000)

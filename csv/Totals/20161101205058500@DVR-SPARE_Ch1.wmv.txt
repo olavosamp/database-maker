@@ -1,2 +1,0 @@
-Tubo, Nada, Conf, Total
-925,124,161,1210
