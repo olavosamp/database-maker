@@ -1,11 +1,12 @@
-# getTotals.py
-# Lists and sum frame counts in all .txt/.csv files present in /path/
-# Frame count files should follow .csv formatting
-#
-def getTotals():
-	import os
-	import pandas as pd
+import os
+import pandas as pd
 
+def getTotals():
+	# getTotals.py
+	# Lists and sum frame counts in all .txt/.csv files present in /path/
+	# Frame count files should follow .csv formatting
+	#
+	
 	path = "C:\\Program Files\\Arquivos Incomuns\\Relevante\\UFRJ\\Projeto Final\\Petrobras\\database-maker\\csv\\Totals\\"
 
 	nameList = os.listdir(path)
