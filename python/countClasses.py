@@ -44,7 +44,7 @@ def countClasses(rootPath):
 				print("\nError: Unidentified class\n{}\n".format(filePath))
 
 
-			listTubo.writelines("{},,\n".format(filePath))
+			# listTubo.writelines("{},,\n".format(filePath))
 			totCount = totCount + 1
 			
 			# print("{}".format(os.path.join(path, file)))

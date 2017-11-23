@@ -1,6 +1,7 @@
 import os
-import pandas 		as pd
+# import pandas 		as pd
 import numpy 		as np
+from PIL import Image
 
 # from keras.applications.inception_v3 import InceptionV3
 # # from keras.preprocessing import image
@@ -46,6 +47,10 @@ tuboFile.close()
 nadaFile.close()
 confFile.close()
 
+im = Image.open("C:\\Program Files\\Arquivos Incomuns\\Relevante\\UFRJ\\Projeto Final\\Petrobras\\database-maker\\images\\20161102000728984@DVR-SPARE_Ch1.wmv\\20161102000728984@DVR-SPARE_Ch1.wmv ID1 FRAME0 tubo.jpg")
+print(im)
+print(np.shape(im))
+# im.show()
 # # create the base pre-trained model
 # base_model = InceptionV3(weights='imagenet', include_top=False)
 
