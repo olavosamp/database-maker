@@ -11,6 +11,9 @@ def getFrames(videoPath, csvPath):
 	# csvPath = "..\\csv\\PIDF-1 PO MRL-021_parte2.csv"
 
 	# Read the data csv and open the video file
+	print("\nUsing opencv version: ", cv2.__version__)
+	print("")
+
 	data = pd.read_csv(csvPath, dtype=str)
 	video = cv2.VideoCapture(videoPath)
 

@@ -1,7 +1,7 @@
 import os
 # import pandas 		as pd
 import numpy 		as np
-from PIL import Image
+import cv2
 
 # from keras.applications.inception_v3 import InceptionV3
 # # from keras.preprocessing import image
@@ -11,7 +11,7 @@ from PIL import Image
 
 from countClasses import countClasses
 
-rootPath = "C:\\Program Files\\Arquivos Incomuns\\Relevante\\UFRJ\\Projeto Final\\Petrobras\\database-maker\\images"
+rootPath = "..\\images"
 
 tuboPath, nadaPath, confPath = countClasses(rootPath)
 
@@ -29,28 +29,53 @@ confList = confFile.readlines()
 
 # Compose data and labels
 
-x = np.array(tuboList, dtype="str") # TODO: x must be a list/array of frames
+# print("\ntuboList shape: ", np.shape(tuboList))
+
+# tuboLen = 0
+# x = [tuboFile.readline()]
+# for line in tuboFile:
+# 	# print(x)
+# 	# print(line)
+# 	# print(np.shape(x))
+# 	# print(np.shape(line))
+	
+# 	# x.append(line)
+# 	x = np.append(x, [line], axis=0)
+# 	tuboLen = tuboLen + 1
+
+xAux = np.array(tuboList, dtype="str")
 y = np.tile([1, 0, 0], (len(tuboList), 1))
 
-x = np.append(x, nadaList, axis=0)
+xAux = np.append(xAux, nadaList, axis=0)
 y = np.append(y, np.tile([0, 1, 0], (len(nadaList), 1)), axis=0)
 
-x = np.append(x, confList, axis=0)
+xAux = np.append(xAux, confList, axis=0)
 y = np.append(y, np.tile([0, 0, 1], (len(confList), 1)), axis=0)
 
+print("xAux: \n", xAux)
+print("\nxAux shape: ", np.shape(xAux))
+
+x = map(lambda x: cv2.imread(x), xAux)
+
+print("")
 print("x: \n", x)
 print("y: \n", y)
 print("\nx shape: ", np.shape(x))
 print("y shape: ", np.shape(y))
 
-tuboFile.close()
-nadaFile.close()
-confFile.close()
+# tuboFile.close()
+# nadaFile.close()
+# confFile.close()
 
-im = Image.open("C:\\Program Files\\Arquivos Incomuns\\Relevante\\UFRJ\\Projeto Final\\Petrobras\\database-maker\\images\\20161102000728984@DVR-SPARE_Ch1.wmv\\20161102000728984@DVR-SPARE_Ch1.wmv ID1 FRAME0 tubo.jpg")
-print(im)
-print(np.shape(im))
-# im.show()
+# im = cv2.imread("..\\images\\GHmls16-263_OK\\DVD-1\\20161101202838328@DVR-SPARE_Ch1.wmv\\20161101202838328@DVR-SPARE_Ch1.wmv ID1 FRAME0 tubo.jpg")
+# im = cv2.imread(x[0])
+# cv2.imshow('image', im)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+
+# print(im)
+# print(np.shape(im))
+
 # # create the base pre-trained model
 # base_model = InceptionV3(weights='imagenet', include_top=False)
 

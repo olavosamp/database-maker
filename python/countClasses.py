@@ -10,9 +10,9 @@ def countClasses(rootPath):
 	#
 
 	# rootPath = "C:\\Program Files\\Arquivos Incomuns\\Relevante\\UFRJ\\Projeto Final\\Petrobras\\database-maker\\images"
-	tuboPath = "C:\\Program Files\\Arquivos Incomuns\\Relevante\\UFRJ\\Projeto Final\\Petrobras\\database-maker\\images\\tubo.txt"
-	nadaPath = "C:\\Program Files\\Arquivos Incomuns\\Relevante\\UFRJ\\Projeto Final\\Petrobras\\database-maker\\images\\nada.txt"
-	confPath = "C:\\Program Files\\Arquivos Incomuns\\Relevante\\UFRJ\\Projeto Final\\Petrobras\\database-maker\\images\\conf.txt"
+	tuboPath = "..\\images\\tubo.txt"
+	nadaPath = "..\\images\\nada.txt"
+	confPath = "..\\images\\conf.txt"
 	
 	listTubo = open(tuboPath, 'w')
 	listNada = open(nadaPath, 'w')
@@ -43,20 +43,18 @@ def countClasses(rootPath):
 			else:
 				print("\nError: Unidentified class\n{}\n".format(filePath))
 
-
-			# listTubo.writelines("{},,\n".format(filePath))
 			totCount = totCount + 1
 			
 			# print("{}".format(os.path.join(path, file)))
 
-	# print("Tubo:  {}".format(tuboCount))
-	# print("Nada:  {}".format(nadaCount))
-	# print("Conf:  {}".format(confCount))
-	# print("Total: {}".format(totCount))
-	# print("\nTotal files found: {}".format(count))
+	print("Tubo:  {}".format(tuboCount))
+	print("Nada:  {}".format(nadaCount))
+	print("Conf:  {}".format(confCount))
+	print("Total: {}".format(totCount))
 
 	listTubo.close()
 	listNada.close()
 	listConf.close()
 	# return tuboCount, nadaCount, confCount, totCount
+
 	return tuboPath, nadaPath, confPath
