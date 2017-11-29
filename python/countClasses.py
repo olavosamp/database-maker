@@ -13,7 +13,7 @@ def countClasses(rootPath):
 	tuboPath = "..\\images\\tubo.txt"
 	nadaPath = "..\\images\\nada.txt"
 	confPath = "..\\images\\conf.txt"
-	
+
 	listTubo = open(tuboPath, 'w')
 	listNada = open(nadaPath, 'w')
 	listConf = open(confPath, 'w')
@@ -26,7 +26,9 @@ def countClasses(rootPath):
 	for path, dirs, files in os.walk(rootPath):
 		for file in files:
 			filePath = os.path.join(path, file)
-			
+			# Replace backslashes with foward slashes for compatibility
+			filePath = filePath.replace("\\", "\\\\")
+
 			# Save each file path in a class txt
 			if filePath.find("tubo") > 0:
 				tuboCount = tuboCount +1
@@ -38,13 +40,13 @@ def countClasses(rootPath):
 
 			elif filePath.find("conf") > 0:
 				confCount = confCount +1
-				listConf.writelines("{}\n".format(filePath))			
+				listConf.writelines("{}\n".format(filePath))
 
 			else:
 				print("\nError: Unidentified class\n{}\n".format(filePath))
 
 			totCount = totCount + 1
-			
+
 			# print("{}".format(os.path.join(path, file)))
 
 	print("Tubo:  {}".format(tuboCount))

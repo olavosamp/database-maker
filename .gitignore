@@ -1,5 +1,6 @@
 # Frame Results
 images/
+demo/
 *.jpg
 *.jpeg
 *.png
