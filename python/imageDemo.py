@@ -1,9 +1,12 @@
+import os
 import cv2
 import numpy 				as np
-from countClasses import countClasses
-import dirs
 
-tuboPath, nadaPath, confPath = countClasses(dirs.images)
+import dirs
+import count
+
+print("")
+tuboPath, nadaPath, confPath = count.listImages()
 print("")
 
 N = 6	# 6 demo images per class
@@ -15,13 +18,14 @@ confFile = open(confPath, 'r')
 tuboList = tuboFile.readlines()[1:]
 nadaList = nadaFile.readlines()[1:]
 confList = confFile.readlines()[1:]
-# tuboList = tuboList[1:]
-# nadaList = nadaList[1:]
-# confList = confList[1:]
 
-# print("\ntuboList shape: ", np.shape(tuboList))
+# Create demo directory
+try:
+	os.makedirs(dirs.demo)
+except OSError:
+	print()
 
-# Tubo demo images
+# Save N images of each class to demo directory
 print("")
 for pathList in [tuboList, nadaList, confList]:
 	sample = np.random.permutation(pathList)[:N]
