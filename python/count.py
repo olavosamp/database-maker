@@ -52,7 +52,11 @@ def listImages():
 	fileNada = open(nadaPath, 'w')
 	fileConf = open(confPath, 'w')
 
-	totCount = 0
+	listTubo = []
+	listNada = []
+	listConf = []
+
+	totCount  = 0
 	tuboCount = 0
 	nadaCount = 0
 	confCount = 0
@@ -67,14 +71,17 @@ def listImages():
 			if filePath.find("tubo") > 0:
 				tuboCount = tuboCount +1
 				fileTubo.writelines("{}\n".format(filePath))
+				listTubo.append(filePath)
 
 			elif filePath.find("nada") > 0:
 				nadaCount = nadaCount +1
 				fileNada.writelines("{}\n".format(filePath))
+				listNada.append(filePath)
 
 			elif filePath.find("conf") > 0:
 				confCount = confCount +1
 				fileConf.writelines("{}\n".format(filePath))
+				listConf.append(filePath)
 
 			else:
 				print("\nError: Unidentified class\n{}\n".format(filePath))
@@ -92,11 +99,11 @@ def listImages():
 	fileNada.close()
 	fileConf.close()
 
-	# Change first line of class files with class count
-	with open(tuboPath, 'r+') as tempFile:
-		tempList = list(tempFile)
-		tempList[0] = str(tuboCount)#+"\n"
-		tempFile.writelines(tempList)
+	# # Change first line of class files with class count
+	# with open(tuboPath, 'r+') as tempFile:
+	# 	tempList = list(tempFile)
+	# 	tempList[0] = str(tuboCount)#+"\n"
+	# 	tempFile.writelines(tempList)
 	# listTubo = list(fileTubo)
 	# listNada = fileNada.readlines()
 	# listConf = fileConf.readlines()
@@ -112,7 +119,7 @@ def listImages():
 	# fileTubo.close()
 	# fileNada.close()
 	# fileConf.close()
-	return tuboPath, nadaPath, confPath
+	return listTubo, listNada, listConf
 
 def countImages():
 	tuboPath, nadaPath, confPath = listImages()
