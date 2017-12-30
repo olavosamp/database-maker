@@ -1,5 +1,9 @@
 import os
+import glob
 import pandas as pd
+import numpy as np
+
+import commons
 import dirs
 
 def countCsv():
@@ -30,37 +34,23 @@ def countCsv():
 	count.tail(1).to_csv(logPath, index=False)
 	return count.tail(1).to_string(index=False)
 
-def listImages():
-	# Counts all existing images by class
-	# Lists and saves each file path inside targetPath
+def listImages(targetPath):
+	# Finds images inside targetPath and lists all corresponding image paths
+	# Save labels per class
 	#
-	# Identify each file as belonging to one of three classes
+	# Identifies each file as belonging to one of three classes
 	#	 Tubo, Nada, Conf
-	# Creates one txt file for each class with corresponding filepath
 	#
-	# Returns the full paths of the txt files created
-	#
+	# Returns imagePaths, labels
+	# imagePaths contains every image filepath
+	# labels contains corresponding ordinal class codes, according to commons.py
+
 	import dirs
 
-	targetPath = dirs.images
+	labels 		= []
+	imagePaths  = []
 
-	tuboPath = dirs.images+"tubo.txt"
-	nadaPath = dirs.images+"nada.txt"
-	confPath = dirs.images+"conf.txt"
-
-	fileTubo = open(tuboPath, 'w')
-	fileNada = open(nadaPath, 'w')
-	fileConf = open(confPath, 'w')
-
-	listTubo = []
-	listNada = []
-	listConf = []
-
-	totCount  = 0
-	tuboCount = 0
-	nadaCount = 0
-	confCount = 0
-	# Finde every file in the root path
+	# Find every file in the root path
 	for path, dirs, files in os.walk(targetPath):
 		for fileTemp in files:
 			filePath = os.path.join(path, fileTemp)
@@ -69,67 +59,26 @@ def listImages():
 
 			# Save each file path in a class txt
 			if filePath.find("tubo") > 0:
-				tuboCount = tuboCount +1
-				fileTubo.writelines("{}\n".format(filePath))
-				listTubo.append(filePath)
+				imagePaths.append(filePath)
+				labels.append(commons.tuboCode)
 
 			elif filePath.find("nada") > 0:
-				nadaCount = nadaCount +1
-				fileNada.writelines("{}\n".format(filePath))
-				listNada.append(filePath)
+				imagePaths.append(filePath)
+				labels.append(commons.nadaCode)
 
 			elif filePath.find("conf") > 0:
-				confCount = confCount +1
-				fileConf.writelines("{}\n".format(filePath))
-				listConf.append(filePath)
+				imagePaths.append(filePath)
+				labels.append(commons.confCode)
 
 			else:
 				print("\nError: Unidentified class\n{}\n".format(filePath))
 
-			totCount = totCount + 1
+	return imagePaths, labels
 
-			# print("{}".format(os.path.join(path, file)))
+def countImages(labels):
+	tuboCount   = len(np.squeeze(np.where(np.isin(labels, commons.tuboCode))))
+	nadaCount   = len(np.squeeze(np.where(np.isin(labels, commons.nadaCode))))
+	confCount   = len(np.squeeze(np.where(np.isin(labels, commons.confCode))))
+	totCount    = len(labels)
 
-	print("Tubo:  {}".format(tuboCount))
-	print("Nada:  {}".format(nadaCount))
-	print("Conf:  {}".format(confCount))
-	print("Total: {}".format(totCount))
-
-	fileTubo.close()
-	fileNada.close()
-	fileConf.close()
-
-	# # Change first line of class files with class count
-	# with open(tuboPath, 'r+') as tempFile:
-	# 	tempList = list(tempFile)
-	# 	tempList[0] = str(tuboCount)#+"\n"
-	# 	tempFile.writelines(tempList)
-	# listTubo = list(fileTubo)
-	# listNada = fileNada.readlines()
-	# listConf = fileConf.readlines()
-    #
-	# listTubo[0] = tuboCount
-	# listNada[0] = nadaCount
-	# listConf[0] = confCount
-
-	# fileTubo.writelines(listTubo)
-	# fileNada.writelines(listNada)
-	# fileConf.writelines(listConf)
-    #
-	# fileTubo.close()
-	# fileNada.close()
-	# fileConf.close()
-	return listTubo, listNada, listConf
-
-def countImages():
-	tuboPath, nadaPath, confPath = listImages()
-	fileTubo = open(tuboPath, 'r')
-	fileNada = open(nadaPath, 'r')
-	fileConf = open(confPath, 'r')
-
-	countTubo = list(fileTubo)[0]
-	countNada = list(fileNada)[0]
-	countConf = list(fileConf)[0]
-
-	countTot = countTubo + countNada + countConf
-	return countTubo, countNada, countConf, countTot
+	return tuboCount, nadaCount, confCount, totCount
