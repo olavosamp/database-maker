@@ -35,7 +35,7 @@ def countCsv():
 	count.tail(1).to_csv(logPath, index=False)
 	return count.tail(1).to_string(index=False)
 
-def listImages(targetPath):
+def listImages(targetPath=dirs.images):
 	# Finds images inside targetPath and lists all corresponding image paths
 	# Save labels per class
 	#
@@ -45,7 +45,6 @@ def listImages(targetPath):
 	# Returns imagePaths, labels
 	# imagePaths contains every image filepath
 	# labels contains corresponding ordinal class codes, according to commons.py
-
 	import dirs
 
 	labels 		= []
@@ -99,8 +98,10 @@ def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset):
 
 	unmatched  = 0
 	frameTotal = 0
+
 	# For each video file, try to find a matching csv file
 	for videoPath in videoList:
+		match = False
 		videoName = videoPath.split(os.path.sep)[-1]
 		videoName = videoName.split('.')[0]
 		# print("\nSearching for: ", videoName)
