@@ -1,23 +1,35 @@
 import os
 import cv2
 import numpy 				as np
+import glob
 
 import dirs
+import commons
 import count
 
-print("")
-tuboPath, nadaPath, confPath = count.listImages()
-print("")
+N = 10	# 6 demo images per class
 
-N = 6	# 6 demo images per class
+targetPath = dirs.images
 
-tuboFile = open(tuboPath, 'r')
-nadaFile = open(nadaPath, 'r')
-confFile = open(confPath, 'r')
+# tuboFile = open(tuboPath, 'r')
+# nadaFile = open(nadaPath, 'r')
+# confFile = open(confPath, 'r')
 
-tuboList = tuboFile.readlines()[1:]
-nadaList = nadaFile.readlines()[1:]
-confList = confFile.readlines()[1:]
+# tuboList = tuboFile.readlines()[1:]
+# nadaList = nadaFile.readlines()[1:]
+# confList = confFile.readlines()[1:]
+
+# Get list of image paths and corresponding labels
+imageList, labels = count.listImages(targetPath)
+
+tuboList = np.extract(np.equal(labels, commons.tuboCode), imageList)
+nadaList = np.extract(np.equal(labels, commons.nadaCode), imageList)
+confList = np.extract(np.equal(labels, commons.confCode), imageList)
+
+# print(imageList)
+print(tuboList)
+print(nadaList)
+print(confList)
 
 # Create demo directory
 try:
@@ -25,7 +37,7 @@ try:
 except OSError:
 	print()
 
-# Save N images of each class to demo directory
+# Save N randomly selected images of each class to demo directory
 print("")
 for pathList in [tuboList, nadaList, confList]:
 	sample = np.random.permutation(pathList)[:N]
@@ -43,9 +55,9 @@ for pathList in [tuboList, nadaList, confList]:
 		# cv2.waitKey(0)
 		# cv2.destroyAllWindows()
 
-tuboFile.close()
-nadaFile.close()
-confFile.close()
+# tuboFile.close()
+# nadaFile.close()
+# confFile.close()
 
 # print("")
 # # im = cv2.imread(r"..\images\GHmls16-263_OK\DVD-1\20161101225102250@DVR-SPARE_Ch1.wmv\20161101225102250@DVR-SPARE_Ch1.wmv ID1 FRAME52 tubo.jpg")

@@ -1,6 +1,11 @@
 import os
+import glob
 import pandas as pd
+import numpy as np
+
+import commons
 import dirs
+from getFrames import getFrames
 
 def countCsv():
 	# Lists and sum frame counts in all .txt/.csv files present in /path/
@@ -30,99 +35,98 @@ def countCsv():
 	count.tail(1).to_csv(logPath, index=False)
 	return count.tail(1).to_string(index=False)
 
-def listImages():
-	# Counts all existing images by class
-	# Lists and saves each file path inside targetPath
+def listImages(targetPath=dirs.images):
+	# Finds images inside targetPath and lists all corresponding image paths
+	# Save labels per class
 	#
-	# Identify each file as belonging to one of three classes
+	# Identifies each file as belonging to one of three classes
 	#	 Tubo, Nada, Conf
-	# Creates one txt file for each class with corresponding filepath
 	#
-	# Returns the full paths of the txt files created
-	#
+	# Returns imagePaths, labels
+	# imagePaths contains every image filepath
+	# labels contains corresponding ordinal class codes, according to commons.py
 	import dirs
 
-	targetPath = dirs.images
+	labels 		= []
+	imagePaths  = []
 
-	tuboPath = dirs.images+"tubo.txt"
-	nadaPath = dirs.images+"nada.txt"
-	confPath = dirs.images+"conf.txt"
-
-	fileTubo = open(tuboPath, 'w')
-	fileNada = open(nadaPath, 'w')
-	fileConf = open(confPath, 'w')
-
-	totCount = 0
-	tuboCount = 0
-	nadaCount = 0
-	confCount = 0
-	# Finde every file in the root path
+	# Find every file in the root path
 	for path, dirs, files in os.walk(targetPath):
 		for fileTemp in files:
 			filePath = os.path.join(path, fileTemp)
 			# Replace backslashes with <other symbol?> for compatibility
 			# filePath = filePath.replace("\\", "\\\\")
 
-			# Save each file path in a class txt
+			# Append each file path to a list
 			if filePath.find("tubo") > 0:
-				tuboCount = tuboCount +1
-				fileTubo.writelines("{}\n".format(filePath))
+				imagePaths.append(filePath)
+				labels.append(commons.tuboCode)
 
 			elif filePath.find("nada") > 0:
-				nadaCount = nadaCount +1
-				fileNada.writelines("{}\n".format(filePath))
+				imagePaths.append(filePath)
+				labels.append(commons.nadaCode)
 
 			elif filePath.find("conf") > 0:
-				confCount = confCount +1
-				fileConf.writelines("{}\n".format(filePath))
+				imagePaths.append(filePath)
+				labels.append(commons.confCode)
 
 			else:
 				print("\nError: Unidentified class\n{}\n".format(filePath))
 
-			totCount = totCount + 1
+	return imagePaths, labels
 
-			# print("{}".format(os.path.join(path, file)))
+def countImages(labels):
+	# Returns four variables, with the number of examples of each class in the dataset and the total
+	#
+	tuboCount   = len(np.squeeze(np.where(np.isin(labels, commons.tuboCode))))
+	nadaCount   = len(np.squeeze(np.where(np.isin(labels, commons.nadaCode))))
+	confCount   = len(np.squeeze(np.where(np.isin(labels, commons.confCode))))
+	totCount    = len(labels)
 
-	print("Tubo:  {}".format(tuboCount))
-	print("Nada:  {}".format(nadaCount))
-	print("Conf:  {}".format(confCount))
-	print("Total: {}".format(totCount))
+	return tuboCount, nadaCount, confCount, totCount
 
-	fileTubo.close()
-	fileNada.close()
-	fileConf.close()
+def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset):
+	# Extract images from videos, according to class descriptions
+	#
+	# Arguments:
+	#	csvPath is filepath of the csv folder
+	#	videoPath is filepath of the video folder
+	#
 
-	# Change first line of class files with class count
-	with open(tuboPath, 'r+') as tempFile:
-		tempList = list(tempFile)
-		tempList[0] = str(tuboCount)#+"\n"
-		tempFile.writelines(tempList)
-	# listTubo = list(fileTubo)
-	# listNada = fileNada.readlines()
-	# listConf = fileConf.readlines()
-    #
-	# listTubo[0] = tuboCount
-	# listNada[0] = nadaCount
-	# listConf[0] = confCount
+	videoList = glob.glob(videoFolder+'**/*.*', recursive=True)
+	csvList = glob.glob(csvFolder+'**/*.csv', recursive=True)
 
-	# fileTubo.writelines(listTubo)
-	# fileNada.writelines(listNada)
-	# fileConf.writelines(listConf)
-    #
-	# fileTubo.close()
-	# fileNada.close()
-	# fileConf.close()
-	return tuboPath, nadaPath, confPath
+	unmatched  = 0
+	frameTotal = 0
 
-def countImages():
-	tuboPath, nadaPath, confPath = listImages()
-	fileTubo = open(tuboPath, 'r')
-	fileNada = open(nadaPath, 'r')
-	fileConf = open(confPath, 'r')
+	# For each video file, try to find a matching csv file
+	for videoPath in videoList:
+		match = False
+		videoName = videoPath.split(os.path.sep)[-1]
+		videoName = videoName.split('.')[0]
+		# print("\nSearching for: ", videoName)
+		# print("")
+		for csvPath in csvList:
+			csvName = csvPath.split(os.path.sep)[-1]
+			# print(csvName)
 
-	countTubo = list(fileTubo)[0]
-	countNada = list(fileNada)[0]
-	countConf = list(fileConf)[0]
+			# Search for a csv file with the same name as the video
+			if csvName.find(videoName) == 0:
+				# If a video has a matching csv file, run getFrames to extract its frames
+				print("Processing video {} ...".format(videoPath.split(os.path.sep)[-1]))
+				frameTotal += getFrames(videoPath, csvPath)
 
-	countTot = countTubo + countNada + countConf
-	return countTubo, countNada, countConf, countTot
+				# print("\nMatch:\n", videoPath)
+				# print(csvPath)
+				match = True
+				break
+
+		# Count videos without csv files
+		if not(match):
+			unmatched += 1
+
+	print("\n{} videos found".format(len(videoList)))
+	print("\n{} csv files found".format(len(csvList)-1))
+	print("\nFound {} matches. {} videos remain without classification and will not be used.".format(len(videoList)-unmatched, unmatched))
+
+	return videoList, csvList, frameTotal

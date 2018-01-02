@@ -4,9 +4,10 @@ import cv2
 import numpy 		as np
 import pandas 		as pd
 
+import dirs
 from timeConverter import timeConverter
 
-def getFrames(videoPath, csvPath):
+def getFrames(videoPath, csvPath, ssim=True):
 	# videoPath = "F:\\Program Files\\Arquivos Incomuns\\Relevante\\UFRJ\\Projeto Final\\DadosPetrobras\\20170724_FTP83G_Petrobras\\CIMRL10-676_OK\\PIDF-1 PO MRL-021_parte2.mpg"
 	# csvPath = "..\\csv\\PIDF-1 PO MRL-021_parte2.csv"
 
@@ -29,20 +30,22 @@ def getFrames(videoPath, csvPath):
 
 	videoName = "testVideo1"
 	videoName = data.loc[0,'VideoName']
+	dirPath = dirs.images+videoName+'\\'
 	# dirPath = "..\\images\\{}".format(videoName)
-	dirPath = "..\\images\\{}".format(videoName)
 
 	# Create output folder
 	try:
 		os.makedirs(dirPath)
 	except OSError:
-		print("Directory already exists or invalid path")
-		print(OSError)
-		print()
+		# print("Directory already exists or invalid path")
+		# print(OSError)
+		# print()
+		pass
 	try:
-		os.makedirs("..\\images\\Totals")
+		os.makedirs(dirs.images+"Totals")
 	except OSError:
-		print()
+		# print()
+		pass
 
 	tuboCount  = 0
 	nadaCount  = 0
@@ -52,7 +55,7 @@ def getFrames(videoPath, csvPath):
 	runTime = np.zeros(numEntries)
 
 	## Perform frame capture operations
-	for i in range(numEntries):	
+	for i in range(numEntries):
 		eventStart 	= timeConverter(data.loc[i,'StartTime'])*1000
 		eventEnd   	= timeConverter(data.loc[i,'EndTime'])*1000
 		runTime[i]  = eventEnd - eventStart		# In ms
@@ -76,7 +79,7 @@ def getFrames(videoPath, csvPath):
 			framePeriod = tMax
 		if framePeriod < tMin:
 			framePeriod = tMin
-		
+
 		print("\nID{:2d} framePeriod {:.3f}".format(ID, framePeriod))
 		frameTime = eventStart
 		while(frameTime < eventEnd):
@@ -88,7 +91,7 @@ def getFrames(videoPath, csvPath):
 			imgPath = "{}\\{} ID{:d} FRAME{:d} {}.jpg".format( dirPath, videoName, ID, frameCount[i], frameClass)
 			# print("\n", imgPath)
 			# print("ID{:2d} Frame {:3d}".format(ID, frameCount[i]))
-			
+
 			if errRead and errSet:
 				# Write frame to file
 				errWrite = cv2.imwrite(imgPath, frame)
@@ -111,11 +114,9 @@ def getFrames(videoPath, csvPath):
 			errCount['errSet']   = errCount['errSet']   + (not(errSet))
 			errCount['errRead']  = errCount['errRead']  + (not(errRead))
 
-
 			# Advance time one framePeriod
 			frameTime = frameTime + framePeriod
 			frameCount[i] = frameCount[i] + 1
-
 
 
 		print("ID{}: {} frames".format(ID, frameCount[i]))
@@ -128,24 +129,24 @@ def getFrames(videoPath, csvPath):
 	# print("errRead", errRead)
 	# print("errSet", errSet)
 
-	print("\nFrame rate: ", frameRate)
-	print("Total frames (csv): ", maxFrames/1000)
-	print("Total frames (video): ", video.get(cv2.CAP_PROP_FRAME_COUNT))
+	print("\nFrame rate: {:.2f}".format( frameRate))
+	print("Total frames (csv): {:.2f}".format( maxFrames/1000))
+	print("Total frames (video): {:.2f}".format( video.get(cv2.CAP_PROP_FRAME_COUNT)))
 	print("Total frames acquired: ", frameTotal)
 	print("   Tubo: ", tuboCount)
 	print("   Nada: ", nadaCount)
 	print("   Conf: ", confCount)
 
 	# Save frame totals
-	logPath = "..\\csv\\Totals\\{}.csv".format( videoName)
+	logPath = dirs.csv+"Totals\\{}.tot".format(videoName)
 	file = open(logPath, 'w')
 	file.writelines(["Tubo,Nada,Conf,Total\n", "{},{},{},{}".format(tuboCount, nadaCount, confCount, frameTotal)])
 	file.close()
 
 	runTime = np.divide(runTime, 1000)
 	print("\nRun time: {} seconds (for contiguous classification, should be the same as video run time)".format(np.sum(runTime)))
-	print("   Mean: ", np.mean(runTime))
-	print("   Std: ", np.std(runTime))
+	print("   Mean: {:.2f}".format( np.mean(runTime)))
+	print("   Std: {:.2f}".format( np.std(runTime)))
 
 	print("\nTotals saved at {}".format(logPath))
 

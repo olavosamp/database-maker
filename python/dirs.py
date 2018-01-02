@@ -1,4 +1,5 @@
 csv = "..\\csv\\"
 totals = csv+"Totals\\"
 demo = "..\\demo\\"
-images = "..\\images\\"
+images = "..\\..\\images\\"
+dataset = "..\\..\\20170724_FTP83G_Petrobras\\"
