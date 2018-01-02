@@ -7,7 +7,7 @@ import pandas 		as pd
 import dirs
 from timeConverter import timeConverter
 
-def getFrames(videoPath, csvPath):
+def getFrames(videoPath, csvPath, ssim=True):
 	# videoPath = "F:\\Program Files\\Arquivos Incomuns\\Relevante\\UFRJ\\Projeto Final\\DadosPetrobras\\20170724_FTP83G_Petrobras\\CIMRL10-676_OK\\PIDF-1 PO MRL-021_parte2.mpg"
 	# csvPath = "..\\csv\\PIDF-1 PO MRL-021_parte2.csv"
 
@@ -114,11 +114,9 @@ def getFrames(videoPath, csvPath):
 			errCount['errSet']   = errCount['errSet']   + (not(errSet))
 			errCount['errRead']  = errCount['errRead']  + (not(errRead))
 
-
 			# Advance time one framePeriod
 			frameTime = frameTime + framePeriod
 			frameCount[i] = frameCount[i] + 1
-
 
 
 		print("ID{}: {} frames".format(ID, frameCount[i]))
