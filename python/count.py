@@ -5,6 +5,7 @@ import numpy as np
 
 import commons
 import dirs
+from getFrames import getFrames
 
 def countCsv():
 	# Lists and sum frame counts in all .txt/.csv files present in /path/
@@ -57,7 +58,7 @@ def listImages(targetPath):
 			# Replace backslashes with <other symbol?> for compatibility
 			# filePath = filePath.replace("\\", "\\\\")
 
-			# Save each file path in a class txt
+			# Append each file path to a list
 			if filePath.find("tubo") > 0:
 				imagePaths.append(filePath)
 				labels.append(commons.tuboCode)
@@ -76,9 +77,55 @@ def listImages(targetPath):
 	return imagePaths, labels
 
 def countImages(labels):
+	# Returns four variables, with the number of examples of each class in the dataset and the total
+	#
 	tuboCount   = len(np.squeeze(np.where(np.isin(labels, commons.tuboCode))))
 	nadaCount   = len(np.squeeze(np.where(np.isin(labels, commons.nadaCode))))
 	confCount   = len(np.squeeze(np.where(np.isin(labels, commons.confCode))))
 	totCount    = len(labels)
 
 	return tuboCount, nadaCount, confCount, totCount
+
+def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset):
+	# Extract images from videos, according to class descriptions
+	#
+	# Arguments:
+	#	csvPath is filepath of the csv folder
+	#	videoPath is filepath of the video folder
+	#
+
+	videoList = glob.glob(videoFolder+'**/*.*', recursive=True)
+	csvList = glob.glob(csvFolder+'**/*.csv', recursive=True)
+
+	unmatched  = 0
+	frameTotal = 0
+	# For each video file, try to find a matching csv file
+	for videoPath in videoList:
+		videoName = videoPath.split(os.path.sep)[-1]
+		videoName = videoName.split('.')[0]
+		# print("\nSearching for: ", videoName)
+		# print("")
+		for csvPath in csvList:
+			csvName = csvPath.split(os.path.sep)[-1]
+			# print(csvName)
+
+			# Search for a csv file with the same name as the video
+			if csvName.find(videoName) == 0:
+				# If a video has a matching csv file, run getFrames to extract its frames
+				print("Processing video {} ...".format(videoPath.split(os.path.sep)[-1]))
+				frameTotal += getFrames(videoPath, csvPath)
+
+				# print("\nMatch:\n", videoPath)
+				# print(csvPath)
+				match = True
+				break
+
+		# Count videos without csv files
+		if not(match):
+			unmatched += 1
+
+	print("\n{} videos found".format(len(videoList)))
+	print("\n{} csv files found".format(len(csvList)-1))
+	print("\nFound {} matches. {} videos remain without classification and will not be used.".format(len(videoList)-unmatched, unmatched))
+
+	return videoList, csvList, frameTotal
