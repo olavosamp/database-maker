@@ -8,9 +8,6 @@ demo/
 # Matlab
 *.asv
 
-# Test
-test*
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

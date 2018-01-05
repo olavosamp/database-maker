@@ -36,6 +36,8 @@ def countCsv():
 	return count.tail(1).to_string(index=False)
 
 def listImages(targetPath=dirs.images):
+	# targetPath is target image folder path
+	#
 	# Finds images inside targetPath and lists all corresponding image paths
 	# Save labels per class
 	#
