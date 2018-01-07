@@ -22,7 +22,7 @@ targetPath  = basePath
 #  frameTotal = getFramesFull(videoPath, csvPath, targetPath)
 
 # List all frame paths
-imagePaths = glob.glob(targetPath+'tuboTemp'+os.path.sep+'*.jpg')
+imagePaths = glob.glob(targetPath+'nadaTemp'+os.path.sep+'*.jpg')
 # imagePaths = glob.glob(dirs.images+'PIDF-1 PO MRL-021_parte1.mpg'+os.path.sep+'*.jpg')
 
 # print('\n'+targetPath+videoName+os.path.sep+'*.jpg'+'\n')
@@ -42,7 +42,7 @@ for index in tqdm(range(numFrames -N-1)):
 
 
 ssimSeq = np.mean(ssimSeq, 0)
-print("SSIM Tubo:")
+print("SSIM Nada:")
 print(ssimSeq)
 
 # print("SSIM:\n{:.3f}".format(ssimSeq))

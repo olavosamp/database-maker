@@ -10,16 +10,13 @@ csvPath = dirs.csv+"\\GHmls16-263_OK\\DVD-1\\20161101205058500@DVR-SPARE_Ch1.csv
 
 targetPath = '..\\..\\testfolder\\'
 
-# videoPath = "F:\\Program Files\\Arquivos Incomuns\\Relevante\\UFRJ\\Projeto Final\\DadosPetrobras\\20170724_FTP83G_Petrobras\\CIMRL10-676_OK\\PIDF-1 PO MRL-021_parte1.mpg"
-# csvPath = "F:\\Program Files\\Arquivos Incomuns\\Relevante\\UFRJ\\Projeto Final\\DadosPetrobras\\database-maker\\csv\\CIMRL10-676_OK\\PIDF-1 PO MRL-021_parte1.csv"
-
 # frameTotal = getFrames(videoPath, csvPath)
 frameTotal = getFramesFull(videoPath, csvPath, targetPath)
 
-# csvTotals = count.countCsv()
-# print("\nTotal potential images (classified and recorded in csv):\n")
-# print(csvTotals)
 print("{} images obtained.".format(frameTotal))
+
+# csvTotals = count.countCsv()
+# print("\nTotal potential images (classified and recorded in csv):\n", csvTotals)
 
 # videoList, csvList, frameTotal = count.rebuildDataset(dirs.csv, dirs.dataset)
 #
