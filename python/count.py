@@ -35,11 +35,11 @@ def countCsv():
 	count.tail(1).to_csv(logPath, index=False)
 	return count.tail(1).to_string(index=False)
 
-def listImages(targetPath=dirs.images):
-	# targetPath is target image folder path
+def listImages(dataPath):
+	# dataPath is the path of the image folder to be read
 	#
-	# Finds images inside targetPath and lists all corresponding image paths
-	# Save labels per class
+	# Finds images inside dataPath and lists all corresponding image paths
+	# Returns labels per class
 	#
 	# Identifies each file as belonging to one of three classes
 	#	 Tubo, Nada, Conf
@@ -53,11 +53,9 @@ def listImages(targetPath=dirs.images):
 	imagePaths  = []
 
 	# Find every file in the root path
-	for path, dirs, files in os.walk(targetPath):
-		for fileTemp in files:
-			filePath = os.path.join(path, fileTemp)
-			# Replace backslashes with <other symbol?> for compatibility
-			# filePath = filePath.replace("\\", "\\\\")
+	for filePath in glob.glob(dataPath+'**'+dirs.sep+'*.jpg', recursive=True):
+			# Replace backslashes with defined separator (in dirs) for compatibility
+			filePath = filePath.replace("\\", dirs.sep)
 
 			# Append each file path to a list
 			if filePath.find("tubo") > 0:
@@ -73,13 +71,15 @@ def listImages(targetPath=dirs.images):
 				labels.append(commons.confCode)
 
 			else:
-				print("\nError: Unidentified class\n{}\n".format(filePath))
+				print("\nError: Unidentified class\n{}".format(filePath))
 
 	return imagePaths, labels
 
-def countImages(labels):
+def countImages(dataPath):
 	# Returns four variables, with the number of examples of each class in the dataset and the total
 	#
+	imagePaths, labels = listImages(dataPath)
+
 	tuboCount   = len(np.squeeze(np.where(np.isin(labels, commons.tuboCode))))
 	nadaCount   = len(np.squeeze(np.where(np.isin(labels, commons.nadaCode))))
 	confCount   = len(np.squeeze(np.where(np.isin(labels, commons.confCode))))
@@ -95,8 +95,8 @@ def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset):
 	#	videoPath is filepath of the video folder
 	#
 
-	videoList = glob.glob(videoFolder+'**/*.*', recursive=True)
-	csvList = glob.glob(csvFolder+'**/*.csv', recursive=True)
+	videoList = glob.glob(videoFolder+'**'+dirs.sep+'*.*', recursive=True)
+	csvList = glob.glob(csvFolder+'**'+dirs.sep+'*.csv', recursive=True)
 
 	unmatched  = 0
 	frameTotal = 0
@@ -104,18 +104,18 @@ def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset):
 	# For each video file, try to find a matching csv file
 	for videoPath in videoList:
 		match = False
-		videoName = videoPath.split(os.path.sep)[-1]
+		videoName = videoPath.split(dirs.sep)[-1]
 		videoName = videoName.split('.')[0]
 		# print("\nSearching for: ", videoName)
 		# print("")
 		for csvPath in csvList:
-			csvName = csvPath.split(os.path.sep)[-1]
+			csvName = csvPath.split(dirs.sep)[-1]
 			# print(csvName)
 
 			# Search for a csv file with the same name as the video
 			if csvName.find(videoName) == 0:
 				# If a video has a matching csv file, run getFrames to extract its frames
-				print("Processing video {} ...".format(videoPath.split(os.path.sep)[-1]))
+				print("Processing video {} ...".format(videoPath.split(dirs.sep)[-1]))
 				frameTotal += getFrames(videoPath, csvPath)
 
 				# print("\nMatch:\n", videoPath)
