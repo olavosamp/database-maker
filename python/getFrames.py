@@ -9,7 +9,7 @@ import dirs
 from   dirs				import sep
 from   timeConverter 		import timeConverter
 
-def getFrames(videoPath, csvPath, ssim=True):
+def getFrames(videoPath, csvPath, targetPath=dirs.images, ssim=True):
 	# videoPath = "F:"+sep+"Program Files"+sep+"Arquivos Incomuns"+sep+"Relevante"+sep+"UFRJ"+sep+"Projeto Final"+sep+"DadosPetrobras"+sep+"20170724_FTP83G_Petrobras"+sep+"CIMRL10-676_OK"+sep+"PIDF-1 PO MRL-021_parte2.mpg"
 	# csvPath = ".."+sep+"csv"+sep+"PIDF-1 PO MRL-021_parte2.csv"
 
@@ -24,16 +24,15 @@ def getFrames(videoPath, csvPath, ssim=True):
 
 	print("Frame rate", frameRate)
 
+	# Using fixed frame period
 	# Interval between captured frames, in ms
 	# framePeriod = (20/frameRate)*1000
 
 	# Number of class events
 	numEntries = data.loc[:,'Id'].count()
 
-	videoName = "testVideo1"
 	videoName = data.loc[0,'VideoName']
-	dirPath = dirs.images+videoName+sep
-	# dirPath = ".."+sep+"images"+sep+"{}".format(videoName)
+	dirPath = targetPath+videoName+sep
 
 	# Create output folder
 	try:
@@ -44,7 +43,7 @@ def getFrames(videoPath, csvPath, ssim=True):
 		# print()
 		pass
 	try:
-		os.makedirs(dirs.images+"Totals"+sep)
+		os.makedirs(dirs.totals)
 	except OSError:
 		# print()
 		pass
@@ -75,8 +74,10 @@ def getFrames(videoPath, csvPath, ssim=True):
 		# Find frame period
 		framePeriod = 20*(runTime[i]*numEntries/maxFrames)*1000
 		# Limit frame period
-		tMax = 5000					# 5 seconds
-		tMin = (10/frameRate)*1000	# 0.5 seconds
+		tMax = 20000					# 20 seconds
+		tMin = (20/frameRate)*1000		# 0.66 seconds for 30 frames/s
+										# 0.8 seconds for 25 frames/s
+		# Limit framePeriod
 		if framePeriod > tMax:
 			framePeriod = tMax
 		if framePeriod < tMin:
@@ -140,7 +141,7 @@ def getFrames(videoPath, csvPath, ssim=True):
 	print("   Conf: ", confCount)
 
 	# Save frame totals
-	logPath = dirs.csv+"Totals"+sep+"{}.tot".format(videoName)
+	logPath = dirs.totals+"{}.tot".format(videoName.split('.')[-2])
 	file = open(logPath, 'w')
 	file.writelines(["Tubo,Nada,Conf,Total\n", "{},{},{},{}".format(tuboCount, nadaCount, confCount, frameTotal)])
 	file.close()

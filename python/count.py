@@ -87,7 +87,7 @@ def countImages(dataPath):
 
 	return tuboCount, nadaCount, confCount, totCount
 
-def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset):
+def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset, targetPath=dirs.images):
 	# Extract images from videos, according to class descriptions
 	#
 	# Arguments:
@@ -95,17 +95,30 @@ def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset):
 	#	videoPath is filepath of the video folder
 	#
 
-	videoList = glob.glob(videoFolder+'**'+dirs.sep+'*.*', recursive=True)
+	videoList = []
+	print("\nScanning for the following file formats:\n")
+	for videoFormat in commons.videoFormats:
+		print(videoFolder+'**'+dirs.sep+'*.'+videoFormat)
+		newList = glob.glob(videoFolder+'**'+dirs.sep+'*.'+videoFormat, recursive=True)
+		videoList.extend(newList)
+	print("\n")
+
 	csvList = glob.glob(csvFolder+'**'+dirs.sep+'*.csv', recursive=True)
+
+	# Replaces \\ with defined separator
+	videoList = list(map(lambda x: x.replace("\\", dirs.sep), videoList))
+	csvList   = list(map(lambda x: x.replace("\\", dirs.sep), csvList))
+
+	# for video in videoList:
+	# 	print(video)
 
 	unmatched  = 0
 	frameTotal = 0
-
 	# For each video file, try to find a matching csv file
 	for videoPath in videoList:
 		match = False
 		videoName = videoPath.split(dirs.sep)[-1]
-		videoName = videoName.split('.')[0]
+		videoName = videoName.split('.')[-2]
 		# print("\nSearching for: ", videoName)
 		# print("")
 		for csvPath in csvList:
@@ -116,7 +129,7 @@ def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset):
 			if csvName.find(videoName) == 0:
 				# If a video has a matching csv file, run getFrames to extract its frames
 				print("Processing video {} ...".format(videoPath.split(dirs.sep)[-1]))
-				frameTotal += getFrames(videoPath, csvPath)
+				frameTotal += getFrames(videoPath, csvPath, targetPath)
 
 				# print("\nMatch:\n", videoPath)
 				# print(csvPath)
@@ -127,6 +140,7 @@ def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset):
 		if not(match):
 			unmatched += 1
 
+	print("\nVIDEO LIST:\n{}\n".format(videoList))
 	print("\n{} videos found".format(len(videoList)))
 	print("\n{} csv files found".format(len(csvList)-1))
 	print("\nFound {} matches. {} videos remain without classification and will not be used.".format(len(videoList)-unmatched, unmatched))

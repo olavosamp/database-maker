@@ -2,6 +2,7 @@ from getFrames import getFrames, getFramesFull, getFramesSSIM
 import count
 import dirs
 
+## Get Frames single video
 # # videoPath = dirs.dataset+"CIMRL10-676_OK"+dirs.sep+"PIDF-1 PO MRL-021_parte2.mpg"
 # # csvPath = dirs.csv+"CIMRL10-676_OK"+dirs.sep+"PIDF-1 PO MRL-021_parte2.csv"
 # videoPath = dirs.dataset+"GHmls16-263_OK"+dirs.sep+"DVD-1"+dirs.sep+"20161101205058500@DVR-SPARE_Ch1.wmv"
@@ -13,22 +14,24 @@ import dirs
 # frameTotal = getFramesFull(videoPath, csvPath, targetPath)
 #
 # print("{} images obtained.".format(frameTotal))
+# csvTotals = count.countCsv()
+# print("\nTotal potential images (classified and recorded in csv):\n", csvTotals)
+
+## Rebuild Dataset
+targetPath = dirs.new_images+'dataset_tmax_20s'+dirs.sep
+videoList, csvList, frameTotal = count.rebuildDataset(dirs.csv, dirs.dataset, targetPath)
+
+labels = count.listImages(dirs.images)
+frameTotal = count.countImages(labels)
+print("{} frames obtained.".format(frameTotal))
+print("\nDatabase rebuilt.")
+
+## Get Frames SSIM
+# videoPath = dirs.dataset+"GHmls16-263_OK"+dirs.sep+"DVD-1"+dirs.sep+"20161102010731375@DVR-SPARE_Ch1.wmv"
+# csvPath = dirs.csv+"GHmls16-263_OK"+dirs.sep+"DVD-1"+dirs.sep+"20161102010731375@DVR-SPARE_Ch1.csv"
 #
-# # csvTotals = count.countCsv()
-# # print("\nTotal potential images (classified and recorded in csv):\n", csvTotals)
+# targetPath = dirs.images+"ssim"+dirs.sep
 #
-# # videoList, csvList, frameTotal = count.rebuildDataset(dirs.csv, dirs.dataset)
-# #
-# # labels = count.listImages(dirs.images)
-# # frameTotal = count.countImages(labels)
-# # print("{} frames obtained.".format(frameTotal))
-# # print("\nDatabase rebuilt.")
-
-videoPath = dirs.dataset+"GHmls16-263_OK"+dirs.sep+"DVD-1"+dirs.sep+"20161102010731375@DVR-SPARE_Ch1.wmv"
-csvPath = dirs.csv+"GHmls16-263_OK"+dirs.sep+"DVD-1"+dirs.sep+"20161102010731375@DVR-SPARE_Ch1.csv"
-
-targetPath = dirs.images+"ssim"+dirs.sep
-
-frameTotal = getFramesSSIM(videoPath, csvPath, targetPath)
-
-print("{} images obtained.".format(frameTotal))
+# frameTotal = getFramesSSIM(videoPath, csvPath, targetPath)
+#
+# print("{} images obtained.".format(frameTotal))
