@@ -10,3 +10,6 @@ confSpCode = [0, 0, 1]
 
 # Videos of the following formats are found in the data source
 videoFormats = ['wmv', 'mpg', 'vob', 'avi']
+
+# SSIM comparison threshold
+ssimLim = 0.600
