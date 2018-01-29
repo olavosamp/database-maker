@@ -74,9 +74,13 @@ def getFrames(videoPath, csvPath, targetPath=dirs.images, ssim=True):
 		# Find frame period
 		framePeriod = 20*(runTime[i]*numEntries/maxFrames)*1000
 		# Limit frame period
+		# tMax = 20000					# 20 seconds
+		# tMin = (20/frameRate)*1000	# 0.66 seconds for 30 frames/s
+		# 								# 0.8 seconds for 25 frames/s
+
 		tMax = 20000					# 20 seconds
-		tMin = (20/frameRate)*1000		# 0.66 seconds for 30 frames/s
-										# 0.8 seconds for 25 frames/s
+		tMin = (30/frameRate)*1000		# 1 seconds for 30 frames/s
+										# 1.2 seconds for 25 frames/s
 		# Limit framePeriod
 		if framePeriod > tMax:
 			framePeriod = tMax
