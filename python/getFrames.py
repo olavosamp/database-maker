@@ -136,13 +136,14 @@ def getFrames(videoPath, csvPath, targetPath=dirs.images, ssim=True):
 	# print("errRead", errRead)
 	# print("errSet", errSet)
 
-	print("\nFrame rate: {:.2f}".format( frameRate))
+	print("\nFrame rate: {:.2f} frames/s".format( frameRate))
+	print("Parameters:\n\tTmin: {:2.2f}\tseconds\n\tTmax: {:2.2f}\tseconds\n".format(tMin/1000, tMax/1000))
 	print("Total frames (csv): {:.2f}".format( maxFrames/1000))
 	print("Total frames (video): {:.2f}".format( video.get(cv2.CAP_PROP_FRAME_COUNT)))
 	print("Total frames acquired: ", frameTotal)
-	print("   Tubo: ", tuboCount)
-	print("   Nada: ", nadaCount)
-	print("   Conf: ", confCount)
+	print("\tTubo: {:4d}".format(tuboCount))
+	print("\tNada: {:4d}".format(nadaCount))
+	print("\tConf: {:4d}".format(confCount))
 
 	# Save frame totals
 	logPath = dirs.totals+"{}.tot".format(videoName.split('.')[-2])
@@ -152,15 +153,15 @@ def getFrames(videoPath, csvPath, targetPath=dirs.images, ssim=True):
 
 	runTime = np.divide(runTime, 1000)
 	print("\nRun time: {} seconds (for contiguous classification, should be the same as video run time)".format(np.sum(runTime)))
-	print("   Mean: {:.2f}".format( np.mean(runTime)))
-	print("   Std: {:.2f}".format( np.std(runTime)))
+	print("\tMean: {:.2f}".format( np.mean(runTime)))
+	print("\tStd:  {:.2f}".format( np.std(runTime)))
 
 	print("\nTotals saved at {}".format(logPath))
 
 	video.release()
 	return frameTotal
 
-def getFramesFull(videoPath, csvPath, targetPath=dirs.images, ssim=True):
+def getFramesFull(videoPath, csvPath, targetPath=dirs.images+'full'+sep, ssim=True):
 	# videoPath = "F:"+sep+"Program Files"+sep+"Arquivos Incomuns"+sep+"Relevante"+sep+"UFRJ"+sep+"Projeto Final"+sep+"DadosPetrobras"+sep+"20170724_FTP83G_Petrobras"+sep+"CIMRL10-676_OK"+sep+"PIDF-1 PO MRL-021_parte2.mpg"
 	# csvPath = ".."+sep+"csv"+sep+"PIDF-1 PO MRL-021_parte2.csv"
 

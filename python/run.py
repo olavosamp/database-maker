@@ -21,11 +21,11 @@ import dirs
 targetPath = dirs.new_images+'dataset_tmax_20s_tmin_1s'+dirs.sep
 videoList, csvList, frameTotal = count.rebuildDataset(dirs.csv, dirs.dataset, targetPath)
 
-tuboCount, nadaCount, confCount, totCount = count.countImages(targetPath)
-print("\nTotal frames acquired: ", totCount)
-print("   Tubo: ", tuboCount)
-print("   Nada: ", nadaCount)
-print("   Conf: ", confCount)
+# tuboCount, nadaCount, confCount, totCount = count.countImages(targetPath)
+# print("\nTotal frames acquired: ", totCount)
+# print("   Tubo: ", tuboCount)
+# print("   Nada: ", nadaCount)
+# print("   Conf: ", confCount)
 
 print("\nDatabase rebuilt.")
 

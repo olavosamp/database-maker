@@ -95,6 +95,8 @@ def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset, targetPath=dirs
 	#	videoPath is filepath of the video folder
 	#
 
+	datasetName = "dataset_tmax_Xs_tmin_Ys"
+
 	videoList = []
 	print("\nScanning for the following file formats:\n")
 	for videoFormat in commons.videoFormats:
@@ -118,7 +120,10 @@ def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset, targetPath=dirs
 	for videoPath in videoList:
 		match = False
 		videoName = videoPath.split(dirs.sep)[-1]
-		videoName = videoName.split('.')[-2]
+		# videoName = videoName.split('.')[-2]
+		videoName = videoName[:-4]				# Only works for file extensions 3 characters long
+												# ex: .avi, .wmv, .vob, .mpg
+
 		# print("\nSearching for: ", videoName)
 		# print("")
 		for csvPath in csvList:
@@ -140,9 +145,19 @@ def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset, targetPath=dirs
 		if not(match):
 			unmatched += 1
 
-	print("\nVIDEO LIST:\n{}\n".format(videoList))
+	tuboCount, nadaCount, confCount, totCount = countImages(targetPath)
+
+	# print("\nVIDEO LIST:\n{}\n".format(videoList))
 	print("\n{} videos found".format(len(videoList)))
 	print("\n{} csv files found".format(len(csvList)-1))
 	print("\nFound {} matches. {} videos remain without classification and will not be used.".format(len(videoList)-unmatched, unmatched))
+
+	# Save database information
+	logPath = targetPath+dirs.sep+"Info.txt"
+	file = open(logPath, 'w')
+	file.writelines(["Extração de frames com período variável","\nDataset {}:".format(datasetName),
+	"Tubo:\t{:4d}".format(tuboCount), "Nada:\t{:4d}".format(nadaCount), "Conf:\t{:4d}".format(confCount),
+	"Total:\t{:4d}".format(totCount), "\nTamanho em disco: "])
+	file.close()
 
 	return videoList, csvList, frameTotal

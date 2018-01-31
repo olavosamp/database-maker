@@ -68,9 +68,9 @@ TVILL16-054_OK
 		Dive 420 16-02-24 23.32.35_C1 OK (Igor) (talvez precise de uma revisão)
 	DVD-2
 		.wmv
-		Dive 420 16-02-25 00.02.35_C1
-		Dive 420 16-02-25 00.32.35_C1
-		Dive 420 16-02-25 01.02.35_C1
-		Dive 420 16-02-25 01.32.35_C1
-		Dive 420 16-02-25 02.02.35_C1
-		Dive 420 16-02-25 02.32.35_C1
+		Dive 420 16-02-25 00.02.35_C1 OK (Igor)
+		Dive 420 16-02-25 00.32.35_C1 OK (Igor)
+		Dive 420 16-02-25 01.02.35_C1 OK (Igor)
+		Dive 420 16-02-25 01.32.35_C1 OK (Igor)
+		Dive 420 16-02-25 02.02.35_C1 OK (Igor)
+		Dive 420 16-02-25 02.32.35_C1 OK (Igor)
