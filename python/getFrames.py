@@ -329,7 +329,6 @@ def getFramesSSIM(videoPath, csvPath, targetPath=dirs.images+'ssim'+sep, ssim=Tr
 	# Number of class events
 	numEntries = data.loc[:,'Id'].count()
 
-	videoName = "testVideo1"
 	videoName = data.loc[0,'VideoName']
 	dirPath = targetPath+videoName+sep
 	# dirPath = ".."+sep+"images"+sep+"{}".format(videoName)
