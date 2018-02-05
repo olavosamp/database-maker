@@ -9,7 +9,7 @@ import dirs
 from   dirs				import sep
 from   timeConverter 		import timeConverter
 
-def getFrames(videoPath, csvPath, targetPath=dirs.images, ssim=True):
+def getFrames(videoPath, data, targetPath=dirs.images, ssim=True):
 	# videoPath = "F:"+sep+"Program Files"+sep+"Arquivos Incomuns"+sep+"Relevante"+sep+"UFRJ"+sep+"Projeto Final"+sep+"DadosPetrobras"+sep+"20170724_FTP83G_Petrobras"+sep+"CIMRL10-676_OK"+sep+"PIDF-1 PO MRL-021_parte2.mpg"
 	# csvPath = ".."+sep+"csv"+sep+"PIDF-1 PO MRL-021_parte2.csv"
 
@@ -17,12 +17,12 @@ def getFrames(videoPath, csvPath, targetPath=dirs.images, ssim=True):
 	print("\nUsing opencv version: ", cv2.__version__)
 	print("")
 
-	data = pd.read_csv(csvPath, dtype=str)
+	# data = pd.read_csv(csvPath, dtype=str)
 	video = cv2.VideoCapture(videoPath)
 
 	frameRate = video.get(cv2.CAP_PROP_FPS)
 
-	print("Frame rate", frameRate)
+	# print("Frame rate", frameRate)
 
 	# Using fixed frame period
 	# Interval between captured frames, in ms
@@ -31,8 +31,8 @@ def getFrames(videoPath, csvPath, targetPath=dirs.images, ssim=True):
 	# Number of class events
 	numEntries = data.loc[:,'Id'].count()
 
-	videoName = data.loc[0,'VideoName']
-	dirPath = targetPath+videoName+sep
+	folderName = csvPath.split(dirs.sep)[-1][:-4]
+	dirPath = targetPath+folderName+sep
 
 	# Create output folder
 	try:
@@ -69,7 +69,16 @@ def getFrames(videoPath, csvPath, targetPath=dirs.images, ssim=True):
 		ID 			= int(data.loc[i,'Id'])
 		eventStart 	= timeConverter(data.loc[i,'StartTime'])*1000
 		eventEnd   	= timeConverter(data.loc[i,'EndTime'])*1000
+		videoName 	= data.loc[i,'VideoName']
+
+		# Error checking for class code normalization
 		frameClass 	= data.loc[i,'Class']
+		if frameClass not in commons.classes:
+			print("\n!!! Error!!! ")
+			print("Video: {}\nID{:2d}\n Class {} does not match any class codes.\n".format(videoName, ID, frameClass))
+
+			i += 1		# Fails if this is already the last entry in the csv
+			continue
 
 		# Find frame period
 		framePeriod = 20*(runTime[i]*numEntries/maxFrames)*1000
@@ -138,8 +147,8 @@ def getFrames(videoPath, csvPath, targetPath=dirs.images, ssim=True):
 
 	print("\nFrame rate: {:.2f} frames/s".format( frameRate))
 	print("Parameters:\n\tTmin: {:2.2f}\tseconds\n\tTmax: {:2.2f}\tseconds\n".format(tMin/1000, tMax/1000))
-	print("Total frames (csv): {:.2f}".format( maxFrames/1000))
-	print("Total frames (video): {:.2f}".format( video.get(cv2.CAP_PROP_FRAME_COUNT)))
+	# print("Total frames (csv): {:.2f}".format( maxFrames/1000))
+	# print("Total frames (video): {:.2f}".format( video.get(cv2.CAP_PROP_FRAME_COUNT)))
 	print("Total frames acquired: ", frameTotal)
 	print("\tTubo: {:4d}".format(tuboCount))
 	print("\tNada: {:4d}".format(nadaCount))

@@ -2,6 +2,7 @@ import os
 import glob
 import pandas as pd
 import numpy as np
+from collections import Counter
 
 import commons
 import dirs
@@ -87,6 +88,21 @@ def countImages(dataPath):
 
 	return tuboCount, nadaCount, confCount, totCount
 
+def splitCsv(csvPath):
+	csvPath = dirs.registro_de_eventos+"GHmls16-263_OK.csv"
+
+	data = pd.read_csv(csvPath, dtype=str)
+
+	nameList = data['VideoName'].unique().tolist()
+
+	dfList = []
+	for elem in nameList:
+	    newDf = data.loc[data.VideoName == elem]
+		dfList.extend(newDf)
+
+	return dfList
+
+
 def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset, targetPath=dirs.images):
 	# Extract images from videos, according to class descriptions
 	#
@@ -95,7 +111,7 @@ def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset, targetPath=dirs
 	#	videoPath is filepath of the video folder
 	#
 
-	datasetName = "dataset_tmax_Xs_tmin_Ys"
+	datasetName = "dataset_tmax_20s_tmin_1_2s"
 
 	videoList = []
 	print("\nScanning for the following file formats:\n")
@@ -110,6 +126,13 @@ def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset, targetPath=dirs
 	# Replaces \\ with defined separator
 	videoList = list(map(lambda x: x.replace("\\", dirs.sep), videoList))
 	csvList   = list(map(lambda x: x.replace("\\", dirs.sep), csvList))
+
+	# Create database folder
+	logPath = targetPath+dirs.sep
+	try:
+		os.makedirs(logPath)
+	except OSError:
+		pass
 
 	# for video in videoList:
 	# 	print(video)
@@ -153,9 +176,8 @@ def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset, targetPath=dirs
 	print("\nFound {} matches. {} videos remain without classification and will not be used.".format(len(videoList)-unmatched, unmatched))
 
 	# Save database information
-	logPath = targetPath+dirs.sep+"Info.txt"
-	file = open(logPath, 'w')
-	file.writelines(["Extração de frames com período variável","\nDataset {}:".format(datasetName),
+	file = open(logPath+"Info.txt", 'w')
+	file.writelines(["Extracao de frames com periodo variavel","\nDataset {}:".format(datasetName),
 	"Tubo:\t{:4d}".format(tuboCount), "Nada:\t{:4d}".format(nadaCount), "Conf:\t{:4d}".format(confCount),
 	"Total:\t{:4d}".format(totCount), "\nTamanho em disco: "])
 	file.close()
