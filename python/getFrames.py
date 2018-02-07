@@ -5,6 +5,7 @@ import pandas 			as pd
 from   tqdm 				import tqdm
 from   skimage.measure 	import compare_ssim
 
+import commons
 import dirs
 from   dirs				import sep
 from   timeConverter 		import timeConverter
@@ -16,6 +17,8 @@ def getFrames(videoPath, data, targetPath=dirs.images, ssim=True):
 	# Read the data csv and open the video file
 	print("\nUsing opencv version: ", cv2.__version__)
 	print("")
+
+	print("\nReference csv:{}".format(data))
 
 	# data = pd.read_csv(csvPath, dtype=str)
 	video = cv2.VideoCapture(videoPath)
@@ -31,7 +34,8 @@ def getFrames(videoPath, data, targetPath=dirs.images, ssim=True):
 	# Number of class events
 	numEntries = data.loc[:,'Id'].count()
 
-	folderName = csvPath.split(dirs.sep)[-1][:-4]
+	# folderName = csvPath.split(dirs.sep)[-1][:-4]
+	folderName = data.loc[0]["VideoName"]
 	dirPath = targetPath+folderName+sep
 
 	# Create output folder
@@ -155,7 +159,7 @@ def getFrames(videoPath, data, targetPath=dirs.images, ssim=True):
 	print("\tConf: {:4d}".format(confCount))
 
 	# Save frame totals
-	logPath = dirs.totals+"{}.tot".format(videoName.split('.')[-2])
+	logPath = dirs.totals+"{}.tot".format(videoName)
 	file = open(logPath, 'w')
 	file.writelines(["Tubo,Nada,Conf,Total\n", "{},{},{},{}".format(tuboCount, nadaCount, confCount, frameTotal)])
 	file.close()
