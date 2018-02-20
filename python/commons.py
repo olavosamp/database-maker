@@ -9,7 +9,17 @@ nadaSpCode = [0, 1, 0]
 confSpCode = [0, 0, 1]
 
 # String class codes used in csv files
-classes = ['tubo', 'nada', 'conf', 'repr', 'dano', 'loop', 'corc', 'torc', 'ondl', 'gaio']
+classes = [ 'tubo', # Duto
+            'nada', # Nada
+            'conf', # Confuso
+            'repr', # Reparo
+            'dano', # Dano
+            'loop', # Loop
+            'corc', # Corcova
+            'torc', # Torção
+            'ondl', # Ondulação
+            'gaio'  # Gaiola de passarinho
+            ]
 
 # Videos of the following formats are found in the data source
 videoFormats = ['wmv', 'mpg', 'vob', 'avi']

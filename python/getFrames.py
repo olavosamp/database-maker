@@ -3,7 +3,7 @@ import cv2
 import numpy 			as np
 import pandas 			as pd
 from   tqdm 				import tqdm
-from   skimage.measure 	import compare_ssim
+# from   skimage.measure 	import compare_ssim
 
 import commons
 import dirs
@@ -56,18 +56,23 @@ def getFrames(videoPath, data, targetPath=dirs.images, ssim=True):
 	nadaCount  = 0
 	confCount  = 0
 	errCount = {'errSet': 0, 'errRead': 0, 'errWrite': 0}
-	frameCount = np.zeros(numEntries, dtype=np.int32)
 	runTime = np.zeros(numEntries)
-
+	idList = []
 	## Perform frame capture operations
 	for i in range(numEntries):
 		eventStart 	= timeConverter(data.loc[i,'StartTime'])*1000
 		eventEnd   	= timeConverter(data.loc[i,'EndTime'])*1000
 		runTime[i]  = eventEnd - eventStart		# In ms
+		idList.append(int(data.loc[i,'Id']))
 
 	# Number of frames in video (aprox)
 	maxFrames = np.sum(runTime)*frameRate
 	#maxFrames = video.get(cv2.CAP_PROP_FRAME_COUNT)
+
+	# List of unique IDs
+	idCounter = Counter(idList)
+	numIds = len(list(idCounter))
+	frameCount = np.zeros(numIds, dtype=np.int32)
 
 	for i in range(numEntries):
 		ID 			= int(data.loc[i,'Id'])
@@ -108,7 +113,7 @@ def getFrames(videoPath, data, targetPath=dirs.images, ssim=True):
 			errRead, frame = video.read()
 
 			# Saved image name/path
-			imgPath = "{}{} ID{:d} FRAME{:d} {}.jpg".format( dirPath, videoName, ID, frameCount[i], frameClass)
+			imgPath = "{}{} ID{:d} FRAME{:d} {}.jpg".format( dirPath, videoName, ID, frameCount[ID-1], frameClass)
 			# print("\n", imgPath)
 			# print("ID{:2d} Frame {:3d}".format(ID, frameCount[i]))
 
@@ -127,7 +132,7 @@ def getFrames(videoPath, data, targetPath=dirs.images, ssim=True):
 			# Error handling
 			if not(errWrite) or not(errRead) or not(errSet):
 				print("\n!!! Error!!! ")
-				print("ID{:2d} Frame {:3d}".format(ID, frameCount[i]))
+				print("ID{:2d} Frame {:3d}".format(ID, frameCount[ID-1]))
 				print("errWrite: {}\nerrRead: {}\nerrSet: {}".format(errWrite, errRead, errSet))
 
 			errCount['errWrite'] = errCount['errWrite'] + (not(errWrite))
@@ -135,11 +140,10 @@ def getFrames(videoPath, data, targetPath=dirs.images, ssim=True):
 			errCount['errRead']  = errCount['errRead']  + (not(errRead))
 
 			# Advance time one framePeriod
-			frameTime = frameTime + framePeriod
-			frameCount[i] = frameCount[i] + 1
+			frameTime += framePeriod
+			frameCount[ID-1] += 1
 
-
-		print("ID{}: {} frames".format(ID, frameCount[i]))
+		print("ID{}: {} frames".format(ID, frameCount[ID-1]))
 		frameTotal = np.sum(frameCount)
 
 	## Information
@@ -323,7 +327,7 @@ def getFramesFull(videoPath, csvPath, targetPath=dirs.images+'full'+sep, ssim=Tr
 	video.release()
 	return frameTotal
 
-def getFramesSSIM(videoPath, csvPath, targetPath=dirs.images+'ssim'+sep, ssim=True):
+# def getFramesSSIM(videoPath, csvPath, targetPath=dirs.images+'ssim'+sep, ssim=True):
 	# Read the data csv and open the video file
 	print("\nUsing opencv version: ", cv2.__version__)
 	print("")

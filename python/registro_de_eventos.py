@@ -6,7 +6,7 @@ import pandas as pd
 
 csvFolder   = "csv"+dirs.sep
 videoFolder = "videos"+dirs.sep
-targetPath  = "imagens"+dirs.sep
+targetPath  = "images"+dirs.sep
 
 try:
     os.makedirs(targetPath)
