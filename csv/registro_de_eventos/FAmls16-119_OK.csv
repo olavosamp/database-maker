@@ -1,0 +1,6 @@
+VideoName,Class,StartTime,EndTime,Id,Obs
+VTS_04_1,dano,000001,000007,1,
+VTS_04_1,dano,000008,000010,2,Dano anterior em zoom
+VTS_04_1,dano,000011,000018,3,Dano sem zoom
+VTS_04_1,dano,000019,000023,4,Camera se deslocando pelo dano
+VTS_04_1,dano,001634,001639,5,
