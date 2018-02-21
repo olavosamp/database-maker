@@ -143,9 +143,8 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 	folderCsvList = glob.glob(csvFolder+'**'+dirs.sep+'*.csv', recursive=True)
 
 	# Replaces \\ with defined separator
-	videoList = list(map(lambda x: x.replace("\\", dirs.sep), videoList))
-	folderCsvList   = list(map(lambda x: x.replace("\\", dirs.sep), folderCsvList))
-
+	videoList		= list(map(lambda x: x.replace("\\", dirs.sep), videoList))
+	folderCsvList	= list(map(lambda x: x.replace("\\", dirs.sep), folderCsvList))
 
 	# print("\nFolder csv list:")
 	# print(folderCsvList)
@@ -176,16 +175,17 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 		# videoName = videoName.split('.')[-2]
 		videoName = videoName[:-4]				# Only works for file extensions 3 characters long
 												# ex: .avi, .wmv, .vob, .mpg
-		# print("\nSearching for: ", videoName)
+		print("\nSearching for: ", videoName)
+		print("Analyzing video {}".format(videoPath.split(dirs.sep)[-1]))
 		# print("")
 
 		for csvDf in csvList:
 			csvName = csvDf.loc[0]["VideoName"]+".csv"
-
+			print("Could it be {}?".format(csvName))
 			# Search for a csv file with the same name as the video
 			if csvName.find(videoName) == 0:
 				# If a video has a matching csv file, run getFrames to extract its frames
-				print("Processing video {} ...".format(videoPath.split(dirs.sep)[-1]))
+				print("It's a match! Extracting frames...\n")
 				frameTotal += getFrames(videoPath, csvDf, targetPath)
 
 				# print("\nMatch:\n", videoPath)
@@ -195,6 +195,7 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 
 		# Count videos without csv files
 		if not(match):
+			print("")
 			unmatched += 1
 
 	# Count all created images and get class totals
@@ -204,14 +205,14 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 	print("\n{} videos found".format(len(videoList)))
 	print("\n{} csv files found".format(len(csvList)-1))
 	print("\nFound {} matches. {} videos remain without classification and will not be used.".format(len(videoList)-unmatched, unmatched))
+	print("A total of {} frames were captured. More information in Info.txt".format(frameTotal))
 
 	# Save database information
 	file = open(logPath+"Info.txt", 'w')
 	file.writelines(["Extracao de frames com periodo variavel","\n\nDataset {}:".format(datasetName),
 	"\nTubo:\t{:4d}".format(tuboCount), "\nNada:\t{:4d}".format(nadaCount), "\nConf:\t{:4d}".format(confCount),
-	"\nTotal:\t{:4d}".format(totCount), "\n\nTamanho em disco: "])
+	"\nTotal:\t{:4d}".format(frameTotal), "\n\nTamanho em disco: "])
 	file.close()
-
 
 	return frameTotal
 

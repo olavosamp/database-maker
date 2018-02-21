@@ -13,6 +13,6 @@ try:
 except OSError:
     pass
 
-frameTotal = count.rebuildDatasetMulti(csvFolder, videoFolder, targetPath)
+frameTotal = count.rebuildDatasetMulti(dirs.registro_de_eventos, dirs.dataset, dirs.images+"registro_de_eventos"+dirs.sep)
 
 input("\nCaptura de frames finalizada. Pressione Enter para sair.")
