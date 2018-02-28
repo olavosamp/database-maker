@@ -18,7 +18,12 @@ classes = [ 'tubo', # Duto
             'corc', # Corcova
             'torc', # Torção
             'ondl', # Ondulação
-            'gaio'  # Gaiola de passarinho
+            'gaio', # Gaiola de passarinho
+            'corr', # Corrosão
+            'ente', # Enterramento do duto
+            'trin', # Trincheira
+            'alte', # Alteração no duto, podendo não ser dano
+            'cruz'  # Cruzamento
             ]
 
 # Videos of the following formats are found in the data source

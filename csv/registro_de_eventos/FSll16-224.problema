@@ -11,7 +11,7 @@ VTS_01_4,repr,000549,000554,2,
 VTS_01_4,repr,000605,000611,2,
 VTS_01_4,repr,000840,000858,2,
 VTS_01_4,repr,000908,000927,2,
-VTS_01_2,ondl,005030,005040,3,Evento com muitas variações (inspeção de um trecho longo)
+VTS_01_2,ondl,005030,005040,3,Evento com muitas variaveis (inspecao de um trecho longo)
 VTS_01_2,ondl,005210,005250,3,
 VTS_01_2,ondl,005340,005410,3,
 VTS_01_2,ondl,005530,005609,3,
