@@ -1,10 +1,10 @@
 import dirs
 
-tuboCode = 0            # Ordinal class code
+tuboCode = 0            # Ordinal class code DESATUALIZADO
 nadaCode = 1
 confCode = 2
 
-tuboSpCode = [1, 0, 0]  # Maximally sparse class code
+tuboSpCode = [1, 0, 0]  # Maximally sparse class code DESATUALIZADO
 nadaSpCode = [0, 1, 0]
 confSpCode = [0, 0, 1]
 

@@ -4,12 +4,7 @@ import numpy 			as np
 import pandas 			as pd
 from   tqdm 			import tqdm
 from   collections 		import Counter
-<<<<<<< HEAD
-
-=======
->>>>>>> d94cc9a6e02352bd7592e205db17f9e96a08eb11
 # from   skimage.measure 	import compare_ssim
-
 
 import commons
 import dirs
