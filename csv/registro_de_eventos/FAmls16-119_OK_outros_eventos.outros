@@ -1,6 +1,6 @@
-VideoName,Class,StartTime,EndTime,Id,Obs
-VTS_02_1,trin,000500,000555,1,
-VTS_02_1,asso,000632,001200,2,
-VTS_06_1,asso,000524,000816,3,
-VTS_06_1,trin,000818,000824,4,
-VTS_06_1,trin,000830,000838,5,
+VideoName;Class;StartTime;EndTime;Id;Obs
+VTS_02_1.vob;trin;00:05:00;00:05:55;1;
+VTS_02_1.vob;asso;00:06:32;00:12:00;2;
+VTS_06_1.vob;asso;00:05:24;00:08:16;3;
+VTS_06_1.vob;trin;00:08:18;00:08:24;4;
+VTS_06_1.vob;trin;00:08:30;00:08:38;5;

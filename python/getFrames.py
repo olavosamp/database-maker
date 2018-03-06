@@ -19,7 +19,7 @@ def getFrames(videoPath, data, targetPath=dirs.images, ssim=True):
 	print("\nUsing opencv version: ", cv2.__version__)
 	print("")
 
-	print("\nReference csv:{}".format(data))
+	# print("\nReference csv:{}".format(data))
 
 	# data = pd.read_csv(csvPath, dtype=str)
 	video = cv2.VideoCapture(videoPath)
@@ -80,6 +80,9 @@ def getFrames(videoPath, data, targetPath=dirs.images, ssim=True):
 		eventStart 	= timeConverter(data.loc[i,'StartTime'])*1000
 		eventEnd   	= timeConverter(data.loc[i,'EndTime'])*1000
 		videoName 	= data.loc[i,'VideoName']
+
+		if len(videoName.split(dirs.sep) ) > 1:
+			videoName = videoName.replace(dirs.sep, '-')
 
 		# Error checking for class code normalization
 		frameClass 	= data.loc[i,'Class']

@@ -100,7 +100,7 @@ def splitCsv(csvPath):
 	# Find and list all unique video names found in the csv
 	nameList = data['VideoName'].unique().tolist()
 
-	print("\n", nameList)
+	# print("\n", nameList)
 	dfList = []
 	# Create a new dataframe for each unique video name found,
 	# splitting the original in many new single video dataframes
@@ -134,27 +134,40 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 	print("\nScanning for the following file formats:")
 	print("\n{}".format(commons.videoFormats))
 	# Find video filepaths and store them in videoList
-	for videoFormat in commons.videoFormats:
-		print(videoFolder+'**'+dirs.sep+'*.'+videoFormat)
-		newList = glob.glob(videoFolder+'**'+dirs.sep+'*.'+videoFormat, recursive=True)
-		videoList.extend(newList)
-	print("\n")
+	# for videoFormat in commons.videoFormats:
+	# 	searchString = videoFolder+'**'+dirs.sep+'*.'+videoFormat
+	# 	# print(searchString)
+	# 	newList = glob.glob(searchString, recursive=True)
+	# 	videoList.extend(newList)
+	# print("\n")
 
 	folderCsvList = glob.glob(csvFolder+'**'+dirs.sep+'*.csv', recursive=True)
 
 	# Replaces \\ with defined separator
-	videoList		= list(map(lambda x: x.replace("\\", dirs.sep), videoList))
+	# videoList		= list(map(lambda x: x.replace("\\", dirs.sep), videoList))
 	folderCsvList	= list(map(lambda x: x.replace("\\", dirs.sep), folderCsvList))
 
 	# print("\nFolder csv list:")
 	# print(folderCsvList)
 
+	# list(map(lambda x: csvList.append((x, splitCsv(x))), folderCsvList))
+	# list(map(lambda x: (csvList.append((x, df)) for df in splitCsv(x)), folderCsvList))
 	# Split each folder csv in video csvs and list them all together
-	csvList = []
-	list(map(lambda x: csvList.extend(splitCsv(x)), folderCsvList))
+	csvList = [()]	# List of Tuples of (folder name, csv dataframe)
+	for csv in folderCsvList:
+		subCsvList = splitCsv(csv)
+		for df in subCsvList:
+			csvList.append((csv, df))
+
+	csvList.pop(0)
 
 	# print("\nSplit csv list:")
-	# print(csvList)
+	# print(csvList[0][1].loc[:]['VideoName'])
+	# print("")
+
+	# for dataTuple in csvList:
+	# 	folderName = dataTuple[0].split(dirs.sep)[-1][:-4]
+	# 	print("{}\n{}\n".format(folderName, dataTuple[1].loc[0]['VideoName']))
 
 	# print("Df name")
 	# print(csvList[0].loc[0]["VideoName"])
@@ -166,46 +179,98 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 	except OSError:
 		pass
 
-	unmatched  = 0
+	foundVideos = 0
 	frameTotal = 0
+	# print(csvList)
 	# For each video file, try to find a matching csv file
-	for videoPath in videoList:
-		match = False
-		videoName = videoPath.split(dirs.sep)[-1]
-		# videoName = videoName.split('.')[-2]
-		videoName = videoName[:-4]				# Only works for file extensions 3 characters long
-												# ex: .avi, .wmv, .vob, .mpg
-		print("\nSearching for: ", videoName)
-		print("Analyzing video {}".format(videoPath.split(dirs.sep)[-1]))
-		# print("")
+	for csvTuple in csvList:
+		# match = False
+		csvDf = csvTuple[1]
+		csvName = csvDf.loc[0]["VideoName"]#+".csv"
+		folderName = csvTuple[0].split(dirs.sep)[-1][:-4]
 
-		for csvDf in csvList:
-			csvName = csvDf.loc[0]["VideoName"]+".csv"
-			print("Could it be {}?".format(csvName))
-			# Search for a csv file with the same name as the video
-			if csvName.find(videoName) == 0:
-				# If a video has a matching csv file, run getFrames to extract its frames
-				print("It's a match! Extracting frames...\n")
-				frameTotal += getFrames(videoPath, csvDf, targetPath)
+		print("\nSearching for: ", csvName)
 
-				# print("\nMatch:\n", videoPath)
-				# print(csvDf)
-				match = True
-				break
 
-		# Count videos without csv files
-		if not(match):
-			print("")
-			unmatched += 1
+		# fullName = videoPath.split(dirs.sep)[-1]
+		# # videoName = videoName.split('.')[-2]
+		# videoName = fullName[:-4]				# Only works for file extensions 3 characters long
+		# 										# ex: .avi, .wmv, .vob, .mpg
+		# print("Analyzing video {}\n".format(fullName))
+		# print("Could it be {}?".format(videoName))
+
+		videoName = ""
+		videoList = []
+		nameSplit = csvName.split(dirs.sep)
+		if len(nameSplit) > 1:
+			for videoFormat in commons.videoFormats:
+				searchString = videoFolder+folderName+dirs.sep+nameSplit[0]+dirs.sep+nameSplit[-1]+"."+videoFormat
+				newList = glob.glob(searchString, recursive=True)
+				videoList.extend(newList)
+				print("Searching:\n{} ".format(searchString))
+			videoList		= list(map(lambda x: x.replace("\\", dirs.sep), videoList))
+
+
+			print("VideoList: ", videoList)
+
+			# # Search for a csv file with the same name as the video
+			# if not(videoName.find(nameSplit[0])) and not(videoName.find(nameSplit[-1])):
+			# 	# If a video has a matching csv file, run getFrames to extract its frames
+			# 	print("It's a match! Extracting frames...\n")
+			# 	frameTotal += getFrames(videoPath, csvDf, targetPath)
+			#
+			# 	# print("\nMatch:\n", videoPath)
+			# 	# print(csvDf)
+			# 	matched += 1
+			# 	break
+		else:
+			for videoFormat in commons.videoFormats:
+				searchString = videoFolder+folderName+dirs.sep+"**"+dirs.sep+nameSplit[-1]+"."+videoFormat
+				newList = glob.glob(searchString, recursive=True)
+				videoList.extend(newList)
+				print("Searching:\n{} ".format(searchString))
+			videoList		= list(map(lambda x: x.replace("\\", dirs.sep), videoList))
+
+			print("\nVideoList: ", videoList)
+
+			# if videoName.find(nameSplit[0]) == 0:
+			# 	# If a video has a matching csv file, run getFrames to extract its frames
+			# 	print("It's a match! Extracting frames...\n")
+			# 	frameTotal += getFrames(videoPath, csvDf, targetPath)
+			#
+			# 	# print("\nMatch:\n", videoPath)
+			# 	# print(csvDf)
+			# 	matched += 1
+			# 	break
+		foundVideos += len(videoList)
+		# If a video has a matching csv file, run getFrames to extract its frames
+		for videoPath in videoList:
+			# print("It's a match! Extracting frames...\n")
+			print("Extracting frames from:\n{}".format(videoPath))
+			frameTotal += getFrames(videoPath, csvDf, targetPath)
+
+			# print("\nMatch:\n", videoPath)
+			# print(csvDf)
+			# matched += 1
+
+		# # Count videos without csv files
+		# if not(match):
+		# 	print("")
+		# 	unmatched += 1
 
 	# Count all created images and get class totals
-	tuboCount, nadaCount, confCount, totCount = countImages(targetPath)
+	# tuboCount, nadaCount, confCount, totCount = countImages(targetPath)
+	tuboCount = 0
+	nadaCount = 0
+	confCount = 0
 
-	# print("\nVIDEO LIST:\n{}\n".format(videoList))
-	print("\n{} videos found".format(len(videoList)))
-	print("\n{} csv files found".format(len(csvList)-1))
-	print("\nFound {} matches. {} videos remain without classification and will not be used.".format(len(videoList)-unmatched, unmatched))
-	print("A total of {} frames were captured. More information in Info.txt".format(frameTotal))
+	#TODO: Consertar essa medida
+	unmatched = len(csvList) - foundVideos
+
+	print("\n{} videos found in csvs.".format(len(csvList)))
+	print("{} matched in actual files.".format(foundVideos))
+	print("\nFound {} matches. {} csv videos did not have a match and have not been used.".format(foundVideos, unmatched))
+	print("A total of {} frames were captured. More information in Info.txt\n".format(frameTotal))
 
 	# Save database information
 	file = open(logPath+"Info.txt", 'w')
@@ -214,7 +279,7 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 	"\nTotal:\t{:4d}".format(frameTotal), "\n\nTamanho em disco: "])
 	file.close()
 
-	return frameTotal
+	return videoList, csvList, frameTotal
 
 def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset, targetPath=dirs.images):
 	# Extract images from videos, according to class descriptions
@@ -270,7 +335,8 @@ def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset, targetPath=dirs
 			if csvName.find(videoName) == 0:
 				# If a video has a matching csv file, run getFrames to extract its frames
 				print("Processing video {} ...".format(videoPath.split(dirs.sep)[-1]))
-				frameTotal += getFrames(videoPath, csvPath, targetPath)
+				data = pd.read_csv(csvPath, dtype=str)
+				frameTotal += getFrames(videoPath, data, targetPath)
 
 				# print("\nMatch:\n", videoPath)
 				# print(csvPath)

@@ -13,20 +13,8 @@ targetPath = dirs.images+"framesFull"+dirs.sep
 frameTotal = getFramesFull(videoPath, csvPath, targetPath)
 
 print("{} images obtained.".format(frameTotal))
-# csvTotals = count.countCsv()
-# print("\nTotal potential images (classified and recorded in csv):\n", csvTotals)
-
-# ## Rebuild Dataset
-# targetPath = dirs.new_images+'dataset_tmax_20s_tmin_1_2s'+dirs.sep
-# videoList, csvList, frameTotal = count.rebuildDataset(dirs.csv, dirs.dataset, targetPath)
-#
-# # tuboCount, nadaCount, confCount, totCount = count.countImages(targetPath)
-# # print("\nTotal frames acquired: ", totCount)
-# # print("   Tubo: ", tuboCount)
-# # print("   Nada: ", nadaCount)
-# # print("   Conf: ", confCount)
-#
-# print("\nDatabase rebuilt at: \n{}".format(targetPath))
+csvTotals = count.countCsv()
+print("\nTotal potential images (classified and recorded in csv):\n", csvTotals)
 
 ## Get Frames SSIM
 # videoPath = dirs.dataset+"GHmls16-263_OK"+dirs.sep+"DVD-1"+dirs.sep+"20161102010731375@DVR-SPARE_Ch1.wmv"
