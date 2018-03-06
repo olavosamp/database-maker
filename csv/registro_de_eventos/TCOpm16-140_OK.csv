@@ -17,6 +17,19 @@ DVD-1/VTS_01_3,torc,005715,005806,3,
 DVD-1/VTS_01_4,dano,004018,004144,4,Reparo com bandagem solta
 DVD-1/VTS_01_4,dano,004205,004450,4,
 DVD-1/VTS_01_4,dano,004715,004812,4,
+DVD-3/VIDEO_TS/VTS_01_1,dano,001844,001935,1,dano pequeno com vazamento
+DVD-3/VIDEO_TS/VTS_01_1,dano,001935,002011,1, zoom
+DVD-3/VIDEO_TS/VTS_01_1,dano,002011,002045,1,
+DVD-3/VIDEO_TS/VTS_01_1,dano,002045,002104,1,zoom muito proximo
+DVD-3/VIDEO_TS/VTS_01_1,dano,002104,002134,1,
+DVD-3/VIDEO_TS/VTS_01_1,dano,002902,004757,1, mesmo dano em outro angulo
+DVD-3/VIDEO_TS/VTS_01_1,dano,004816,004858,1
+DVD-3/VIDEO_TS/VTS_01_1,dano,010016,010021,1, mesmo dano depois de ser raspado.
+DVD-3/VIDEO_TS/VTS_01_1,dano,010058,010112,1,,
+DVD-3/VIDEO_TS/VTS_01_1,dano,010441,010622,1,zoom do dano raspado.
+DVD-3/VIDEO_TS/VTS_01_1,dano,010634,010709,1
+DVD-3/VIDEO_TS/VTS_01_1,dano,010714,010835,1
+DVD-3/VIDEO_TS/VTS_01_1,dano,011112,011114,1
 DVD-5/VIDEO_TS/VTS_01_0,repr,002056,002301,1,"reparo com bandagem soltando, inclui zoom do reparo"
 DVD-5/VIDEO_TS/VTS_01_0,repr,002401,002420,1,todos os loops sao parecidos (dutos com mesma largura e cor loops de mesma dimens�o)
 DVD-5/VIDEO_TS/VTS_01_0,repr,011630,012018,2,"reparo com bandagem soltando escape de gas"
