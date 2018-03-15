@@ -1,7 +1,7 @@
 VideoName,Class,StartTime,EndTime,Id,Obs
-VTS_01_1,loop,2746,2805,1,sombra do duto
-VTS_01_1,loop,2816,2940,2,sombra
-VTS_01_1,loop,2958,3444,1,"voltou para o primeiro pouca sombra (mais no final) peixe (cobra)"
-VTS_01_1,loop,3500,3652,3,"peixe, sem sombra"
-VTS_01_1,loop,3844,4122,4,"escuro, sombra"
-VTS_01_1,loop,4155,4500,5,sem sombra ou peixe - todos os loops parecidos (mesma largura cor loops dimensao)
+VTS_01_1,loop,002746,002805,1,sombra do duto
+VTS_01_1,loop,002816,002940,2,sombra
+VTS_01_1,loop,002958,003444,1,"voltou para o primeiro pouca sombra (mais no final) peixe (cobra)"
+VTS_01_1,loop,003500,003652,3,"peixe sem sombra"
+VTS_01_1,loop,003844,004122,4,"escuro sombra"
+VTS_01_1,loop,004155,004500,5,sem sombra ou peixe - todos os loops parecidos (mesma largura cor loops dimensao)

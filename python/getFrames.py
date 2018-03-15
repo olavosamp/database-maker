@@ -239,7 +239,7 @@ def getFramesFull(videoPath, csvPath, targetPath=dirs.images+'full'+sep, ssim=Tr
 	# Number of frames in video (aprox)
 	maxFrames = np.sum(runTime)*frameRate
 	#maxFrames = video.get(cv2.CAP_PROP_FRAME_COUNT)
-
+	K = 20
 	for i in range(numEntries):
 		ID 			= int(data.loc[i,'Id'])
 		eventStart 	= timeConverter(data.loc[i,'StartTime'])*1000
@@ -248,6 +248,10 @@ def getFramesFull(videoPath, csvPath, targetPath=dirs.images+'full'+sep, ssim=Tr
 
 		# Use minimum frame period
 		framePeriod = 1/frameRate*1000
+
+		# Use fixed frame period
+		framePeriod = K/frameRate*1000
+
 
 		# # Find frame period
 		# framePeriod = 20*(runTime[i]*numEntries/maxFrames)*1000
@@ -269,7 +273,7 @@ def getFramesFull(videoPath, csvPath, targetPath=dirs.images+'full'+sep, ssim=Tr
 			# Saved image name/path
 			imgPath = "{}{} ID{:d} FRAME{:d} {}.jpg".format( dirPath, videoName, ID, frameCount[i], frameClass)
 			# print("\n", imgPath)
-			# print("ID{:2d} Frame {:3d}".format(ID, frameCount[i]))
+			print("ID{:2d} Frame {:3d}".format(ID, frameCount[i]))
 
 			if errRead and errSet:
 				# Write frame to file

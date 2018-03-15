@@ -159,7 +159,7 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 		for df in subCsvList:
 			csvList.append((csv, df))
 
-	csvList.pop(0)
+	csvList.pop(0)	# Removes initialization empy entry
 
 	# print("\nSplit csv list:")
 	# print(csvList[0][1].loc[:]['VideoName'])
@@ -182,7 +182,8 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 	foundVideos = 0
 	frameTotal = 0
 	# print(csvList)
-	# For each video file, try to find a matching csv file
+
+	# Iterate on csv dataframes
 	for csvTuple in csvList:
 		# match = False
 		csvDf = csvTuple[1]
@@ -229,7 +230,8 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 				newList = glob.glob(searchString, recursive=True)
 				videoList.extend(newList)
 				print("Searching:\n{} ".format(searchString))
-			videoList		= list(map(lambda x: x.replace("\\", dirs.sep), videoList))
+
+			videoList = list(map(lambda x: x.replace("\\", dirs.sep), videoList))
 
 			print("\nVideoList: ", videoList)
 
@@ -247,7 +249,7 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 		for videoPath in videoList:
 			# print("It's a match! Extracting frames...\n")
 			print("Extracting frames from:\n{}".format(videoPath))
-			frameTotal += getFrames(videoPath, csvDf, targetPath)
+			frameTotal += getFrames(videoPath, csvDf, targetPath+folderName+dirs.sep)
 
 			# print("\nMatch:\n", videoPath)
 			# print(csvDf)

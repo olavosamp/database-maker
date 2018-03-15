@@ -11,26 +11,33 @@ import dirs
 #
 
 # Paths for a video
-# dirPath = dirs.images+"framesFull"+dirs.sep+"20161101215100437@DVR-SPARE_Ch1.wmv"+dirs.sep
-# gridName = dirs.images+"video_grid3x3.jpg"
+dirPath = dirs.images+"frameSeqExample"+dirs.sep
+gridName = dirs.images+"frame_seq01.jpg"
 
-# Paths for a dataset
-dirPath = ".."+dirs.sep+".."+dirs.sep+"datasets"+dirs.sep+"dataset_tmax_20s_tmin_1s"+dirs.sep
-gridName = dirs.images+"dataset_grid3x3.jpg"
+# # Paths for a dataset
+# dirPath = ".."+dirs.sep+".."+dirs.sep+"datasets"+dirs.sep+"dataset_tmax_20s_tmin_1s"+dirs.sep
+# gridName = dirs.images+"dataset_grid3x3.jpg"
 
-# Paths for class examples
-dirPath =   dirs.images+"classExamples"+dirs.sep+"conf"+dirs.sep
-gridName = dirs.images+"classExamples"+dirs.sep+"conf_grid.jpg"
+# # Paths for class examples
+# dirPath =   dirs.images+"classExamples"+dirs.sep+"conf"+dirs.sep
+# gridName = dirs.images+"classExamples"+dirs.sep+"conf_grid.jpg"
 
-K = 3 # Side of the image grid. It will contain K^2 images.
+
 
 # files = [ join(dirPath, f) for f in listdir(dirPath) if isfile(join(dirPath, f)) ]
 files = glob(dirPath+'**'+dirs.sep+'*.jpg', recursive=True)
-shuffle(files)
 
-# imageDim = (704, 576)   # (height, width)
-imageDim = (300,300)
-destDim = (K*imageDim[0],K*imageDim[1])
+
+# # Square Grid
+# K = 3                                     # Side of a square image grid. It will contain K^2 images.
+# imageDim = (300,300)                      # (height, width)
+# destDim = (K*imageDim[0],K*imageDim[1])   # (width, height)
+# shuffle(files)
+
+# Rectangular grid
+K = len(files)                          # Length of the rectangle. I will contain K images.
+imageDim = (300,300)                    # (height, width)
+destDim = (K*imageDim[0],imageDim[1])   # (width, height)
 
 # images = list(map(lambda x: Image.open(x).resize(imageDim), files))   # only first K^2 images ares used, stupid
 
