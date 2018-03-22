@@ -3,9 +3,10 @@ import count
 import dirs
 
 ## Rebuild Dataset
-targetPath = dirs.images+'registroTest'+dirs.sep
-
-videoList, csvList, frameTotal = count.rebuildDatasetMulti(dirs.registro_de_eventos, dirs.dataset, targetPath)
+targetPath = dirs.images+'registroTestRev'+dirs.sep
+# Usage
+# rebuildDatasetMulti(csv_folder, videos_folder, target_folder)
+videoList, csvList, frameTotal = count.rebuildDatasetMulti(dirs.csv+"registro_de_eventos_rev1"+dirs.sep, dirs.dataset, targetPath)
 
 # tuboCount, nadaCount, confCount, totCount = count.countImages(targetPath)
 # print("\nTotal frames acquired: ", totCount)

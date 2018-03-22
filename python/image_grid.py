@@ -10,17 +10,17 @@ import dirs
 # Utility to create a grid of images sourced from dirPath.
 #
 
-# # Paths for a video
-# dirPath = dirs.images+"frameGridExample"+dirs.sep
-# gridName = dirs.images+"frames_grid01.jpg"
+# Paths for a video
+dirPath = dirs.images+"framesFull"+dirs.sep
+gridName = dirs.images+"video_grid3x3.jpg"
 
 # # Paths for a dataset
 # dirPath = ".."+dirs.sep+".."+dirs.sep+"datasets"+dirs.sep+"dataset_tmax_20s_tmin_1s"+dirs.sep
 # gridName = dirs.images+"dataset_grid3x3.jpg"
 
-# Paths for class examples
-dirPath =   dirs.images+"classExamples"+dirs.sep+"nada"+dirs.sep
-gridName = dirs.images+"classExamples"+dirs.sep+"nada_grid.jpg"
+# # Paths for class examples
+# dirPath =   dirs.images+"classExamples"+dirs.sep+"nada"+dirs.sep
+# gridName = dirs.images+"classExamples"+dirs.sep+"nada_grid.jpg"
 
 
 # files = [ join(dirPath, f) for f in listdir(dirPath) if isfile(join(dirPath, f)) ]
@@ -31,10 +31,9 @@ lowerCrop = 40
 
 # Square Grid
 K = 3                                     # Side of a square image grid. It will contain K^2 images.
-
 imageDim = (300,300)                                                # (width, height)
 destDim = (K*imageDim[0],K*(imageDim[1] - lowerCrop - upperCrop))   # (width, height)
-shuffle(files)
+# shuffle(files)
 
 # # Rectangular grid
 # K = len(files)                          # Length of the rectangle. I will contain K images.

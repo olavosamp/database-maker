@@ -1,0 +1,24 @@
+﻿Problemas na Base de Vídeos
+
+CIMRL10-676_OK
+  PIDF-1 PO MRL-021_parte3.mpg
+    Está corrompido de alguma forma. Ele toca no VLC, mas os tempos estão sempre errados. A relação entre o tempo do vídeo e o que de fato é mostrado não é constante. Tentar acessar o momento 10:00 duas vezes vai mostrar coisas diferentes em cada vez. Ainda pode-se extrair todos os frames e, então, selecionar os desejados.
+
+DENMA13-293
+  Não tem vídeos correspondentes, apenas o relatório.
+
+FAmls16-119_OK
+  VTS_02_1.vob
+  VTS_06_1.vob
+    O programa demora muito tempo para extrair cada frame desses vídeos, algo em torno de 30 vezes mais do que nos outros vídeos. Ainda não descobri o porquê.
+
+TCOpm16-140_OK
+  DVD-1/VTS_01_1.vob
+  DVD-2/VTS_01_1.vob
+    O programa não consegue navegar por esses vídeos.
+
+  DVD-1/VTS_01_3.vob
+      Alguns frames não conseguem ser lidos e o ffmpeg (codec) indica erro.
+
+TCOPM16-160_OK
+  Não tem relatório correspondente, apenas os vídeos.

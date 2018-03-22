@@ -53,9 +53,8 @@ def getFrames(videoPath, data, targetPath=dirs.images, ssim=True):
 		# print()
 		pass
 
-	tuboCount  = 0
-	nadaCount  = 0
-	confCount  = 0
+	tuboCount = nadaCount = confCount 	= 0
+	errWrite  = errRead   = errSet 		= True
 	errCount = {'errSet': 0, 'errRead': 0, 'errWrite': 0}
 	runTime = np.zeros(numEntries)
 	idList = []
@@ -91,7 +90,7 @@ def getFrames(videoPath, data, targetPath=dirs.images, ssim=True):
 			print("Video: {}\nID{:2d}\n Class {} does not match any class codes.\n".format(videoName, ID, frameClass))
 
 			i += 1		# Fails if this is already the last entry in the csv
-			continue
+			continue	# Returns to the beginning of the iteration
 
 		# Find frame period
 		framePeriod = 20*(runTime[i]*numEntries/maxFrames)*1000
@@ -141,9 +140,9 @@ def getFrames(videoPath, data, targetPath=dirs.images, ssim=True):
 				print("ID{:2d} Frame {:3d}".format(ID, frameCount[ID]))
 				print("errWrite: {}\nerrRead: {}\nerrSet: {}".format(errWrite, errRead, errSet))
 
-			errCount['errWrite'] = errCount['errWrite'] + (not(errWrite))
-			errCount['errSet']   = errCount['errSet']   + (not(errSet))
-			errCount['errRead']  = errCount['errRead']  + (not(errRead))
+			errCount['errWrite'] += (not(errWrite))
+			errCount['errSet']   += (not(errSet))
+			errCount['errRead']  += (not(errRead))
 
 			# Advance time one framePeriod
 			frameTime += framePeriod

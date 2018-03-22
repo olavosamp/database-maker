@@ -248,7 +248,7 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 		# If a video has a matching csv file, run getFrames to extract its frames
 		for videoPath in videoList:
 			# print("It's a match! Extracting frames...\n")
-			print("Extracting frames from:\n{}".format(videoPath))
+			print("\nExtracting frames from:\n{}".format(videoPath))
 			frameTotal += getFrames(videoPath, csvDf, targetPath+folderName+dirs.sep)
 
 			# print("\nMatch:\n", videoPath)
