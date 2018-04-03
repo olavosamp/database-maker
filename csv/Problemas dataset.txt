@@ -1,24 +1,38 @@
 ﻿Problemas na Base de Vídeos
 
-CIMRL10-676_OK
-  PIDF-1 PO MRL-021_parte3.mpg
-    Está corrompido de alguma forma. Ele toca no VLC, mas os tempos estão sempre errados. A relação entre o tempo do vídeo e o que de fato é mostrado não é constante. Tentar acessar o momento 10:00 duas vezes vai mostrar coisas diferentes em cada vez. Ainda pode-se extrair todos os frames e, então, selecionar os desejados.
+Arquivos Corrompidos:
+	CIMRL10-676_OK
+	  PIDF-1 PO MRL-021_parte3.mpg
+		Está corrompido de alguma forma. Ele toca no VLC, mas os tempos estão sempre errados. A relação entre o tempo do vídeo e o que de fato é mostrado não é constante. Tentar acessar o momento 10:00 duas vezes vai mostrar coisas diferentes em cada vez. Ainda pode-se extrair todos os frames e, então, selecionar os desejados.
 
-DENMA13-293
-  Não tem vídeos correspondentes, apenas o relatório.
+Tempo de Captura Muito Longo:
+	FAmls16-119_OK
+	  VTS_02_1.vob
+	  VTS_06_1.vob
+	TCOmll15-017_OK
+	  VTS_01_1.vob
+		O programa demora muito tempo para extrair cada frame desses vídeos, de 15 a 1800 vezes mais do que nos outros vídeos. O pior caso demora 2,5 horas, enquanto o normal é de 5 a 75 segundos. Ainda não descobri o porquê.
 
-FAmls16-119_OK
-  VTS_02_1.vob
-  VTS_06_1.vob
-    O programa demora muito tempo para extrair cada frame desses vídeos, algo em torno de 30 vezes mais do que nos outros vídeos. Ainda não descobri o porquê.
+Erros de Leitura:
+	TCOpm16-140_OK
+	  DVD-1/VTS_01_1.vob
+	  DVD-2/VTS_01_1.vob
+	  DVD-5/VTS_01_1.vob
+	  DVD-6/VTS_01_1.vob
+		Erro do Opencv: O programa não consegue navegar por esses vídeos.
+		(Todos também demoram muito para serem processados)
 
-TCOpm16-140_OK
-  DVD-1/VTS_01_1.vob
-  DVD-2/VTS_01_1.vob
-    O programa não consegue navegar por esses vídeos.
+	TVILL16-054_OK
+	  DVD-2/Dive 420 16-02-25 01.02.35_C1.wmv
+	  DVD-2/Dive 420 16-02-25 02.02.35_C1.wmv
+		Erro do ffmpeg. O programa não reconhece os frames.
 
-  DVD-1/VTS_01_3.vob
-      Alguns frames não conseguem ser lidos e o ffmpeg (codec) indica erro.
+	  DVD-1/VTS_01_3.vob
+		  Alguns frames não conseguem ser lidos e o ffmpeg (codec) indica erro.
 
-TCOPM16-160_OK
-  Não tem relatório correspondente, apenas os vídeos.
+Falta de Arquivos:
+	TCOPM16-160_OK
+	  Não tem relatório correspondente, apenas os vídeos.
+
+	DENMA13-293
+	  Não tem vídeos correspondentes, apenas o relatório.

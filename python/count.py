@@ -257,20 +257,20 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 
 			frameTotal += getFrames(videoPath, csvDf, targetPath+folderName+dirs.sep)
 
-			runTime = startTime - time.time()
-			print("\nElapsed time: {:.4d}".format(runTime) )
+			runTime = time.time() - startTime
+			print("\nElapsed time:\n{:.2f} seconds".format(runTime) )
 			timeReg.append((videoPath, runTime))
-
 
 			# print("\nMatch:\n", videoPath)
 			# print(csvDf)
 			# matched += 1
-		timeReg.pop(0)
+
 		# # Count videos without csv files
 		# if not(match):
 		# 	print("")
 		# 	unmatched += 1
 
+	timeReg.pop(0)
 	# Count all created images and get class totals
 	# tuboCount, nadaCount, confCount, totCount = countImages(targetPath)
 	tuboCount = 0
@@ -297,8 +297,10 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 
 	# Extraction runtimes
 	print("\nVideo extraction runtimes:")
+	print(timeReg)
+	print("")
 	for timeTuple in timeReg:
-		print("{}: {:.2d}".format(timeTuple[0], timeTuple[1]))
+		print("{:}: {:.2f} seconds".format(timeTuple[0], timeTuple[1]))
 
 	return videoList, csvList, frameTotal
 
