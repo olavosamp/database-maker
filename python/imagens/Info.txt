@@ -1,9 +1,0 @@
-Extracao de frames com periodo variavel
-
-Dataset dataset_registro_de_eventos_test:
-Tubo:	   0
-Nada:	   0
-Conf:	   0
-Total:	   0
-
-Tamanho em disco: 

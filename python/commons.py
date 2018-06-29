@@ -1,6 +1,5 @@
 import dirs
 
-
 # String class codes used in csv files
 classes = [ 'tubo', # Duto
             'nada', # Nada
@@ -24,16 +23,16 @@ classes = [ 'tubo', # Duto
             'asso'  # Assoreamento
             ]
 
-tuboCode = 0            # Ordinal class code DESATUALIZADO
+tuboCode = 0            # Ordinal class codes DESATUALIZADO
 nadaCode = 1
 confCode = 2
 
-tuboSpCode = [1, 0, 0]  # Maximally sparse class code DESATUALIZADO
+tuboSpCode = [1, 0, 0]  # Orthogonal class codes DESATUALIZADO
 nadaSpCode = [0, 1, 0]
 confSpCode = [0, 0, 1]
 
 # Videos of the following formats are found in the data source
-videoFormats = ['wmv', 'mpg', 'vob', 'avi']
+videoFormats = ['wmv', 'mpg', 'vob', 'avi', ]
 
 # SSIM comparison threshold
 ssimLim = 0.600

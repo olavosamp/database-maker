@@ -25,10 +25,7 @@ Erros de Leitura:
 	TVILL16-054_OK
 	  DVD-2/Dive 420 16-02-25 01.02.35_C1.wmv
 	  DVD-2/Dive 420 16-02-25 02.02.35_C1.wmv
-		Erro do ffmpeg. O programa não reconhece os frames.
-
-	  DVD-1/VTS_01_3.vob
-		  Alguns frames não conseguem ser lidos e o ffmpeg (codec) indica erro.
+		Erro do ffmpeg. O programa não reconhece nenhum frame.
 
 Falta de Arquivos:
 	TCOPM16-160_OK
