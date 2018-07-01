@@ -8,6 +8,9 @@ def get_frames(videoPath, interval=5, destFolder="./images/", verbose=False):
         interval:   Frame capture period in seconds.
         destFolder: Frame destination folder.
     '''
+    videoName   = videoPath.split("/")[-1]
+    videoFolder = videoPath.split("20170724_FTP83G_Petrobras/")[-1]
+    destFolder  = destFolder+"/".join(videoFolder.split("/")[:-1])+"/"
 
     try:
         os.makedirs(destFolder)
@@ -15,7 +18,6 @@ def get_frames(videoPath, interval=5, destFolder="./images/", verbose=False):
         # Folder already exists or destFolder is invalid
         pass
 
-    videoName = videoPath.split("/")[-1]
     video = cv.VideoCapture(videoPath)
 
     frameRate   = video.get(cv.CAP_PROP_FPS)
@@ -49,9 +51,11 @@ def get_frames(videoPath, interval=5, destFolder="./images/", verbose=False):
 
             # Write frame as jpg
             imgPath = destFolder+"{} {}.jpg".format(videoName, frameCount)
+            print("\n")
+            print(imgPath)
             errWrite = cv.imwrite(imgPath, frame)
+            print("ErrWrite? ",errWrite)
 
-        print("\nCaptured {} frames.".format(frameCount))
     else:
         for frameTime in captureTimes:
             errSet = video.set(cv.CAP_PROP_POS_MSEC, frameTime)
@@ -62,6 +66,9 @@ def get_frames(videoPath, interval=5, destFolder="./images/", verbose=False):
             # Write frame as jpg
             imgPath = destFolder+"{} {}.jpg".format(videoName, frameCount)
             errWrite = cv.imwrite(imgPath, frame)
+
+    print("\nCaptured {} frames.".format(frameCount))
+    print("\nSaved {} frames at {}".format(frameCount, imgPath))
 
 
     return frameCount
