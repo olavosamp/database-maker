@@ -1,8 +1,6 @@
 from PIL import Image
-from os import listdir
-from os.path import isfile, join
 from glob import glob
-from random import shuffle
+# from random import shuffle
 
 import dirs
 

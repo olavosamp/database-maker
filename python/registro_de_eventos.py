@@ -15,4 +15,4 @@ except OSError:
 
 frameTotal = count.rebuildDatasetMulti(dirs.registro_de_eventos, dirs.dataset, dirs.images+"registro_de_eventos"+dirs.sep)
 
-input("\nCaptura de frames finalizada. Pressione Enter para sair.")
+print("\nCaptura de frames finalizada.\n")
