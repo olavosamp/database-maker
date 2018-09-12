@@ -7,6 +7,8 @@ import dirs
 import commons
 import count
 
+# Get some dataset image samples, I think
+
 N = 10	# 6 demo images per class
 
 targetPath = dirs.images
