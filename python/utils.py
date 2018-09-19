@@ -1,6 +1,7 @@
 import os
 import math
 import numpy 	as np
+import pandas	as pd
 from PIL 		import Image
 from glob 		import glob
 from tqdm		import tqdm
@@ -29,7 +30,26 @@ def timeConverter( strTime ):
 		seconds = s + m*60 + h*3600
 	return seconds
 
-def image_grid(path, targetPath="image_grid.jpg", side=6, upperCrop=0, lowerCrop=0, show=True, save=True):
+def color_filter(image, filter='r', filter_strenght=1.5):
+	# Select color channel
+	if filter == 'r':
+		targetChannel = 0
+	elif filter == 'g':
+		targetChannel = 1
+	elif filter == 'b':
+		targetChannel = 2
+	else:
+		raise KeyError("Selected filter does not exist.")
+
+	source = image.split()
+
+	redFilter = source[targetChannel].point(lambda x: x*filter_strenght)
+
+	source[targetChannel].paste(redFilter)
+	image = Image.merge(image.mode, source)
+	return image
+
+def image_grid(path, targetPath="image_grid.jpg", upperCrop=0, lowerCrop=0, show=False, save=True):
 	'''
 	    Creates a square grid of images randomly samples from available files on path.
 
@@ -38,10 +58,6 @@ def image_grid(path, targetPath="image_grid.jpg", side=6, upperCrop=0, lowerCrop
 
 	    targetPath:
 	        Path where resulting grid will be saved;
-
-	    side:
-	        Number of images to allocate on a grid side. Total number of images on the grid
-	    will be side².
 
 	    upperCrop and lowerCrop:
 	        Number of pixels to be cropped from each composing image. The crops executed
@@ -54,11 +70,18 @@ def image_grid(path, targetPath="image_grid.jpg", side=6, upperCrop=0, lowerCrop
 
 	files = np.random.choice(files, size=squareNumImages, replace=False)
 
+	# Create fake predictions DataFrame
+	predictions = pd.DataFrame(files)
+	predictions['Prediction'] = np.random.choice([0, 1], size=squareNumImages, p=[0.8, 0.2])
+
 	# Square Grid
 	# Side of a square image grid. It will contain side^2 images.
 	side = int(math.sqrt(numImages))
+
+	# Image resizing dimension
 	imageDim = (300,300)   	   # (width, height)
 	# imageDim = (100,100)
+
 	destDim = (side*imageDim[0], side*(imageDim[1] - lowerCrop - upperCrop))
 
 	im_grid = Image.new('RGB', destDim)
@@ -69,6 +92,10 @@ def image_grid(path, targetPath="image_grid.jpg", side=6, upperCrop=0, lowerCrop
 
 			im = im.resize(imageDim)
 			im = im.crop((0, upperCrop, imageDim[0], imageDim[1] - lowerCrop))
+
+			# Apply color filter if image has wrong prediction
+			if predictions.loc[index, "Prediction"] == 1:
+				im = color_filter(im, filter='r', filter_strenght=3.5)
 
 			im.thumbnail(imageDim)
 			im_grid.paste(im, (i,j))
