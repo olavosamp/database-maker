@@ -1,2 +1,0 @@
-Tubo,Nada,Conf,Total
-14927,5360,4463,24750

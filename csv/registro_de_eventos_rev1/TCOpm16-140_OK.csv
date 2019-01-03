@@ -1,0 +1,55 @@
+VideoName,Class,StartTime,EndTime,Id,Obs
+DVD-1/VTS_01_1,cruz,005400,005537,1,Cruzamento
+DVD-1/VTS_01_1,cruz,005735,005746,2,Cruzamento
+DVD-1/VTS_01_1,cruz,010000,010316,3,Cruzamento
+DVD-1/VTS_01_1,cruz,010347,010400,3,Cruzamento
+DVD-1/VTS_01_1,cruz,010455,010503,4,Cruzamento
+DVD-1/VTS_01_1,cruz,011318,011330,5,Cruzamento
+DVD-1/VTS_01_1,cruz,011406,011546,6,Cruzamento
+DVD-1/VTS_01_1,cruz,011555,011620,6,Cruzamento
+DVD-1/VTS_01_1,cruz,011652,011716,7,Cruzamento
+DVD-1/VTS_01_2,cruz,000000,000103,1,Cruzamento
+DVD-1/VTS_01_2,cruz,002027,002212,2,Cruzamento
+DVD-1/VTS_01_2,cruz,002300,002330,3,Cruzamento
+DVD-1/VTS_01_2,cruz,002716,002732,4,Cruzamento
+DVD-1/VTS_01_2,repr,005642,005705,5,Reparo em bom estado
+DVD-1/VTS_01_2,repr,005713,005855,5,
+DVD-1/VTS_01_2,repr,005940,010030,5,
+DVD-1/VTS_01_2,repr,010107,010148,5,
+DVD-1/VTS_01_2,repr,010433,010444,5,
+DVD-1/VTS_01_2,repr,010500,011300,5,
+DVD-1/VTS_01_3,dano,000825,001000,1,Dano de armadura exposta
+DVD-1/VTS_01_3,dano,001123,001710,1,
+DVD-1/VTS_01_3,dano,001734,002115,1,
+DVD-1/VTS_01_3,torc,003715,004230,2,torcao
+DVD-1/VTS_01_3,torc,004430,004551,2,
+DVD-1/VTS_01_3,torc,004552,005226,2,
+DVD-1/VTS_01_3,torc,005237,005300,2,
+DVD-1/VTS_01_3,torc,005423,005630,2,
+DVD-1/VTS_01_3,torc,005715,005806,2,
+DVD-1/VTS_01_4,repr,004018,004144,1,Reparo com bandagem solta
+DVD-1/VTS_01_4,repr,004205,004450,1,
+DVD-1/VTS_01_4,repr,004715,004812,1,
+DVD-1/VTS_01_4,cruz,003833,003900,2,Cruzamento
+DVD-1/VTS_01_4,cruz,005825,005900,3,Cruzamento
+DVD-1/VTS_01_5,cruz,002658,002806,1,Cruzamento
+DVD-1/VTS_01_5,cruz,003822,003852,2,Cruzamento
+DVD-2/VTS_01_1,cruz,010205,010258,1,Cruzamento
+DVD-2/VTS_01_2,cruz,000455,000615,1,Cruzamento
+DVD-2/VTS_01_4,flan,002929,003555,1,flange
+DVD-2/VTS_01_4,garr,003607,004902,2,garra
+DVD-2/VTS_01_4,garr,004924,005250,3,garra
+DVD-2/VTS_01_4,flan,005300,005500,4,flange
+DVD-2/VTS_01_4,flan,005706,005723,4,flange
+DVD-2/VTS_01_5,cruz,000626,001057,1,Cruzamento
+DVD-2/VTS_01_5,cruz,005400,005413,2,Cruzamento
+DVD-5/VIDEO_TS/VTS_01_1,repr,002100,002301,1,reparo com bandagem soltando inclui zoom do reparo
+DVD-5/VIDEO_TS/VTS_01_1,repr,002401,002420,1
+DVD-5/VIDEO_TS/VTS_01_1,repr,010952,011310,2,reparo com bandagem soltando e escape de gas continuo de baixa intensidade (com zoom em um trecho)
+DVD-5/VIDEO_TS/VTS_01_1,repr,011630,011718,2,reparo com bandagem soltando escape de gas
+DVD-5/VIDEO_TS/VTS_01_4,torc,005135,005204,3,pequena torcao
+DVD-5/VIDEO_TS/VTS_01_4,torc,005512,005736,4,duto com pequena torcao provocando vao livre
+DVD-5/VIDEO_TS/VTS_01_4,torc,005753,005807,4,sem sombra ou peixe
+DVD-6/VIDEO_TS/VTS_01_1,dano,002817,002830,5,armadura exposta
+DVD-6/VIDEO_TS/VTS_01_1,dano,002900,002915,5,armadura exposta (deixamos de fora o intervalo do zoom)
+DVD-6/VIDEO_TS/VTS_01_1,dano,010536,010627,6,armadura exposta (inclui um pouco do zoom)

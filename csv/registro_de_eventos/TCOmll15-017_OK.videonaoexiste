@@ -1,7 +1,0 @@
-VideoName,Class,StartTime,EndTime,Id,Obs
-VTS_01_0,loop,002707,002739,1,video escuro
-VTS_01_0,loop,002749,002913,2,presenca de sombra do duto
-VTS_01_0,loop,002927,003424,1,voltou para o primeiro presenca de peixe (formato de cobra) sombra
-VTS_01_0,loop,003427,003628,3,presenca de peixe
-VTS_01_0,loop,003804,004058,4,
-VTS_01_0,loop,004116,004437,5,sem sombra ou peixe - todos os loops sao parecidos (dutos com mesma largura e cor loops de mesma dimensao

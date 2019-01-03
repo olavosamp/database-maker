@@ -1,5 +1,6 @@
 import os
 import glob
+import time
 import pandas as pd
 import numpy as np
 from collections import Counter
@@ -120,7 +121,7 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 	#	videoPath:	filepath of the video folder
 	#	targetPath:	images destination folder
 
-	# GET FOLDER CSVS
+	# Algorithm: GET FOLDER CSVS
 	#
 	# FOR EACH FOLDER CSV
 	#	SPLIT FOLDER CSV IN NORMAL CSVS
@@ -152,14 +153,15 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 
 	# list(map(lambda x: csvList.append((x, splitCsv(x))), folderCsvList))
 	# list(map(lambda x: (csvList.append((x, df)) for df in splitCsv(x)), folderCsvList))
+
 	# Split each folder csv in video csvs and list them all together
-	csvList = [()]	# List of Tuples of (folder name, csv dataframe)
+	csvList = [()]				# List of Tuples of (folder name, csv dataframe)
 	for csv in folderCsvList:
 		subCsvList = splitCsv(csv)
 		for df in subCsvList:
 			csvList.append((csv, df))
 
-	csvList.pop(0)
+	csvList.pop(0)	# Removes initialization empy entry
 
 	# print("\nSplit csv list:")
 	# print(csvList[0][1].loc[:]['VideoName'])
@@ -182,7 +184,8 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 	foundVideos = 0
 	frameTotal = 0
 	# print(csvList)
-	# For each video file, try to find a matching csv file
+
+	# Iterate on csv dataframes
 	for csvTuple in csvList:
 		# match = False
 		csvDf = csvTuple[1]
@@ -201,17 +204,19 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 
 		videoName = ""
 		videoList = []
+		timeReg = [()]	# (Video name, extraction time) tuple
 		nameSplit = csvName.split(dirs.sep)
 		if len(nameSplit) > 1:
 			for videoFormat in commons.videoFormats:
 				searchString = videoFolder+folderName+dirs.sep+nameSplit[0]+dirs.sep+nameSplit[-1]+"."+videoFormat
+
 				newList = glob.glob(searchString, recursive=True)
 				videoList.extend(newList)
-				print("Searching:\n{} ".format(searchString))
+				# print("Searching:\n{} ".format(searchString))
+
 			videoList		= list(map(lambda x: x.replace("\\", dirs.sep), videoList))
 
-
-			print("VideoList: ", videoList)
+			print("\nFound the following matching videos (more than one indicates a problem):\n ", videoList)
 
 			# # Search for a csv file with the same name as the video
 			# if not(videoName.find(nameSplit[0])) and not(videoName.find(nameSplit[-1])):
@@ -229,7 +234,8 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 				newList = glob.glob(searchString, recursive=True)
 				videoList.extend(newList)
 				print("Searching:\n{} ".format(searchString))
-			videoList		= list(map(lambda x: x.replace("\\", dirs.sep), videoList))
+
+			videoList = list(map(lambda x: x.replace("\\", dirs.sep), videoList))
 
 			print("\nVideoList: ", videoList)
 
@@ -243,11 +249,17 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 			# 	matched += 1
 			# 	break
 		foundVideos += len(videoList)
+
 		# If a video has a matching csv file, run getFrames to extract its frames
 		for videoPath in videoList:
-			# print("It's a match! Extracting frames...\n")
-			print("Extracting frames from:\n{}".format(videoPath))
-			frameTotal += getFrames(videoPath, csvDf, targetPath)
+			print("\nExtracting frames from:\n{}".format(videoPath))
+			startTime = time.time()
+
+			frameTotal += getFrames(videoPath, csvDf, targetPath+folderName+dirs.sep)
+
+			runTime = time.time() - startTime
+			print("\nElapsed time:\n{:.2f} seconds".format(runTime) )
+			timeReg.append((videoPath, runTime))
 
 			# print("\nMatch:\n", videoPath)
 			# print(csvDf)
@@ -258,6 +270,7 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 		# 	print("")
 		# 	unmatched += 1
 
+	timeReg.pop(0)
 	# Count all created images and get class totals
 	# tuboCount, nadaCount, confCount, totCount = countImages(targetPath)
 	tuboCount = 0
@@ -267,6 +280,9 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 	#TODO: Consertar essa medida
 	unmatched = len(csvList) - foundVideos
 
+	## Information
+
+	# Video search stats
 	print("\n{} videos found in csvs.".format(len(csvList)))
 	print("{} matched in actual files.".format(foundVideos))
 	print("\nFound {} matches. {} csv videos did not have a match and have not been used.".format(foundVideos, unmatched))
@@ -278,6 +294,13 @@ def rebuildDatasetMulti(csvFolder=dirs.registro_de_eventos, videoFolder=dirs.dat
 	"\nTubo:\t{:4d}".format(tuboCount), "\nNada:\t{:4d}".format(nadaCount), "\nConf:\t{:4d}".format(confCount),
 	"\nTotal:\t{:4d}".format(frameTotal), "\n\nTamanho em disco: "])
 	file.close()
+
+	# Extraction runtimes
+	print("\nVideo extraction runtimes:")
+	print(timeReg)
+	print("")
+	for timeTuple in timeReg:
+		print("{:}: {:.2f} seconds".format(timeTuple[0], timeTuple[1]))
 
 	return videoList, csvList, frameTotal
 
