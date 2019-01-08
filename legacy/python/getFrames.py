@@ -108,7 +108,7 @@ def getFrames(videoPath, data, targetPath=dirs.images, ssim=True):
 	# data = pd.read_csv(csvPath, dtype=str)
 	video = cv2.VideoCapture(videoPath)
 
-	frameRate = video.get(cv2.CAP_PROP_FPS)
+    frameRate = video.get(cv2.CAP_PROP_FPS)
 
 	# print("Frame rate", frameRate)
 
