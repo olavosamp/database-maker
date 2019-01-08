@@ -6,12 +6,9 @@ sep     = "/"       # Foward dash for Windows/Linux compatibility
 csv                 = ".."+sep+"csv"+sep
 totals              = csv+"Totals"+sep
 demo                = ".."+sep+"demo"+sep
-images              = ".."+sep+".."+sep+"images"+sep
-dataset             = ".."+sep+".."+sep+"20170724_FTP83G_Petrobras"+sep
+images              = ".."+sep+"images"+sep
+dataset             = ".."+sep+"20170724_FTP83G_Petrobras"+sep
 registro_de_eventos = csv+sep+"registro_de_eventos"+sep
-
-new_images          = ".."+sep+".."+sep+"new_images"+sep
-trim                = new_images+"trim"+sep
 
 def create_folder(path):
     try:
@@ -22,4 +19,3 @@ def create_folder(path):
 
 create_folder(demo)
 create_folder(images)
-create_folder(new_images)

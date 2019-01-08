@@ -2,17 +2,24 @@ import cv2
 import pandas as pd
 import numpy  as np
 
-import libs.dirs
+import libs.dirs as dirs
 
 class GetFrames:
     def __init__(self, videoPath, csvPath=None, interval=5, destPath='./images/', verbose=False):
+        if verbose:
+    	       print("\nUsing opencv version: ", cv2.__version__)
+
         self.videoPath  = videoPath
         self.csvPath    = csvPath
         self.interval   = interval
         self.destPath   = destPath
         self.verbose    = verbose
 
+        self.videoError = dict()
+        self.frameCount = 0
+
         # Validate video path and file
+        dirs.create_folder(self.destPath)
         self.video = self.get_video_data()
 
         # Get csv or interval information
@@ -40,3 +47,31 @@ class GetFrames:
 
         self.frameRate = self.video.get(cv2.CAP_PROP_FPS)
         return self.video
+
+    def get_frames(self):
+        self.totalFrames = self.video.get(cv2.CAP_PROP_FRAME_COUNT)
+        self.videoTime   = self.totalFrames/self.frameRate
+
+        if self._from_csv:
+            raise NotImplementedError("Frame extraction from csv file not yet implemented")
+        else:
+            if self.verbose:
+                print("")
+            self.timePos    = 0
+            self.frameCount = 0
+
+            while self.timePos < self.videoTime:
+                if self.verbose:
+                    print("Frame ", self.frameCount)
+                self.videoError['set'] = self.video.set(cv2.CAP_PROP_POS_MSEC, self.timePos)
+
+                self.frameNum = self.video.get(cv2.CAP_PROP_POS_FRAMES)
+                self.videoError['read'], self.frame = self.video.read()
+
+                # self.framePath = dirs.images+'test_remake/'
+                self.framePath = self.destPath
+                self.framePath += 'FRAME_{}.jpg'.format(self.frameCount)
+
+                self.videoError['write'] = cv2.imwrite(self.framePath, self.frame)
+
+                self.frameCount += 1
