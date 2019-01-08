@@ -1,5 +1,5 @@
 opencv
 numpy
 pandas
-PIL
+Pillow
 tqdm
