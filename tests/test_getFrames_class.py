@@ -6,7 +6,7 @@ videoPath  = "E:/Projeto Final/Projeto Petrobras/20170724_FTP83G_Petrobras/GHmls
 
 destPath   = dirs.images+'remake/'
 
-getFrames = GetFrames(videoPath, csvPath=None, interval=8000, destPath=destPath,
+getFrames = GetFrames(videoPath, csvPath=None, interval=60, destPath=destPath,
                       verbose=True)
 
 print(getFrames.frameRate)
