@@ -1,4 +1,6 @@
 from libs.get_frames_class import *
+from libs.utils            import convert_video
+
 
 import libs.dirs           as dirs
 
@@ -6,7 +8,7 @@ destBase   = dirs.images+'remake/'
 
 basePath = "E:/Projeto Final/Projeto Petrobras/20170724_FTP83G_Petrobras/"
 paths    = [
-            # "TVILL16-054_OK/DVD-1/Dive 420 16-02-24 20.32.35_C1.wmv",
+            "TVILL16-054_OK/DVD-1/Dive 420 16-02-24 20.32.35_C1.wmv",
             "TVILL16-054_OK/DVD-1/Dive 420 16-02-24 21.02.35_C1.wmv",
             "TVILL16-054_OK/DVD-1/Dive 420 16-02-24 21.32.35_C1.wmv",
             "TVILL16-054_OK/DVD-1/Dive 420 16-02-24 22.02.35_C1.wmv",
@@ -19,12 +21,19 @@ paths    = [
 ]
 
 for path in paths:
+
     videoPath = basePath+path
+
+    newFormat = 'mp4'
+    convertPath = dirs.demo + '.'.join(path.split('.')[:-1])
+    convertPath += '.'+newFormat
+
+    convert_video(videoPath, convertPath)
 
     destEnd   = ".".join(path.split(".")[:-1])+"/"
     destPath  = destBase+destEnd
 
-    getFrames = GetFrames(videoPath, csvPath=None, interval=1, destPath=destPath,
+    getFrames = GetFrames(convertPath, csvPath=None, interval=1, destPath=destPath,
                             verbose=True)
 
     print("Video:\n", getFrames.videoPath)
