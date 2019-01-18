@@ -9,15 +9,15 @@ destBase   = dirs.images+'remake/'
 basePath = "E:/Projeto Final/Projeto Petrobras/20170724_FTP83G_Petrobras/"
 # basePath = dirs.converted
 paths    = [
-            # "TVILL16-054_OK/DVD-1/Dive 420 16-02-24 20.32.35_C1.mp4",
-            # "TVILL16-054_OK/DVD-1/Dive 420 16-02-24 21.02.35_C1.wmv",
-            # "TVILL16-054_OK/DVD-1/Dive 420 16-02-24 21.32.35_C1.wmv",
-            # "TVILL16-054_OK/DVD-1/Dive 420 16-02-24 22.02.35_C1.wmv",
-            # "TVILL16-054_OK/DVD-1/Dive 420 16-02-24 23.02.35_C1.wmv",
-            # "TVILL16-054_OK/DVD-1/Dive 420 16-02-24 23.32.35_C1.wmv",
-            # "TVILL16-054_OK/DVD-2/Dive 420 16-02-25 00.02.35_C1.wmv",
-            # "TVILL16-054_OK/DVD-2/Dive 420 16-02-25 00.32.35_C1.wmv",
-            # "TVILL16-054_OK/DVD-2/Dive 420 16-02-25 01.02.35_C1.wmv",
+            "TVILL16-054_OK/DVD-1/Dive 420 16-02-24 20.32.35_C1.wmv",
+            "TVILL16-054_OK/DVD-1/Dive 420 16-02-24 21.02.35_C1.wmv",
+            "TVILL16-054_OK/DVD-1/Dive 420 16-02-24 21.32.35_C1.wmv",
+            "TVILL16-054_OK/DVD-1/Dive 420 16-02-24 22.02.35_C1.wmv",
+            "TVILL16-054_OK/DVD-1/Dive 420 16-02-24 23.02.35_C1.wmv",
+            "TVILL16-054_OK/DVD-1/Dive 420 16-02-24 23.32.35_C1.wmv",
+            "TVILL16-054_OK/DVD-2/Dive 420 16-02-25 00.02.35_C1.wmv",
+            "TVILL16-054_OK/DVD-2/Dive 420 16-02-25 00.32.35_C1.wmv",
+            "TVILL16-054_OK/DVD-2/Dive 420 16-02-25 01.02.35_C1.wmv",
             "TVILL16-054_OK/DVD-2/Dive 420 16-02-25 02.32.35_C1.wmv",
 ]
 
