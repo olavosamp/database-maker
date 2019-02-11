@@ -135,8 +135,12 @@ def getFrames(videoPath, data, targetPath=dirs.images, ssim=True):
         # print()
         pass
 
-    tuboCount = nadaCount = confCount     = 0
-    errWrite  = errRead   = errSet         = True
+    tuboCount = 0
+    nadaCount = 0
+    confCount = 0
+    errWrite  = True
+    errRead   = True
+    errSet    = True
     errCount = {'errSet': 0, 'errRead': 0, 'errWrite': 0}
     runTime = np.zeros(numEntries)
     idList = []
@@ -160,19 +164,19 @@ def getFrames(videoPath, data, targetPath=dirs.images, ssim=True):
         ID             = int(data.loc[i,'Id'])
         eventStart     = timeConverter(data.loc[i,'StartTime'])*1000
         eventEnd       = timeConverter(data.loc[i,'EndTime'])*1000
-        videoName     = data.loc[i,'VideoName']
+        videoName      = data.loc[i,'VideoName']
 
         if len(videoName.split(dirs.sep) ) > 1:
-            videoName = videoName.replace(dirs.sep, '-')
+            videoName = videoName.replace(dirs.sep, '--')
 
-        # Error checking for class code normalization
+        # Check for matching classes
         frameClass     = data.loc[i,'Class']
         if frameClass not in commons.classes:
             print("\n!!! Error!!! ")
             print("Video: {}\nID{:2d}\n Class {} does not match any class codes.\n".format(videoName, ID, frameClass))
 
             i += 1        # Fails if this is already the last entry in the csv
-            continue    # Returns to the beginning of the iteration
+            continue      # Returns to the beginning of the iteration
 
         # Find frame period
         framePeriod = 20*(runTime[i]*numEntries/maxFrames)*1000
