@@ -20,7 +20,10 @@ classes = [ 'tubo', # Duto
             'cruz', # Cruzamento
             'flan', # Flange
             'garr', # Garra
-            'asso'  # Assoreamento
+            'asso', # Assoreamento
+
+            'evto', # Evento
+            'nevt'  # Não Evento
             ]
 
 tuboCode = 0            # Ordinal class codes DESATUALIZADO
