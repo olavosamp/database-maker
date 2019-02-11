@@ -1,3 +1,6 @@
+# Frame totals files
+*.tot
+
 # Frame Results
 images/
 demo/
