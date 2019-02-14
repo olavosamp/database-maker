@@ -96,8 +96,8 @@ def getFrames(videoPath, data, targetPath=dirs.images, ssim=True):
     '''
         Main frame capture routine
     '''
-    # videoPath = "F:"+sep+"Program Files"+sep+"Arquivos Incomuns"+sep+"Relevante"+sep+"UFRJ"+sep+"Projeto Final"+sep+"DadosPetrobras"+sep+"20170724_FTP83G_Petrobras"+sep+"CIMRL10-676_OK"+sep+"PIDF-1 PO MRL-021_parte2.mpg"
-    # csvPath = ".."+sep+"csv"+sep+"PIDF-1 PO MRL-021_parte2.csv"
+    # videoPath = ".."+sep+".."+sep+".."+sep+"20170724_FTP83G_Petrobras"+sep+"CIMRL10-676_OK"+sep+"PIDF-1 PO MRL-021_parte2.mpg"
+    # csvPath = ".."+sep+".."+sep+"csv"+sep+"PIDF-1 PO MRL-021_parte2.csv"
 
     # Read the data csv and open the video file
     print("\nUsing opencv version: ", cv2.__version__)

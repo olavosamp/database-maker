@@ -3,11 +3,12 @@ import count
 import dirs
 
 ## Rebuild Dataset
-targetPath = dirs.images+ "registro_tags_test" + dirs.sep
-csvPath    = dirs.csv   + "registro_tags"         + dirs.sep
+targetPath = dirs.images + "registro_tags_test" + dirs.sep
+csvPath    = dirs.csv    + "registro_tags"      + dirs.sep
 '''
     Usage
     rebuildDatasetMulti(csv_folder, videos_folder, target_folder)
+    rebuildDataset     (csv_folder, videos_folder, target_folder)
 '''
 
 # videoList, csvList, frameTotal = count.rebuildDatasetMulti(csvPath, dirs.dataset, targetPath)

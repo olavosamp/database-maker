@@ -331,6 +331,14 @@ def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset, targetPath=dirs
     videoList = list(map(lambda x: x.replace("\\", dirs.sep), videoList))
     csvList   = list(map(lambda x: x.replace("\\", dirs.sep), csvList))
 
+    print("\nCSV List\n")
+    for path in csvList:
+        print(path)
+
+    # print("\nVideo List\n")
+    # for path in videoList:
+    #     print(path)
+
     # Create database folder
     logPath = targetPath+dirs.sep
     try:
@@ -343,37 +351,75 @@ def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset, targetPath=dirs
 
     unmatched  = 0
     frameTotal = 0
-    # For each video file, try to find a matching csv file
-    for videoPath in videoList:
+
+    # For each csv file, try to find a matching video file
+    for csvPath in csvList:
         match = False
-        videoName = videoPath.split(dirs.sep)[-1]
+        csvDf = pd.read_csv(csvPath, dtype='str')
+        videoPath = csvDf.loc[0]['VideoName']
+
+        # Check if videoPath has extension
+        for videoFormat in commons.videoFormats:
+            videoFormat = "."+videoFormat
+            if videoFormat in videoPath:
+                # print("Found extension")
+                videoPath = videoPath[:-4]
+                break
+
+        # videoName = videoPath.split(dirs.sep)[-1]
         # videoName = videoName.split('.')[-2]
-        videoName = videoName[:-4]                # Only works for file extensions 3 characters long
+        # videoName = videoName[:-4]                # Only works for file extensions 3 characters long
                                                   # ex: .avi, .wmv, .vob, .mpg
 
-        # print("\nSearching for: ", videoName)
-        # print("")
-        for csvPath in csvList:
-            csvName = csvPath.split(dirs.sep)[-1]
-            # print("CSV\n", csvName)
-            # print("Video\n", videoName)
-            # input()
+        print("\nSearching for: ", videoPath)
 
-            # Search for a csv file with the same name as the video
-            if csvName.find(videoName) == 0:
+        for video in videoList:
+            if videoPath in video:
+                print("Video match")
+
                 # If a video has a matching csv file, run getFrames to extract its frames
-                print("Processing video {} ...".format(videoPath.split(dirs.sep)[-1]))
-                data = pd.read_csv(csvPath, dtype=str)
-                frameTotal += getFrames(videoPath, data, targetPath)
+                print("Processing video {} ...".format(video.split(dirs.sep)[-1]))
+                # data = pd.read_csv(csvPath, dtype=str)
+                frameTotal += getFrames(video, csvDf, targetPath)
 
-                # print("\nMatch:\n", videoPath)
-                # print(csvPath)
                 match = True
                 break
 
         # Count videos without csv files
         if not(match):
             unmatched += 1
+
+    # # For each video file, try to find a matching csv file
+    # for videoPath in videoList:
+    #     match = False
+    #     videoName = videoPath.split(dirs.sep)[-1]
+    #     # videoName = videoName.split('.')[-2]
+    #     videoName = videoName[:-4]                # Only works for file extensions 3 characters long
+    #                                               # ex: .avi, .wmv, .vob, .mpg
+    #
+    #     # print("\nSearching for: ", videoName)
+    #     # print("")
+    #     for csvPath in csvList:
+    #         csvName = csvPath.split(dirs.sep)[-1]
+    #         # print("CSV\n", csvName)
+    #         # print("Video\n", videoName)
+    #         # input()
+    #
+    #         # Search for a csv file with the same name as the video
+    #         if csvName.find(videoName) == 0:
+    #             # If a video has a matching csv file, run getFrames to extract its frames
+    #             print("Processing video {} ...".format(videoPath.split(dirs.sep)[-1]))
+    #             data = pd.read_csv(csvPath, dtype=str)
+    #             frameTotal += getFrames(videoPath, data, targetPath)
+    #
+    #             # print("\nMatch:\n", videoPath)
+    #             # print(csvPath)
+    #             match = True
+    #             break
+    #
+    #     # Count videos without csv files
+    #     if not(match):
+    #         unmatched += 1
 
     # Count all created images and get class totals
     tuboCount, nadaCount, confCount, totCount = countImages(targetPath)
