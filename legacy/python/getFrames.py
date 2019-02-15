@@ -166,6 +166,12 @@ def getFrames(videoPath, data, targetPath=dirs.images, ssim=True):
         eventEnd       = timeConverter(data.loc[i,'EndTime'])*1000
         videoName      = data.loc[i,'VideoName']
 
+        tags    = data.loc[i, 'Tags']
+        tagList = tags.split('-')
+        if commons.skipTag in tagList:
+            # Skip csv entry if it contains a skip tag
+            continue
+
         if len(videoName.split(dirs.sep) ) > 1:
             videoName = videoName.replace(dirs.sep, '--')
 
