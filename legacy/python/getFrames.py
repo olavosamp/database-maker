@@ -213,7 +213,15 @@ def getFrames(videoPath, data, targetPath=dirs.images, ssim=True):
             if errRead and errSet:
                 frameCount[ID] += 1
                 # Saved image name/path
-                imgPath = "{}{} ID{:d} FRAME{:d} {}.jpg".format( dirPath, videoName, ID, frameCount[ID], frameClass)
+                imgPath = "{}{} ID{:d} FRAME{:d} {}".format( dirPath, videoName, ID, frameCount[ID], frameClass)
+
+                # If entry contains a marker tag, include it in filename
+                if commons.markerTag1 in tagList:
+                    imgPath += " "+commons.markerTag1
+                if commons.markerTag2 in tagList:
+                    imgPath += " "+commons.markerTag2
+
+                imgPath += ".jpg"
 
                 # Write frame to file
                 errWrite = cv2.imwrite(imgPath, frame)

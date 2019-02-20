@@ -40,5 +40,7 @@ videoFormats = ['wmv', 'mpg', 'vob', 'avi', 'mp4']
 # SSIM comparison threshold
 ssimLim = 0.600
 
-
-skipTag = 'naousar'
+# Relevant tags
+skipTag    = 'naousar'
+markerTag1 = "erro1"
+markerTag2 = "erro2"
