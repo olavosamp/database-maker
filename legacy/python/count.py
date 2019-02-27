@@ -325,6 +325,7 @@ def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset, targetPath=dirs
         videoList.extend(newList)
     print("\n")
 
+    print("\nSearching for csv files in\n", csvFolder, "\n")
     csvList = glob.glob(csvFolder+'**'+dirs.sep+'*.csv', recursive=True)
 
     # Replaces \\ with defined separator
@@ -389,44 +390,12 @@ def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset, targetPath=dirs
         if not(match):
             unmatched += 1
 
-    # # For each video file, try to find a matching csv file
-    # for videoPath in videoList:
-    #     match = False
-    #     videoName = videoPath.split(dirs.sep)[-1]
-    #     # videoName = videoName.split('.')[-2]
-    #     videoName = videoName[:-4]                # Only works for file extensions 3 characters long
-    #                                               # ex: .avi, .wmv, .vob, .mpg
-    #
-    #     # print("\nSearching for: ", videoName)
-    #     # print("")
-    #     for csvPath in csvList:
-    #         csvName = csvPath.split(dirs.sep)[-1]
-    #         # print("CSV\n", csvName)
-    #         # print("Video\n", videoName)
-    #         # input()
-    #
-    #         # Search for a csv file with the same name as the video
-    #         if csvName.find(videoName) == 0:
-    #             # If a video has a matching csv file, run getFrames to extract its frames
-    #             print("Processing video {} ...".format(videoPath.split(dirs.sep)[-1]))
-    #             data = pd.read_csv(csvPath, dtype=str)
-    #             frameTotal += getFrames(videoPath, data, targetPath)
-    #
-    #             # print("\nMatch:\n", videoPath)
-    #             # print(csvPath)
-    #             match = True
-    #             break
-    #
-    #     # Count videos without csv files
-    #     if not(match):
-    #         unmatched += 1
-
     # Count all created images and get class totals
     tuboCount, nadaCount, confCount, totCount = countImages(targetPath)
 
     # print("\nVIDEO LIST:\n{}\n".format(videoList))
     print("\n{} videos found".format(len(videoList)))
-    print("\n{} csv files found".format(len(csvList)-1))
+    print("\n{} csv files found".format(len(csvList)))
     print("\nFound {} matches. {} videos remain without classification and will not be used.".format(len(videoList)-unmatched, unmatched))
 
     # Save database information

@@ -1,0 +1,12 @@
+get_frames_class
+  read video                            v
+  save frames                           v
+  name frames                           v
+  get all frames                        v
+
+  read csv
+  get frames from csv
+  name frames from csv
+
+  register and catch errors
+  nice prints

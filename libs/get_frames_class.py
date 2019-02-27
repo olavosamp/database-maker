@@ -1,51 +1,82 @@
 import cv2
-import pandas as pd
-import numpy  as np
+import pandas       as pd
+import numpy        as np
 import datetime
 
-import libs.dirs as dirs
-from utils       import timeConverter
+import libs.dirs    as dirs
+from libs.utils     import timeConverter
 
 class GetFrames:
     '''
-        interval: frame capture interval, in seconds.
+        Base frame extractor class
     '''
-    def __init__(self, videoPath, csvPath, destPath='./images/', verbose=False):
-        if verbose:
-    	       print("\nUsing opencv version: ", cv2.__version__)
-
-        self.videoPath  = videoPath
-        self.csvPath    = csvPath
+    def __init__(self, destPath, verbose=True):
         self.destPath   = destPath
         self.verbose    = verbose
 
         self.videoError = {'read': True, 'set': True, 'write': True}
         self.frameCount = 0
 
-        # Validate video path and file
-        dirs.create_folder(self.destPath)
-        self.video = self.get_video_data()
+        if self.verbose:
+            print("\nUsing opencv version: ", cv2.__version__)
 
-        # Get csv or interval information
-        if self.csvPath == None:
+        # Create destination folder
+        dirs.create_folder(self.destPath)
+
+
+    def get_video_data(self, videoPath):
+        try:
+        	self.video = cv2.VideoCapture(videoPath)
+        except:
+            print("\nError opening video:\n")
+            cv2.VideoCapture(videoPath)
+
+        self.frameRate = self.video.get(cv2.CAP_PROP_FPS)
+        if self.frameRate == 0:
+            self.frameRate = 25  # Default frame rate is 30 or 25 fps
+
+        self.numFrames = self.video.get(cv2.CAP_PROP_FRAME_COUNT)
+        return self.video
+
+
+    def get_frames(self):
+        self.totalFrames = self.video.get(cv2.CAP_PROP_FRAME_COUNT)
+        self.videoTime   = self.totalFrames/self.frameRate
+        if self.verbose:
+            print("Total video time:")
+        print(str(datetime.timedelta(seconds=self.videoTime)))
+
+        self.timePos    = 0
+        self.frameCount = 0
+
+        # Actual frame extraction function
+        self._routine_get_frames()
+
+        print(self.videoError)
+        print("{} frames captured.".format(self.frameCount))
+
+
+
+class GetFramesCsv:
+    '''
+        csvPath:  reference csv filepath
+        destPath: dataset destination folder
+        interval: frame capture interval, in seconds.
+    '''
+    def __init__(self, csvPath, destPath='./images/', verbose=True):
+        super().__init__(destPath, verbose=verbose)
+        self.csvPath    = csvPath
+
+        # Get csv data
+        if self.csvPath != None:
             self.csvData   = self.get_csv_data()
+        else:
+            raise NameError("CSV filepath not defined.")
 
 
     def get_csv_data(self):
         self.csvData = pd.read_csv(self.csvPath, dtype=str)
         return self.csvData
-
-
-    def get_video_data(self):
-        try:
-        	self.video = cv2.VideoCapture(self.videoPath)
-        except:
-            print("\nError opening video:\n")
-            cv2.VideoCapture(self.videoPath)
-
-        self.frameRate = self.video.get(cv2.CAP_PROP_FPS)
-        self.numFrames = self.video.get(cv2.CAP_PROP_FRAME_COUNT)
-        return self.video
 
 
     def get_capture_interval(self):
@@ -63,7 +94,7 @@ class GetFrames:
         return self.filePath
 
 
-    def routine_get_frames_csv(self):
+    def _routine_get_frames(self):
         self.numEntries = self.csvData.shape[0]
 
         for self.event in range(self.numEntries):
@@ -73,7 +104,7 @@ class GetFrames:
             self.eventClass = self.csvData.loc[self.event,'Class']
             self.videoName  = self.csvData[self.event, 'VideoName']
 
-            if self.eventClass is not in commons.classes:
+            if self.eventClass not in commons.classes:
                 print("\n\nError: Proposed class is not in accepted classes list.\nSkipping entry.\n\n")
                 continue
 
@@ -97,37 +128,25 @@ class GetFrames:
             self.frameCount += self.eventFrames
 
 
-    def get_frames(self):
-        self.totalFrames = self.video.get(cv2.CAP_PROP_FRAME_COUNT)
-        self.videoTime   = self.totalFrames/self.frameRate
-            if self.verbose:
-                print("Total video time:")
-            print(str(datetime.timedelta(seconds=self.videoTime)))
-
-        self.timePos    = 0
-        self.frameCount = 0
-
-        # Actual frame extraction function
-        self.routine_get_frames()
-
-        print(self.videoError)
-        print("{} frames captured.".format(self.frameCount))
-
-
 
 class GetFramesFull(GetFrames):
-    def __init__(self, interval=5, interMin=0.8, interMax=20):
-        super().__init__(videoPath, csvPath, )
+    def __init__(self, videoPath, destPath='./images/', interval=5, interMin=0.8, interMax=20, verbose=True):
+        super().__init__(destPath, verbose=verbose)
+        self.videoPath  = videoPath
         self.interval   = interval
         self.interMin   = interMin
         self.interMax   = interMax
+
+        # Validate video path and file
+        self.video = self.get_video_data(self.videoPath)
 
         self.validate_interval()
 
 
     def validate_interval(self):
         self.interval = np.clip(self.interval, self.frameRate, None)
-        return self.interval
+        self.interMin = np.clip(self.interMin, self.frameRate, None)
+        self.interMax = np.clip(self.interMax, self.frameRate, None)
 
 
     def get_filename(self):
@@ -139,7 +158,7 @@ class GetFramesFull(GetFrames):
         return self.filePath
 
 
-    def routine_get_frames(self):
+    def _routine_get_frames(self):
         if self.verbose:
             print("Full video frame capture")
 
