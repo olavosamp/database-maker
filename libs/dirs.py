@@ -3,7 +3,7 @@ import os
 sep     = "/"       # Foward dash for Windows/Linux compatibility
 # sep = "\\"        # Backwards dash for Windows specific applications
 
-root                = ".."+sep+".."+sep
+root                = ".."+sep
 csv                 = ".."+sep+"csv"+sep
 totals              = csv+"Totals"+sep
 demo                = root+"demo"+sep

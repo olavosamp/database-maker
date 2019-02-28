@@ -150,9 +150,11 @@ class GetFramesFull(GetFrames):
 
 
     def get_filename(self):
-        path = self.videoName.replace("/", "--")
+        # Get relative video path from full video path
+        self.videoName = self.videoPath.split(dirs.dataset)[1]
+        self.videoName = self.videoName.replace("/", "--")
 
-        self.fileName = path+ " FRAME {}.jpg".format(self.eventFrame)
+        self.fileName = self.videoName+ " FRAME {}.jpg".format(self.frameCount)
         self.filePath = self.destPath+self.fileName
 
         return self.filePath
