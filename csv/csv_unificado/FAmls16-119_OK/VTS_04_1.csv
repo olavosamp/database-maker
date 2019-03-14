@@ -1,0 +1,6 @@
+VideoName,Class,StartTime,EndTime,Id,Obs
+FAmls16-119_OK/VTS_04_1,dano,000001,000007,1,
+FAmls16-119_OK/VTS_04_1,dano,000008,000010,1,Dano anterior em zoom
+FAmls16-119_OK/VTS_04_1,dano,000011,000018,1,Dano sem zoom
+FAmls16-119_OK/VTS_04_1,dano,000019,000027,1,Camera se deslocando pelo dano
+FAmls16-119_OK/VTS_04_1,dano,001634,001639,1,
