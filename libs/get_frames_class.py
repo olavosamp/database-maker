@@ -64,9 +64,11 @@ class GetFramesCsv(GetFrames):
         destPath: dataset destination folder
         interval: frame capture interval, in seconds.
     '''
-    def __init__(self, csvPath, destPath='./images/', verbose=True):
+    def __init__(self, csvPath, destPath='./images/', interMin=0.8, interMax=20, verbose=True):
         super().__init__(destPath, verbose=verbose)
         self.csvPath    = csvPath
+        self.interMin   = interMin
+        self.interMax   = interMax
 
         # Get csv data
         if self.csvPath != None:
@@ -95,7 +97,7 @@ class GetFramesCsv(GetFrames):
     def get_filename(self):
         path = self.videoName.replace("/", "--")
 
-        self.fileName  = path+ " {} ID {} FRAME {}.jpg".format(self.eventClass, self.eventNum, self.eventFrame)
+        self.fileName  = path+ " {} ID {} FRAME {}.jpg".format(self.eventClass, self.eventNum, self.eventFrames)
         self.framePath = self.destPath+self.fileName
 
         return self.framePath
@@ -118,11 +120,15 @@ class GetFramesCsv(GetFrames):
     def _routine_get_frames(self):
         ''' Get frames from using a csv file as reference'''
 
-        self.videoPath = self.csvData.loc[0, 'VideoName']
+        self.videoPath = dirs.dataset+self.csvData.loc[0, 'VideoName']
 
         self.video = self.get_video_data(self.videoPath)
+        print("\nframeRate:", self.frameRate)
+        print("totalFrames:", self.totalFrames)
+        print()
 
-        if self.totalFrames == 0:
+
+        # if self.totalFrames == 0:
             # TODO: GET TOTAL FRAMES AND VIDEO TIME SOME WAY
 
         # self.totalFrames = self.video.get(cv2.CAP_PROP_FRAME_COUNT)
