@@ -6,9 +6,9 @@ import libs.dirs           as dirs
 # csvPath = dirs.csv+"registro_tags/FSll16-224_OK/DVD-3/VTS_01_1.csv"
 csvPath = dirs.csv+"/csv_unificado/TVILL16-054_OK/DVD-1/Dive 420 16-02-24 19.32.32_C1.csv"
 
-destPath   = dirs.images+'remake/'
+destPath   = dirs.images+'testcsv/'
 
-getFrames = GetFramesCsv(csvPath, destPath='./images/testcsv/', verbose=True)
+getFrames = GetFramesCsv(csvPath, destPath=destPath, verbose=True)
 
 getFrames.get_frames()
 print(getFrames.frameRate)

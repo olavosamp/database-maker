@@ -6,9 +6,9 @@ sep     = "/"       # Foward dash for Windows/Linux compatibility
 root                = "."+sep
 csv                 = root+"csv"+sep
 totals              = csv+"Totals"+sep
-demo                = root+"demo"+sep
-converted           = root+"converted"+sep
-images              = root+"images"+sep
+demo                = root+".."+sep+"demo"+sep
+converted           = root+".."+sep+"converted"+sep
+images              = root+".."+sep+"images"+sep
 dataset             = root+".."+sep+"20170724_FTP83G_Petrobras"+sep
 registro_de_eventos = csv+sep+"registro_de_eventos"+sep
 

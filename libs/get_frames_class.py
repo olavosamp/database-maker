@@ -15,7 +15,7 @@ class GetFrames:
         self.destPath   = destPath
         self.verbose    = verbose
 
-        self.videoError = {'read': True, 'set': True, 'write': True}
+        self.videoError = {'read': False, 'set': False, 'write': False}
         self.frameCount = 0
 
         if self.verbose:
@@ -62,7 +62,8 @@ class GetFramesCsv(GetFrames):
     '''
         csvPath:  reference csv filepath
         destPath: dataset destination folder
-        interval: frame capture interval, in seconds.
+        interMin: minimum frame capture interval, in seconds
+        interMax: maximum frame capture interval, in seconds
     '''
     def __init__(self, csvPath, destPath='./images/', interMin=0.8, interMax=20, verbose=True):
         super().__init__(destPath, verbose=verbose)
@@ -89,7 +90,7 @@ class GetFramesCsv(GetFrames):
 
     def get_capture_interval(self):
         # self.interval = 20*(runTime[self.eventNum]*self.numEntries/maxFrames)*1000
-        self.interval = 20*(self.eventTime*self.numEntries/self.totalFrames)*1000
+        self.interval = 20*(self.eventTime*self.numEntries/self.totalFrames)#*1000
         self.interval = np.clip(self.interval, self.interMin, self.interMax)
         return self.interval
 
@@ -138,8 +139,8 @@ class GetFramesCsv(GetFrames):
         self.frameCount = 0
         for self.eventNum in range(self.numEntries):
             self.eventFrames= 0
-            self.eventStart = timeConverter(self.csvData.loc[self.eventNum,'StartTime'])*1000
-            self.eventEnd   = timeConverter(self.csvData.loc[self.eventNum,'EndTime'])*1000
+            self.eventStart = timeConverter(self.csvData.loc[self.eventNum,'StartTime'])#*1000
+            self.eventEnd   = timeConverter(self.csvData.loc[self.eventNum,'EndTime'])#*1000
             self.eventClass = self.csvData.loc[self.eventNum,'Class']
             self.videoName  = self.csvData.loc[self.eventNum, 'VideoName']
 
@@ -153,9 +154,16 @@ class GetFramesCsv(GetFrames):
 
             self.timePos   = self.eventStart
             self.timeLimit = self.eventEnd
+            print("\nEvento ", self.eventNum)
+            print("timeStart: ", self.eventStart)
+            print("interval: ", self.interval)
+            print("timeEnd: ", self.eventEnd)
+            print()
+
             while self.timePos < self.timeLimit:
                 if self.verbose:
                     print("Frame ", self.eventFrames)
+                    print("Time: ", self.timePos)
                 self.videoError['set'] = self.video.set(cv2.CAP_PROP_POS_MSEC, self.timePos*1000)
 
                 self.frameNum = self.video.get(cv2.CAP_PROP_POS_FRAMES)
@@ -166,6 +174,14 @@ class GetFramesCsv(GetFrames):
 
                 self.timePos     += self.interval
                 self.eventFrames += 1
+
+                # Print errors
+                if self.verbose:
+                    if (self.videoError['set'] == False) or (self.videoError['read'] == False) or (self.videoError['write'] == False):
+                        print("\n!!! Error !!!\n\
+                        Set  : {}\n\
+                        Read : {}\n\
+                        Write: {}\n".format(self.videoError['set'],self.videoError['read'],self.videoError['write']))
 
             self.frameCount += self.eventFrames
 
