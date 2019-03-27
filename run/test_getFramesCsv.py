@@ -14,3 +14,7 @@ getFrames.get_frames()
 print(getFrames.frameRate)
 print(getFrames.videoPath)
 print(getFrames.destPath)
+print("\nError logs:")
+print(getFrames.errorCounter)
+for elem in getFrames.errorList:
+    print(elem)

@@ -11,11 +11,16 @@ class GetFrames:
     '''
         Base frame extractor class
     '''
-    def __init__(self, destPath, verbose=True):
+    def __init__(self, destPath, verbose=True, errorLog=True):
         self.destPath   = destPath
         self.verbose    = verbose
+        self.errorLog   = errorLog
 
-        self.videoError = {'read': False, 'set': False, 'write': False}
+        self.videoError   = {'read': False, 'set': False, 'write': False}
+        if self.errorLog:
+            self.errorCounter = {'read': 0,     'set': 0,     'write': 0}
+            self.errorList = []
+
         self.frameCount = 0
 
         if self.verbose:
@@ -57,6 +62,13 @@ class GetFrames:
         print("{} frames captured.".format(self.frameCount))
 
 
+    def reset_error_flags(self):
+        # Reset video error flags
+        self.videoError["set"]   = True
+        self.videoError["read"]  = True
+        self.videoError["write"] = True
+
+
 
 class GetFramesCsv(GetFrames):
     '''
@@ -65,7 +77,7 @@ class GetFramesCsv(GetFrames):
         interMin: minimum frame capture interval, in seconds
         interMax: maximum frame capture interval, in seconds
     '''
-    def __init__(self, csvPath, destPath='./images/', interMin=0.8, interMax=20, verbose=True):
+    def __init__(self, csvPath, destPath='./images/', interMin=0.8, interMax=20, verbose=True, errorLog=True):
         super().__init__(destPath, verbose=verbose)
         self.csvPath    = csvPath
         self.interMin   = interMin
@@ -98,7 +110,7 @@ class GetFramesCsv(GetFrames):
     def get_filename(self):
         path = self.videoName.replace("/", "--")
 
-        self.fileName  = path+ " ID {} FRAME {} {}.jpg".format(self.eventId, self.eventFrames, self.eventClass)
+        self.fileName  = path+ " ID{} FRAME{} {}.jpg".format(self.eventId, self.eventFrames, self.eventClass)
         self.framePath = self.destPath+self.fileName
 
         return self.framePath
@@ -157,19 +169,22 @@ class GetFramesCsv(GetFrames):
             self.timePos   = self.eventStart
             self.timeLimit = self.eventEnd
 
-            print("\nEvento ", self.eventId)
+            print("\nEvent ", self.eventId)
             print("timeStart: ", self.eventStart)
             print("interval: ", self.interval)
             print("timeEnd: ", self.eventEnd)
-            print()
 
             while self.timePos < self.timeLimit:
-                if self.verbose:
-                    print("Frame ", self.eventFrames)
+                # if self.verbose:
+                    # print("Frame ", self.eventFrames)
                     # print("Time: ", self.timePos)
+
                 self.videoError['set'] = self.video.set(cv2.CAP_PROP_POS_MSEC, self.timePos*1000)
 
+                # frameNum is Absolute frame number
+                # frameCount is the number of frames extracted from the video so far
                 self.frameNum = self.video.get(cv2.CAP_PROP_POS_FRAMES)
+
                 self.videoError['read'], self.frame = self.video.read()
 
                 self.framePath = self.get_filename()
@@ -177,6 +192,12 @@ class GetFramesCsv(GetFrames):
 
                 self.timePos     += self.interval
                 self.eventFrames += 1
+
+                if self.errorLog:
+                    for key in self.videoError.keys():
+                        if self.videoError[key] == False:
+                            self.errorCounter[key] += 1
+                            self.errorList.append((self.framePath, key))
 
                 # Print errors
                 if self.verbose:
@@ -186,6 +207,9 @@ class GetFramesCsv(GetFrames):
                         Read : {}\n\
                         Write: {}\n".format(self.videoError['set'],self.videoError['read'],self.videoError['write']))
 
+                self.reset_error_flags()
+
+            print("Captured frames: {}\n".format( self.eventFrames))
             self.frameCount += self.eventFrames
 
 
