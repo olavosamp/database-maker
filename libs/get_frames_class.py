@@ -98,7 +98,7 @@ class GetFramesCsv(GetFrames):
     def get_filename(self):
         path = self.videoName.replace("/", "--")
 
-        self.fileName  = path+ " {} ID {} FRAME {}.jpg".format(self.eventClass, self.eventNum, self.eventFrames)
+        self.fileName  = path+ " ID {} FRAME {} {}.jpg".format(self.eventId, self.eventFrames, self.eventClass)
         self.framePath = self.destPath+self.fileName
 
         return self.framePath
@@ -135,6 +135,7 @@ class GetFramesCsv(GetFrames):
         # self.totalFrames = self.video.get(cv2.CAP_PROP_FRAME_COUNT)
         self.videoTime   = self.totalFrames/self.frameRate
         self.numEntries = self.csvData.shape[0]
+        # print("\nFound ", self.numEntries, "lines in csv.\n")
 
         self.frameCount = 0
         for self.eventNum in range(self.numEntries):
@@ -142,6 +143,7 @@ class GetFramesCsv(GetFrames):
             self.eventStart = timeConverter(self.csvData.loc[self.eventNum,'StartTime'])#*1000
             self.eventEnd   = timeConverter(self.csvData.loc[self.eventNum,'EndTime'])#*1000
             self.eventClass = self.csvData.loc[self.eventNum,'Class']
+            self.eventId    = self.csvData.loc[self.eventNum, 'Id']
             self.videoName  = self.csvData.loc[self.eventNum, 'VideoName']
 
             self.eventTime = self.eventEnd - self.eventStart
@@ -154,7 +156,8 @@ class GetFramesCsv(GetFrames):
 
             self.timePos   = self.eventStart
             self.timeLimit = self.eventEnd
-            print("\nEvento ", self.eventNum)
+
+            print("\nEvento ", self.eventId)
             print("timeStart: ", self.eventStart)
             print("interval: ", self.interval)
             print("timeEnd: ", self.eventEnd)
@@ -163,7 +166,7 @@ class GetFramesCsv(GetFrames):
             while self.timePos < self.timeLimit:
                 if self.verbose:
                     print("Frame ", self.eventFrames)
-                    print("Time: ", self.timePos)
+                    # print("Time: ", self.timePos)
                 self.videoError['set'] = self.video.set(cv2.CAP_PROP_POS_MSEC, self.timePos*1000)
 
                 self.frameNum = self.video.get(cv2.CAP_PROP_POS_FRAMES)
