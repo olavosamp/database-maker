@@ -42,6 +42,9 @@ class GetFrames:
             self.frameRate = 25  # Default frame rate is 30 or 25 fps
 
         self.totalFrames = self.video.get(cv2.CAP_PROP_FRAME_COUNT)
+
+        self.videoFolderPath = "/".join(videoPath.split("/")[3:-1])+"/"
+        dirs.create_folder(self.destPath+self.videoFolderPath)
         return self.video
 
 
@@ -108,10 +111,18 @@ class GetFramesCsv(GetFrames):
 
 
     def get_filename(self):
-        path = self.videoName.replace("/", "--")
+        videoNameClean = ".".join(self.videoName.split(".")[:-1])
+        videoNameClean = videoNameClean.replace("/", "--")
+        videoNameTail = videoNameClean.split("--")[-1]+"/"
 
-        self.fileName  = path+ " ID{} FRAME{} {}.jpg".format(self.eventId, self.eventFrames, self.eventClass)
-        self.framePath = self.destPath+self.fileName
+        self.fileName  = videoNameClean+ " ID{} FRAME{} {}.jpg".format(self.eventId, self.eventFrames, self.eventClass)
+        self.folderPath = self.destPath+self.videoFolderPath+videoNameTail
+        self.framePath = self.folderPath+self.fileName
+        print(self.destPath)
+        print(self.videoFolderPath)
+        print(self.fileName)
+        print(self.framePath)
+        input()
 
         return self.framePath
 

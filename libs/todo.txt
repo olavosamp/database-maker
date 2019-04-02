@@ -4,9 +4,17 @@ get_frames_class
   name frames                           v
   get all frames                        v
 
-  read csv
-  get frames from csv
-  name frames from csv
+  read csv                              v
+  get frames from csv                   v
+  name frames from csv                  v
 
-  register and catch errors
+  get frames from csv list
+
+  register and catch errors             v
+
+  unit tests
+    test GetFramesCsv for 1 csv
+    test GetFramesCsv for many csv
+    test GetFramesCsv for non existing csv/video
+
   nice prints
