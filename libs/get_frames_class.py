@@ -2,6 +2,7 @@ import cv2
 import pandas       as pd
 import numpy        as np
 import datetime
+import os.path
 
 import libs.dirs    as dirs
 import libs.commons as commons
@@ -80,11 +81,13 @@ class GetFramesCsv(GetFrames):
         interMin: minimum frame capture interval, in seconds
         interMax: maximum frame capture interval, in seconds
     '''
-    def __init__(self, csvPath, destPath='./images/', interMin=0.8, interMax=20, verbose=True, errorLog=True):
+    def __init__(self, csvPath, destPath='./images/', interMin=0.8, interMax=20,
+     verbose=True, errorLog=True, ignorePathError=False):
         super().__init__(destPath, verbose=verbose)
-        self.csvPath    = csvPath
-        self.interMin   = interMin
-        self.interMax   = interMax
+        self.ignorePathError = ignorePathError
+        self.csvPath         = csvPath
+        self.interMin        = interMin
+        self.interMax        = interMax
 
         # Get csv data
         if self.csvPath != None:
@@ -94,12 +97,26 @@ class GetFramesCsv(GetFrames):
 
 
     # def validate_csv_path(self):
-    #     # Check if csv path exists and if it is a list
+    #     # Check if csv path exists
 
 
     def get_csv_data(self):
         # CSV Data is a pandas DataFrame of the csv file
         self.csvData = pd.read_csv(self.csvPath, dtype=str)
+
+        # Validate video paths
+        # Assumes that there can be many videopaths in one csv
+        # note: iterrows does not preserve dtypes;
+        #       don't modify dataframe while iterating.
+        for index, row in self.csvData.iterrows():
+            checkPath = dirs.dataset+row['VideoName']
+            if os.path.isfile(checkPath) == False:
+                print("\n", checkPath, "\n")
+                raise FileNotFoundError("Csv points to a video that doesn't exist.")
+
+        # Assumes there can be only one videopath in the entire csv
+        self.videoPath    = dirs.dataset+self.csvData.loc[0, 'VideoName']
+
         return self.csvData
 
 
@@ -111,18 +128,29 @@ class GetFramesCsv(GetFrames):
 
 
     def get_filename(self):
-        videoNameClean = ".".join(self.videoName.split(".")[:-1])
-        videoNameClean = videoNameClean.replace("/", "--")
-        videoNameTail = videoNameClean.split("--")[-1]+"/"
+        # videoPath:       dataset path + csv['VideoName']
+        # videoName:       csv['VideoName']
+        # videoNameClean:  csv['VideoName'] sem extensão ".wmv"
+        # videoNameTail:   nome do vídeo sem extensão
+        # videoFolderPath: "/".join(videoPath.split("/")[3:-1])+"/" path relativo do video
+        # fileName:        nome do frame "<Nome do video> ID<> FRAME<> <classe>.jpg"
+        # folderPath:      videoPath + video name + frame file path
+        # framePath:       path nome do frame
 
-        self.fileName  = videoNameClean+ " ID{} FRAME{} {}.jpg".format(self.eventId, self.eventFrames, self.eventClass)
-        self.folderPath = self.destPath+self.videoFolderPath+videoNameTail
-        self.framePath = self.folderPath+self.fileName
-        print(self.destPath)
-        print(self.videoFolderPath)
-        print(self.fileName)
-        print(self.framePath)
-        input()
+        videoNameClean = ".".join(self.videoName.split(".")[:-1]).replace("/", "--")
+        videoNameTail  = videoNameClean.split("--")[-1]
+
+        self.fileName   = videoNameClean+ " ID{} FRAME{} {}.jpg".format(self.eventId, self.eventFrames, self.eventClass)
+        self.folderPath = self.destPath+self.videoFolderPath+videoNameTail+"/"
+        self.framePath  = self.folderPath+self.fileName
+
+        dirs.create_folder(self.folderPath)
+
+        # print(self.destPath)
+        # print(self.videoFolderPath)
+        # print(self.fileName)
+        # print(self.framePath)
+        # input()
 
         return self.framePath
 
@@ -144,7 +172,6 @@ class GetFramesCsv(GetFrames):
     def _routine_get_frames(self):
         ''' Get frames from using a csv file as reference'''
 
-        self.videoPath = dirs.dataset+self.csvData.loc[0, 'VideoName']
 
         self.video = self.get_video_data(self.videoPath)
         print("\nframeRate:", self.frameRate)

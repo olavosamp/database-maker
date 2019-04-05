@@ -1,3 +1,4 @@
+from glob import glob
 from libs.get_frames_class import *
 
 import libs.dirs           as dirs
@@ -7,6 +8,13 @@ csvPathList = [dirs.csv+"csv_unificado/TVILL16-054_OK/DVD-1/Dive 420 16-02-24 19
                dirs.csv+"csv_unificado/TVILL16-054_OK/DVD-1/Dive 420 16-02-24 20.02.35_C1.csv",
                dirs.csv+"csv_unificado/TVILL16-054_OK/DVD-2/Dive 420 16-02-25 00.02.35_C1.csv",
 ]
+
+# csvFolderPath = dirs.csv+"csv_unificado/"
+# csvPathList = glob(csvFolderPath+"**/*.csv", recursive=True)
+
+# for csvPath in csvPathList:
+#     print(csvPath)
+# input()
 
 for csvPath in csvPathList:
     getFrames = GetFramesCsv(csvPath, destPath=destPath, verbose=True)
