@@ -22,7 +22,7 @@ for csvPath in csvPathList:
     print("\nProcessing csv: ", csvPath)
     getFrames.get_frames()
     print("\nProcessing finished.")
-    print(getFrames.videoPath)
+    print(getFrames.videoName)
     print(getFrames.frameRate)
     print(getFrames.destPath)
     print("\nError logs:")

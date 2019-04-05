@@ -31,12 +31,15 @@ class GetFrames:
         dirs.create_folder(self.destPath)
 
 
-    def get_video_data(self, videoPath):
+    def get_video_data(self):
+        '''
+            videoPath: source video path
+        '''
         try:
-        	self.video = cv2.VideoCapture(videoPath)
+        	self.video = cv2.VideoCapture(dirs.dataset+self.videoName)
         except:
             print("\nError opening video:\n")
-            cv2.VideoCapture(videoPath)
+            cv2.VideoCapture(dirs.dataset+self.videoName)
 
         self.frameRate = self.video.get(cv2.CAP_PROP_FPS)
         if self.frameRate == 0:
@@ -44,8 +47,10 @@ class GetFrames:
 
         self.totalFrames = self.video.get(cv2.CAP_PROP_FRAME_COUNT)
 
-        self.videoFolderPath = "/".join(videoPath.split("/")[3:-1])+"/"
-        dirs.create_folder(self.destPath+self.videoFolderPath)
+        # self.videoFolderPath = "/".join(videoPath.split("/")[3:-1])+"/"
+
+        self.videoFolderPath = self.destPath + self.videoName[:-4]+"/"
+        dirs.create_folder(self.videoFolderPath)
         return self.video
 
 
@@ -115,44 +120,60 @@ class GetFramesCsv(GetFrames):
                 raise FileNotFoundError("Csv points to a video that doesn't exist.")
 
         # Assumes there can be only one videopath in the entire csv
-        self.videoPath    = dirs.dataset+self.csvData.loc[0, 'VideoName']
-
+        # self.videoPath    = dirs.dataset+self.csvData.loc[0, 'VideoName']
+        self.videoName    = self.csvData.loc[0, 'VideoName']
         return self.csvData
 
 
     def get_capture_interval(self):
-        # self.interval = 20*(runTime[self.eventNum]*self.numEntries/maxFrames)*1000
         self.interval = 20*(self.eventTime*self.numEntries/self.totalFrames)#*1000
         self.interval = np.clip(self.interval, self.interMin, self.interMax)
+
         return self.interval
 
 
     def get_filename(self):
-        # videoPath:       dataset path + csv['VideoName']
-        # videoName:       csv['VideoName']
-        # videoNameClean:  csv['VideoName'] sem extensão ".wmv"
-        # videoNameTail:   nome do vídeo sem extensão
-        # videoFolderPath: "/".join(videoPath.split("/")[3:-1])+"/" path relativo do video
-        # fileName:        nome do frame "<Nome do video> ID<> FRAME<> <classe>.jpg"
-        # folderPath:      videoPath + video name + frame file path
-        # framePath:       path nome do frame
+        videoNameClean = self.videoName.replace("/", "--")[:-1][:-4]
+        self.fileName = videoNameClean+" ID{} FRAME{} {}.jpg".format(self.eventId,
+                        self.eventFrames, self.eventClass)
 
-        videoNameClean = ".".join(self.videoName.split(".")[:-1]).replace("/", "--")
-        videoNameTail  = videoNameClean.split("--")[-1]
-
-        self.fileName   = videoNameClean+ " ID{} FRAME{} {}.jpg".format(self.eventId, self.eventFrames, self.eventClass)
-        self.folderPath = self.destPath+self.videoFolderPath+videoNameTail+"/"
-        self.framePath  = self.folderPath+self.fileName
-
-        dirs.create_folder(self.folderPath)
+        self.framePath = self.videoFolderPath+self.fileName
 
         # print(self.destPath)
         # print(self.videoFolderPath)
+        # print(self.videoName)
+        # print(videoNameClean)
         # print(self.fileName)
         # print(self.framePath)
         # input()
 
-        return self.framePath
+    # def get_filename(self):
+    #     # videoPath:       dataset path + csv['VideoName']
+    #     # videoName:       csv['VideoName']
+    #     # videoNameClean:  csv['VideoName'] sem extensão ".wmv"
+    #     # videoNameTail:   nome do vídeo sem extensão
+    #     # videoFolderPath: "/".join(videoPath.split("/")[3:-1])+"/" path relativo do video sem o nome do video
+    #     # fileName:        nome do frame "<Nome do video> ID<> FRAME<> <classe>.jpg"
+    #     # folderPath:      videoPath + video name + frame file path
+    #     # framePath:       path nome do frame
+    #
+    #     videoNameClean = ".".join(self.videoName.split(".")[:-1]).replace("/", "--")
+    #     videoNameTail  = videoNameClean.split("--")[-1]
+    #
+    #     self.fileName   = videoNameClean+ " ID{} FRAME{} {}.jpg".format(self.eventId, self.eventFrames, self.eventClass)
+    #     self.folderPath = self.destPath+self.videoFolderPath+videoNameTail+"/"
+    #     self.framePath  = self.folderPath+self.fileName
+    #
+    #     dirs.create_folder(self.folderPath)
+    #
+    #     # print(self.destPath)
+    #     # print(self.videoFolderPath)
+    #     # print(self.videoName)
+    #     # print(self.fileName)
+    #     # print(self.framePath)
+    #     # input()
+    #
+    #     return self.framePath
 
 
     def get_frames(self):
@@ -173,7 +194,8 @@ class GetFramesCsv(GetFrames):
         ''' Get frames from using a csv file as reference'''
 
 
-        self.video = self.get_video_data(self.videoPath)
+        # self.video = self.get_video_data(dirs.dataset+self.videoName)
+        self.video = self.get_video_data()
         print("\nframeRate:", self.frameRate)
         print("totalFrames:", self.totalFrames)
         print()
@@ -194,7 +216,7 @@ class GetFramesCsv(GetFrames):
             self.eventEnd   = timeConverter(self.csvData.loc[self.eventNum,'EndTime'])#*1000
             self.eventClass = self.csvData.loc[self.eventNum,'Class']
             self.eventId    = self.csvData.loc[self.eventNum, 'Id']
-            self.videoName  = self.csvData.loc[self.eventNum, 'VideoName']
+            # self.videoName  = self.csvData.loc[self.eventNum, 'VideoName']
 
             self.eventTime = self.eventEnd - self.eventStart
 
@@ -225,7 +247,7 @@ class GetFramesCsv(GetFrames):
 
                 self.videoError['read'], self.frame = self.video.read()
 
-                self.framePath = self.get_filename()
+                self.get_filename()
                 self.videoError['write'] = cv2.imwrite(self.framePath, self.frame)
 
                 self.timePos     += self.interval
