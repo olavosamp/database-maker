@@ -5,12 +5,13 @@ sep     = "/"       # Foward dash for Windows/Linux compatibility
 
 root                = "."+sep
 csv                 = root+"csv"+sep
-totals              = csv+"Totals"+sep
-demo                = root+".."+sep+"demo"+sep
-converted           = root+".."+sep+"converted"+sep
 images              = root+".."+sep+"images"+sep
 dataset             = root+".."+sep+"20170724_FTP83G_Petrobras"+sep
-registro_de_eventos = csv+sep+"registro_de_eventos"+sep
+index               = root+"csv"+sep+"main_index.csv"
+# totals              = csv+"Totals"+sep
+# demo                = root+".."+sep+"demo"+sep
+# converted           = root+".."+sep+"converted"+sep
+# registro_de_eventos = csv+sep+"registro_de_eventos"+sep
 
 def create_folder(path):
     try:
@@ -19,6 +20,6 @@ def create_folder(path):
         # Folder already exists or destFolder is invalid
         pass
 
-create_folder(demo)
 create_folder(images)
-create_folder(converted)
+# create_folder(demo)
+# create_folder(converted)

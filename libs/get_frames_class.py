@@ -118,6 +118,7 @@ class GetFramesCsv(GetFrames):
             if os.path.isfile(checkPath) == False:
                 print("\n", checkPath, "\n")
                 raise FileNotFoundError("Csv points to a video that doesn't exist.")
+                # TODO: Check if video path has extension; try to add an extension
 
         # Assumes there can be only one videopath in the entire csv
         # self.videoPath    = dirs.dataset+self.csvData.loc[0, 'VideoName']
