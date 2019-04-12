@@ -33,9 +33,19 @@ class IndexManager:
         if self.indexExists == True:
             # Append to existing df
             newEntryDf = pd.DataFrame.from_dict(newEntry)
-            self.index = self.index.append(newEntryDf).reset_index(drop=True)
+            # print("New entry DF:")
+            # print(newEntryDf)
+            print("Columns newEntry:")
+            for col in newEntryDf.columns:
+                print(col)
+            print("\nColumns index:")
+            for col in self.index.columns:
+                print(col)
+            # input()
+            self.index = self.index.append(newEntryDf, sort=False, ignore_index=False).reset_index(drop=True)
         else:
             # create df with new entry and write to disk as the index file
             self.index = pd.DataFrame.from_dict(newEntry)
             self.indexExists = True
-        self.index.to_csv(self.path)
+
+        self.index.to_csv(self.path, index=False)

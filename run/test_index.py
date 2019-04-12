@@ -17,18 +17,12 @@ newEntry = {
             'AbsoluteFrameNumber':  [1],
             'RelativeFrameNumber':  [1],
             'Tags':                 ['duto-peixe-anodo'],
-            'FramePath':            [framePath],
-            # '':,
-            # '':,
-            # '':,
-            # '':,
-            # '':,
-            # '':,
-            # '':,
-            # '':,
-            # '':,
+            'FramePath':            [framePath]
 }
+print("New entry:")
 print(newEntry)
+for key in newEntry.keys():
+    print(key)
 # t = pd.read_csv(dirs.index)
 # t = pd.DataFrame.from_dict(newEntry)
 # print(t.shape)
@@ -39,10 +33,11 @@ print(newEntry)
 # print(t.shape)
 # print(t)
 
-
+print()
 ind = IndexManager()
-# print(ind.index)
 ind.add_entry(newEntry)
-print(ind.index)
+for col in ind.index.columns:
+    print(col)
+# print(ind.index.columns)
 # ind.add_entry(newEntry)
-# print(ind.index)
+print(ind.index)
