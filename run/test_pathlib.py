@@ -11,7 +11,7 @@ from libs.get_frames_class import *
 #                dirs.csv+"csv_unificado/TVILL16-054_OK/DVD-2/Dive 420 16-02-25 00.02.35_C1.csv",
 # ]
 relative = "/TVILL16-054_OK/DVD-1/Dive 420 16-02-24 19.32.32_C1.wmv"
-videoPath = dirs.dataset / Path(relative)
+videoPath = dirs.base_videos / Path(relative)
 
 # baseCsv = Path(dirs.csv)
 # print(dirs.csv)
@@ -22,8 +22,8 @@ videoPath = dirs.dataset / Path(relative)
 # print(baseDest / Path("testcsv/"))
 
 print(videoPath)
-print(dirs.dataset)
-# destPath = Path(videoPath).relative_to(str(dirs.dataset))
+print(dirs.base_videos)
+# destPath = Path(videoPath).relative_to(str(dirs.base_videos))
 # destPath = Path(dirs.images / "testcsv/") / destPath
 # print(destPath)
 #

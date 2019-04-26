@@ -4,7 +4,7 @@ from libs.index     import IndexManager
 import libs.dirs    as dirs
 import pandas as pd
 
-videoPath = Path(dirs.dataset+"CIMRL10-676_OK/PIDF-1 PO MRL-021_parte1.mpg")
+videoPath = Path(dirs.base_videos+"CIMRL10-676_OK/PIDF-1 PO MRL-021_parte1.mpg")
 framePath = Path(dirs.images+"testcsv/frame01.jpg")
 
 newEntry = {

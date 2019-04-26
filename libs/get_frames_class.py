@@ -36,10 +36,10 @@ class GetFrames:
             videoPath: source video path
         '''
         try:
-        	self.video = cv2.VideoCapture(dirs.dataset+self.videoName)
+        	self.video = cv2.VideoCapture(dirs.base_videos+self.videoName)
         except:
             print("\nError opening video:\n")
-            cv2.VideoCapture(dirs.dataset+self.videoName)
+            cv2.VideoCapture(dirs.base_videos+self.videoName)
 
         self.frameRate = self.video.get(cv2.CAP_PROP_FPS)
         if self.frameRate == 0:
@@ -114,14 +114,14 @@ class GetFramesCsv(GetFrames):
         # note: iterrows does not preserve dtypes;
         #       don't modify dataframe while iterating.
         for index, row in self.csvData.iterrows():
-            checkPath = dirs.dataset+row['VideoName']
+            checkPath = dirs.base_videos+row['VideoName']
             if os.path.isfile(checkPath) == False:
                 print("\n", checkPath, "\n")
                 raise FileNotFoundError("Csv points to a video that doesn't exist.")
                 # TODO: Check if video path has extension; try to add an extension
 
         # Assumes there can be only one videopath in the entire csv
-        # self.videoPath    = dirs.dataset+self.csvData.loc[0, 'VideoName']
+        # self.videoPath    = dirs.base_videos+self.csvData.loc[0, 'VideoName']
         self.videoName    = self.csvData.loc[0, 'VideoName']
         return self.csvData
 
@@ -260,7 +260,7 @@ class GetFramesFull(GetFrames):
 
     def get_filename(self):
         # Get relative video path from full video path
-        self.videoName = self.videoPath.split(dirs.dataset)[1]
+        self.videoName = self.videoPath.split(dirs.base_videos)[1]
         self.videoName = self.videoName.replace("/", "--")
 
         self.fileName = self.videoName+ " FRAME {}.jpg".format(self.frameCount)
