@@ -10,6 +10,7 @@ class IndexManager:
 
         self.validate_path()
 
+
     def validate_path(self):
         if self.path.suffix == ".csv":
             if self.path.exists() == True:
@@ -25,6 +26,7 @@ class IndexManager:
         else:
             raise ValueError("Invalid index path.")
 
+
     def add_entry(self, newEntry):
         '''
             newEntry: Dict of lists. Keys are data columns, values are lists containing
@@ -35,12 +37,12 @@ class IndexManager:
             newEntryDf = pd.DataFrame.from_dict(newEntry)
             # print("New entry DF:")
             # print(newEntryDf)
-            print("Columns newEntry:")
-            for col in newEntryDf.columns:
-                print(col)
-            print("\nColumns index:")
-            for col in self.index.columns:
-                print(col)
+            # print("Columns newEntry:")
+            # for col in newEntryDf.columns:
+            #     print(col)
+            # print("\nColumns index:")
+            # for col in self.index.columns:
+            #     print(col)
             # input()
             self.index = self.index.append(newEntryDf, sort=False, ignore_index=False).reset_index(drop=True)
         else:
