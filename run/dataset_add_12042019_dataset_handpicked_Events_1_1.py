@@ -7,9 +7,10 @@ from glob           import glob
 
 ind = IndexManager()
 
-datasetPath = Path(dirs.dataset) / "all_datasets" / "dataset_registro_de_eventos"
-
+datasetPath = Path(dirs.dataset) / "all_datasets" / "12042019_dataset_handpicked_Events_1.1"
 globList = glob(str(datasetPath / '**' / '*.jpg'), recursive=True)
+# print(datasetPath)
+# print(globList)
 
 pathList = []
 for path in globList:
@@ -49,11 +50,14 @@ for path in pathList:
     # Get Tags field
     tags = []
     folderTag = path.parts[-2]
-    if folderTag.find("Evento") != -1 or folderTag.find("evento") != -1:
-        tags.append("evento")
+    if folderTag.find("Outros") != -1 or folderTag.find("outros") != -1:
+        pass
     elif folderTag.find("Limpo") != -1 or folderTag.find("limpo") != -1:
         tags.append("limpo")
+    else:
+        tags.append(folderTag.lower())
 
+    # Add last word on frame name as a tag
     tags.append(path.stem.split(" ")[-1])
     tags = "-".join(tags)
 
@@ -64,9 +68,8 @@ for path in pathList:
     # TODO: Move each frame to a permanent dataset folder and use this path as FramePath
     framePath = str(path)
 
-
     # print('VideoPath ', videoPath)
-    # print('Repor ', report)
+    # print('Report ', report)
     # print("dvd: ", dvd)
     # print("videoname: ", videoName)
     # print('EventId: ', eventId)
