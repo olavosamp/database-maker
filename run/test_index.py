@@ -36,8 +36,10 @@ for key in newEntry.keys():
 print()
 ind = IndexManager()
 ind.add_entry(newEntry)
+ind.add_entry(newEntry)
 for col in ind.index.columns:
     print(col)
 # print(ind.index.columns)
 # ind.add_entry(newEntry)
 print(ind.index)
+ind.write_index()

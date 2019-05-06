@@ -62,7 +62,7 @@ for path in pathList:
     tags = "-".join(tags)
 
     # Get OriginalDataset field
-    originalDataset = "dataset_registro_de_eventos"
+    originalDataset = "12042019_dataset_handpicked_Events_1.1"
 
     # Get FramePath field
     # TODO: Move each frame to a permanent dataset folder and use this path as FramePath
@@ -93,4 +93,8 @@ for path in pathList:
     'FramePath':            [framePath],
     'OriginalDataset':      [originalDataset]
     }
+
+    # print()
+    # for e in entry:
+    #     print(e, ": ", entry[e])
     ind.add_entry(entry)

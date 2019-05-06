@@ -1,3 +1,6 @@
+# Index backups
+csv/index_backup/
+
 # Frame totals files
 *.tot
 
