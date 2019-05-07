@@ -83,8 +83,8 @@ class IndexManager:
 
     def write_index(self, auto_path=True):
         '''
-            Writes current index DataFrame to a csv file. auto_path == True appends
-             date and time to index path
+            Create a backup of old index and write current index DataFrame to a csv file.
+            auto_path == True appends date and time to index path
         '''
         # Create destination folder
         dirs.create_folder(self.path.parent)
