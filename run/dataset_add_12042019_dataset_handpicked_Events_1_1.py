@@ -98,3 +98,5 @@ for path in pathList:
     # for e in entry:
     #     print(e, ": ", entry[e])
     ind.add_entry(entry)
+    
+ind.write_index()

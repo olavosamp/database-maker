@@ -91,3 +91,5 @@ for path in pathList:
     'OriginalDataset':      [originalDataset]
     }
     ind.add_entry(entry)
+    
+ind.write_index()
