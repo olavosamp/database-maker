@@ -31,7 +31,7 @@ for path in pathList:
     if dvdIndex == -1:
         dvd = None
     else:
-        dvd = str(path)[str(path).find("DVD-")+4]
+        dvd = str(path)[dvdIndex+4]
 
     # Get VideoName field, dont get dvd name in this field
     videoName = relPath.parts[-3]
@@ -45,6 +45,9 @@ for path in pathList:
     # Find number after "FRAME"
     frameSubPath = path.stem[path.stem.find("FRAME"):].split(" ")[0]
     relFrame = frameSubPath[5:]
+
+    # Get AbsoluteFrameNumber
+    absFrame = None
 
     # Get Tags field
     tags = []
@@ -84,12 +87,12 @@ for path in pathList:
     'VideoName':            [videoName],
     'EventId':              [eventId],
     'FrameTime':            [None],
-    'AbsoluteFrameNumber':  [None],
+    'AbsoluteFrameNumber':  [absFrame],
     'RelativeFrameNumber':  [relFrame],
     'Tags':                 [tags],
     'FramePath':            [framePath],
     'OriginalDataset':      [originalDataset]
     }
     ind.add_entry(entry)
-    
+
 ind.write_index()

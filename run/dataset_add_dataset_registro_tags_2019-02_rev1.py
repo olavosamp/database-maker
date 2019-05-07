@@ -7,7 +7,7 @@ from glob           import glob
 
 ind = IndexManager()
 
-datasetPath = Path(dirs.dataset) / "all_datasets" / "12042019_dataset_handpicked_Events_1.1"
+datasetPath = Path(dirs.dataset) / "all_datasets" / "dataset_registro_tags_2019-02_rev1"
 
 globList = glob(str(datasetPath / '**' / '*.jpg'), recursive=True)
 
@@ -20,9 +20,6 @@ for path in pathList:
     print(path.parts)
     relPath = path.relative_to(datasetPath)
 
-    # Get VideoPath field
-    videoPath = "/".join(relPath.parts[:-2])
-
     # Get Report field
     report = relPath.parts[0]
 
@@ -34,54 +31,52 @@ for path in pathList:
         dvd = str(path)[dvdIndex+4]
 
     # Get VideoName field, dont get dvd name in this field
-    videoName = relPath.parts[-3]
+    videoName = relPath.parts[-2]
+    if videoName.find("Dive") != -1:
+        videoName += ".wmv"
+
+    # Get VideoPath field
+    videoPath = report / Path("DVD-" + dvd) / Path(videoName)
 
     # Get EventId field
     # Find number after "ID". Make exception because of VIDEO strings
     idSubPath = path.stem[path.stem.find(" ID")+1:].split(" ")[0]
     eventId = idSubPath[2:]
 
+    # Get AbsoluteFrameNumber
+    absFrame = None
+
     # Get RelativeFrameNumber field
     # Find number after "FRAME"
     frameSubPath = path.stem[path.stem.find("FRAME"):].split(" ")[0]
     relFrame = frameSubPath[5:]
 
-    # Get AbsoluteFrameNumber
-    absFrame = None
-
     # Get Tags field
     tags = []
-    folderTag = path.parts[-2]
-    if folderTag.find("Outros") != -1 or folderTag.find("outros") != -1:
-        pass
-    elif folderTag.find("Limpo") != -1 or folderTag.find("limpo") != -1:
-        tags.append("limpo")
-    else:
-        tags.append('evento')
-        tags.append(folderTag.lower())
-
-    # Add last word on frame name as a tag
-    tags.append(path.stem.split(" ")[-1])
+    tagsSubstring = path.stem[path.stem.find("FRAME"):]
+    for tag in tagsSubstring.split(" ")[1:]:
+        tags.append(tag)
     tags = "-".join(tags)
 
     # Get OriginalDataset field
-    originalDataset = "12042019_dataset_handpicked_Events_1.1"
+    originalDataset = "dataset_registro_tags_2019-02_rev1"
 
     # Get FramePath field
     # TODO: Move each frame to a permanent dataset folder and use this path as FramePath
     framePath = str(path)
 
-    # print('VideoPath ', videoPath)
-    # print('Report ', report)
-    # print("dvd: ", dvd)
-    # print("videoname: ", videoName)
-    # print('EventId: ', eventId)
-    # # print('FrameTime: ', )
-    # # print('AbsoluteFrameNumber: ', )
-    # print('RelativeFrameNumber: ', relFrame)
-    # print('Tags: ', tags)
-    # # print('FramePath: ', str)
-    # input()
+    print('VideoPath ', videoPath)
+    print('Report ', report)
+    print("dvd: ", dvd)
+    print("videoname: ", videoName)
+    print('EventId: ', eventId)
+    # print('FrameTime: ', )
+    print('AbsoluteFrameNumber: ', absFrame)
+    print('RelativeFrameNumber: ', relFrame)
+    print('Tags: ', tags)
+    # print('FramePath: ', str)
+    print("OriginalDataset: ", originalDataset)
+    input()
 
     entry = {
     'VideoPath':            [videoPath],
@@ -90,16 +85,12 @@ for path in pathList:
     'VideoName':            [videoName],
     'EventId':              [eventId],
     'FrameTime':            [None],
-    'AbsoluteFrameNumber':  [absFrame],
+    'AbsoluteFrameNumber':  [None],
     'RelativeFrameNumber':  [relFrame],
     'Tags':                 [tags],
     'FramePath':            [framePath],
     'OriginalDataset':      [originalDataset]
     }
-
-    # print()
-    # for e in entry:
-    #     print(e, ": ", entry[e])
     ind.add_entry(entry)
 
 ind.write_index()

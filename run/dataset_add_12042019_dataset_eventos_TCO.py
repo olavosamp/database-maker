@@ -8,9 +8,8 @@ from glob           import glob
 ind = IndexManager()
 
 datasetPath = Path(dirs.dataset) / "all_datasets" / "12042019_dataset_eventos_TCO"
+
 globList = glob(str(datasetPath / '**' / '*.jpg'), recursive=True)
-# print(datasetPath)
-# print(globList)
 
 pathList = []
 for path in globList:
@@ -20,8 +19,6 @@ datasetDf = pd.DataFrame()
 for path in pathList:
     print(path.parts)
     relPath = path.relative_to(datasetPath)
-
-
 
     # Get DVD field
     folderName = relPath.parts[0]
@@ -69,18 +66,18 @@ for path in pathList:
     # TODO: Move each frame to a permanent dataset folder and use this path as FramePath
     framePath = str(path)
 
-    print('VideoPath ', videoPath)
-    print('Report ', report)
-    print("dvd: ", dvd)
-    print("videoname: ", videoName)
-    print('EventId: ', eventId)
-    # print('FrameTime: ', )
-    print('AbsoluteFrameNumber: ', absFrame)
-    print('RelativeFrameNumber: ', relFrame)
-    print('Tags: ', tags)
-    # print('FramePath: ', str)
-    print("OriginalDataset: ", originalDataset)
-    input()
+    # print('VideoPath ', videoPath)
+    # print('Report ', report)
+    # print("dvd: ", dvd)
+    # print("videoname: ", videoName)
+    # print('EventId: ', eventId)
+    # # print('FrameTime: ', )
+    # print('AbsoluteFrameNumber: ', absFrame)
+    # print('RelativeFrameNumber: ', relFrame)
+    # print('Tags: ', tags)
+    # # print('FramePath: ', str)
+    # print("OriginalDataset: ", originalDataset)
+    # input()
 
     entry = {
     'VideoPath':            [videoPath],
