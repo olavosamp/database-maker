@@ -44,7 +44,7 @@ for path in pathList:
             if vtsIndex != -1:
                 videoName = videoName[vtsIndex:]
             break
-            
+
     if videoName == None:
         raise ValueError("Unable to find video extension for video name detection.")
 
@@ -79,18 +79,18 @@ for path in pathList:
     # TODO: Move each frame to a permanent dataset folder and use this path as FramePath
     framePath = str(path)
 
-    print('VideoPath ', videoPath)
-    print('Report ', report)
-    print("dvd: ", dvd)
-    print("videoname: ", videoName)
-    print('EventId: ', eventId)
-    # print('FrameTime: ', )
-    print('AbsoluteFrameNumber: ', absFrame)
-    print('RelativeFrameNumber: ', relFrame)
-    print('Tags: ', tags)
-    # print('FramePath: ', str)
-    print("OriginalDataset: ", originalDataset)
-    input()
+    # print('VideoPath ', videoPath)
+    # print('Report ', report)
+    # print("dvd: ", dvd)
+    # print("videoname: ", videoName)
+    # print('EventId: ', eventId)
+    # # print('FrameTime: ', )
+    # print('AbsoluteFrameNumber: ', absFrame)
+    # print('RelativeFrameNumber: ', relFrame)
+    # print('Tags: ', tags)
+    # # print('FramePath: ', str)
+    # print("OriginalDataset: ", originalDataset)
+    # input()
 
     entry = {
     'VideoPath':            [videoPath],

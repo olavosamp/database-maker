@@ -33,13 +33,26 @@ newEntry = {
 # print(t.shape)
 # print(t)
 
-print()
-ind = IndexManager()
-ind.add_entry(newEntry)
-ind.add_entry(newEntry)
-# for col in ind.index.columns:
-#     print(col)
-# print(ind.index.columns)
+# print()
+# ind = IndexManager()
 # ind.add_entry(newEntry)
-print(ind.index)
-ind.write_index()
+# ind.add_entry(newEntry)
+# # for col in ind.index.columns:
+# #     print(col)
+# # print(ind.index.columns)
+# # ind.add_entry(newEntry)
+# print(ind.index)
+# ind.write_index()
+
+ind  = IndexManager()
+datasets = ["12042019_dataset_eventos_handpick_2",
+            "12042019_dataset_eventos_TCO",
+            "12042019_dataset_handpicked_Events_1.1",
+            "dataset_registro_tags_2019-02_rev1",
+            "dataset_registro_de_eventos"
+]
+# print(ind.index['OriginalDataset'])
+# print(datasets[0])
+for ds in datasets:
+    mask = ind.index['OriginalDataset'] == ds
+    print(ds, ": ",  (ind.index.loc[mask, 'OriginalDataset']).shape)
