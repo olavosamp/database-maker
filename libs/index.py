@@ -20,10 +20,7 @@ class IndexManager:
     def validate_path(self):
         if self.path.suffix == ".csv":
             # Check for csv files matching filename in self.path
-            # pathList = glob(str(self.path.with_name("*"+str(self.path.stem)+"*.csv")).strip())
             pathList = list(self.path.parent.glob("*"+str(self.path.stem).strip()+"*.csv"))
-            # print("PathList")
-            # print(pathList)
 
             if len(pathList) > 0:
                 try:
@@ -52,41 +49,38 @@ class IndexManager:
             # exit()
 
             self.index = self.index.append(newEntryDf, sort=False, ignore_index=False).reset_index(drop=True)
-            # self.check_duplicate()
+            self.check_duplicates()
         else:
             # create df with new entry and write to disk as the index file
             self.index = pd.DataFrame.from_dict(newEntry)
             self.indexExists = True
 
 
-    def check_duplicate(self):
-        # print(self.index[self.index.duplicated(['VideoName'], keep=False)])
-        check1 = self.index.duplicated(['Report'])
-        check2 = self.index.duplicated(['DVD'])
-        check3 = self.index.duplicated(['FrameName'])
+    def check_duplicates(self):
+        check1     = self.index.duplicated(['Report'], keep=False)
+        check2     = self.index.duplicated(['DVD'], keep=False)
+        check3     = self.index.duplicated(['FrameName'], keep=False)
+
         truthArray = np.array([check1, check2, check3]).T
-        mask = np.all(truthArray, axis=1)
+        mask       = np.all(truthArray, axis=1)
+        dupIndex   = np.squeeze(np.argwhere(mask == True))
 
-        print(check3[mask])
-        print(truthArray[mask, :])
-        print(self.index.loc[mask, :])
-        input()
-        # indexLen = self.index.shape[0]
+        if len(dupIndex) > 0:
+            baseTags = self.index.loc[dupIndex[0], 'Tags'].split("-")
+            for i in range(1,len(dupIndex)):
+                # Join duplicate and existing entries Tags
+                newTags = self.index.loc[dupIndex[i], 'Tags'].split("-")
+                newTags.extend(baseTags)
+                newTags = list(dict.fromkeys(newTags)) # Get unique tags
 
-        # for i in range(indexLen):
-        #     check1 = (self.index.loc[i, 'Report']    == newEntryDf['Report']).values
-        #     check2 = (self.index.loc[i, 'DVD']       == newEntryDf['DVD']).values
-        #     check3 = (self.index.loc[i, 'VideoName'] == newEntryDf['VideoName']).values
-        #     # print(check1)
-        #     # print(check2)
-        #     # print(check3)
-        #     # exit()
-        #     if check1 and check2 and check3:
-        #         # If duplicate, return duplicate entry index
-        #         return i
+                # Save new Tag field with "-" as separator
+                self.index.loc[dupIndex[0], 'Tags'] = "-".join(newTags)
 
-        # If not duplicate
-        return -1
+                # TODO: Join OriginalDataset fields
+                #
+
+                # Drop duplicate entry
+                self.index = self.index.drop(i).reset_index(drop=True)
 
 
     def make_backup(self):
