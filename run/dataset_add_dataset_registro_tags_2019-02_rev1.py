@@ -58,6 +58,9 @@ for path in pathList:
         tags.append(tag)
     tags = "-".join(tags)
 
+    # Get FrameName field
+    frameName = path.name
+
     # Get OriginalDataset field
     originalDataset = "dataset_registro_tags_2019-02_rev1"
 
@@ -89,6 +92,7 @@ for path in pathList:
     'RelativeFrameNumber':  [relFrame],
     'Tags':                 [tags],
     'FramePath':            [framePath],
+    'FrameName':            [frameName],
     'OriginalDataset':      [originalDataset]
     }
     ind.add_entry(entry)

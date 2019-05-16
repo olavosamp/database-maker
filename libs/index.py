@@ -1,5 +1,6 @@
 import os
 import pandas       as pd
+import numpy        as np
 from   datetime     import datetime
 from   pathlib      import Path
 from   glob         import glob
@@ -47,11 +48,45 @@ class IndexManager:
         if self.indexExists == True:
             # Append to existing df
             newEntryDf = pd.DataFrame.from_dict(newEntry)
+
+            # exit()
+
             self.index = self.index.append(newEntryDf, sort=False, ignore_index=False).reset_index(drop=True)
+            # self.check_duplicate()
         else:
             # create df with new entry and write to disk as the index file
             self.index = pd.DataFrame.from_dict(newEntry)
             self.indexExists = True
+
+
+    def check_duplicate(self):
+        # print(self.index[self.index.duplicated(['VideoName'], keep=False)])
+        check1 = self.index.duplicated(['Report'])
+        check2 = self.index.duplicated(['DVD'])
+        check3 = self.index.duplicated(['FrameName'])
+        truthArray = np.array([check1, check2, check3]).T
+        mask = np.all(truthArray, axis=1)
+
+        print(check3[mask])
+        print(truthArray[mask, :])
+        print(self.index.loc[mask, :])
+        input()
+        # indexLen = self.index.shape[0]
+
+        # for i in range(indexLen):
+        #     check1 = (self.index.loc[i, 'Report']    == newEntryDf['Report']).values
+        #     check2 = (self.index.loc[i, 'DVD']       == newEntryDf['DVD']).values
+        #     check3 = (self.index.loc[i, 'VideoName'] == newEntryDf['VideoName']).values
+        #     # print(check1)
+        #     # print(check2)
+        #     # print(check3)
+        #     # exit()
+        #     if check1 and check2 and check3:
+        #         # If duplicate, return duplicate entry index
+        #         return i
+
+        # If not duplicate
+        return -1
 
 
     def make_backup(self):
@@ -79,6 +114,7 @@ class IndexManager:
                 fileIndex += 1
 
             os.rename(entry, newPath)
+
 
 
     def write_index(self, auto_path=True):

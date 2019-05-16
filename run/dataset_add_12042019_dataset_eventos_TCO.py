@@ -59,6 +59,9 @@ for path in pathList:
     # Join tags with '-'
     tags = "-".join(tags)
 
+    # Get FrameName field
+    frameName = path.name
+
     # Get OriginalDataset field
     originalDataset = "12042019_dataset_eventos_TCO"
 
@@ -90,6 +93,7 @@ for path in pathList:
     'RelativeFrameNumber':  [relFrame],
     'Tags':                 [tags],
     'FramePath':            [framePath],
+    'FrameName':            [frameName],
     'OriginalDataset':      [originalDataset]
     }
 
