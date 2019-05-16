@@ -43,7 +43,7 @@ def listVideos(dataPath):
 #     print(folder)
 #     print("")
 
-videoPaths = listVideos(dirs.dataset)
+videoPaths = listVideos(dirs.base_videos)
 
 ## List videos
 # print("")

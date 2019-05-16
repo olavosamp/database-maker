@@ -307,7 +307,7 @@ def rebuildDatasetMulti(csvFolder, videoFolder, targetPath=dirs.images):
 
     return videoList, csvList, frameTotal
 
-def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.dataset, targetPath=dirs.images):
+def rebuildDataset(csvFolder=dirs.csv, videoFolder=dirs.base_videos, targetPath=dirs.images):
     # Extract images from videos, according to class descriptions
     #
     # Arguments:

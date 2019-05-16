@@ -11,8 +11,8 @@ csvPath    = dirs.csv    + "registro_tags"      + dirs.sep
     rebuildDataset     (csv_folder, videos_folder, target_folder)
 '''
 
-# videoList, csvList, frameTotal = count.rebuildDatasetMulti(csvPath, dirs.dataset, targetPath)
-videoList, csvList, frameTotal = count.rebuildDataset(csvPath, dirs.dataset, targetPath)
+# videoList, csvList, frameTotal = count.rebuildDatasetMulti(csvPath, dirs.base_videos, targetPath)
+videoList, csvList, frameTotal = count.rebuildDataset(csvPath, dirs.base_videos, targetPath)
 
 # tuboCount, nadaCount, confCount, totCount = count.countImages(targetPath)
 # print("\nTotal frames acquired: ", totCount)
