@@ -24,7 +24,7 @@ for path in pathList:
     videoPath = "/".join(relPath.parts[:-2])
 
     # Get Report field
-    report = relPath.parts[0]
+    report = relPath.parts[1]
 
     # Get DVD field
     dvdIndex = str(path).find("DVD-")

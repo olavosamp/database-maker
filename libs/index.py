@@ -46,17 +46,22 @@ class IndexManager:
             # Append to existing df
             newEntryDf = pd.DataFrame.from_dict(newEntry)
 
-            # exit()
-
             self.index = self.index.append(newEntryDf, sort=False, ignore_index=False).reset_index(drop=True)
             self.check_duplicates()
         else:
-            # create df with new entry and write to disk as the index file
+            # Create df with new entry and write to disk as the index file
             self.index = pd.DataFrame.from_dict(newEntry)
             self.indexExists = True
 
 
     def check_duplicates(self):
+        '''
+            Check for duplicated index entries
+
+            Duplicate criteria:
+                Same Report, DVD and FrameName field.
+
+        '''
         check1     = self.index.duplicated(['Report'], keep=False)
         check2     = self.index.duplicated(['DVD'], keep=False)
         check3     = self.index.duplicated(['FrameName'], keep=False)
@@ -65,22 +70,33 @@ class IndexManager:
         mask       = np.all(truthArray, axis=1)
         dupIndex   = np.squeeze(np.argwhere(mask == True))
 
+        print("Duplicate Indexes: ", dupIndex)
+
+        try:   # Dirty exception escape
+            len(dupIndex)
+        except TypeError:
+            print("Index vector broke. Probably no duplicates.")
+            return -1
+
         if len(dupIndex) > 0:
-            baseTags = self.index.loc[dupIndex[0], 'Tags'].split("-")
-            for i in range(1,len(dupIndex)):
-                # Join duplicate and existing entries Tags
-                newTags = self.index.loc[dupIndex[i], 'Tags'].split("-")
-                newTags.extend(baseTags)
-                newTags = list(dict.fromkeys(newTags)) # Get unique tags
+            newTags     = self.index.loc[dupIndex[0], 'Tags'].split("-")
+            newDataset  = self.index.loc[dupIndex[0], 'OriginalDataset'].split("-")
+            for i in dupIndex[-1:-1:1]:
+                print("i: ", i)
+                print(self.index)
+                # Join duplicate and existing Tags fields
+                newTags.extend(self.index.loc[i, 'Tags'].split("-"))
+                # Join duplicate and existing OriginalDataset fields
+                newDataset.extend(self.index.loc[i, 'OriginalDataset'].split("-"))
 
-                # Save new Tag field with "-" as separator
-                self.index.loc[dupIndex[0], 'Tags'] = "-".join(newTags)
+            # Get unique tags
+            newTags = list(dict.fromkeys(newTags))
+            # Save new Tag field with "-" as separator
+            self.index.loc[dupIndex[0], 'Tags'] = "-".join(newTags)
+            self.index.loc[dupIndex[0], 'OriginalDataset'] = "-".join(newDataset)
 
-                # TODO: Join OriginalDataset fields
-                #
-
-                # Drop duplicate entry
-                self.index = self.index.drop(i).reset_index(drop=True)
+            # Drop duplicate entries
+            self.index = self.index.drop(dupIndex).reset_index(drop=True)
 
 
     def make_backup(self):
@@ -135,3 +151,12 @@ class IndexManager:
         # print(self.index)
 
         self.index.to_csv(self.indexPath, index=False)
+
+    def get_unique_tags(self):
+        self.tagList = []
+        f = lambda x: self.tagList.extend(x.split('-'))
+
+        self.index['Tags'].apply(f)
+        self.tagList = list(dict.fromkeys(self.tagList))
+
+        return self.tagList
