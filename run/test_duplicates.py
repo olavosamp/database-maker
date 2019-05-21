@@ -23,7 +23,8 @@ newEntry0 = {
             'DVD':                  [1],
             'VideoName':            ['PIDF-1 PO MRL-021_parte1.mpg'],
             'Tags':                 ['duto-peixe-anodo'],
-            'FrameName':            ['PIDF-1 PO MRL-021_parte1.mpg'],
+            'FrameName':            ['PIDF-1_PO_MRL-021_parte3.mpg_115080.jpg'],
+            'FramePath':            ['PIDF-1_PO_MRL-021_parte3.mpg_115080.jpg'],
             'OriginalDataset':      ['dataset1']
 }
 
@@ -32,7 +33,8 @@ newEntry1 = {
             'DVD':                  [1],
             'VideoName':            ['PIDF-1 PO MRL-021_parte1.mpg'],
             'Tags':                 ['duto-zoom'],
-            'FrameName':            ['PIDF-1 PO MRL-021_parte1.mpg'],
+            'FrameName':            ['PIDF-1_PO_MRL-021_parte3.mpg_115080.jpg'],
+            'FramePath':            ['PIDF-1_PO_MRL-021_parte3.mpg_115080.jpg'],
             'OriginalDataset':      ['dataset2']
 }
 
@@ -41,7 +43,8 @@ newEntry2 = {
             'DVD':                  [2],
             'VideoName':            ['20161102045347140@DVR-SPARE_Ch1.wmv'],
             'Tags':                 ['duto-flange'],
-            'FrameName':            ['20161102045347140@DVR-SPARE_Ch1.wmv'],
+            'FrameName':            ['20161101212059250@DVR-SPARE_Ch1.wmv ID17 FRAME5 tubo.jpg'],
+            'FramePath':            ['GHmls16-263/DVD-1/20161101212059250@DVR-SPARE_Ch1.wmv/20161101212059250@DVR-SPARE_Ch1.wmv ID17 FRAME5 tubo.jpg'],
             'OriginalDataset':      ['dataset1']
 }
 
@@ -50,57 +53,38 @@ newEntry3 = {
             'DVD':                  [2],
             'VideoName':            ['20161102045347140@DVR-SPARE_Ch1.wmv'],
             'Tags':                 ['duto-flange-anodo'],
-            'FrameName':            ['20161102045347140@DVR-SPARE_Ch1.wmv'],
+            'FrameName':            ['20161101212059250@DVR-SPARE_Ch1.wmv ID17 FRAME5 tubo.jpg'],
+            'FramePath':            ['GHmls16-263/DVD-1/20161101212059250@DVR-SPARE_Ch1.wmv/20161101212059250@DVR-SPARE_Ch1.wmv ID17 FRAME5 tubo.jpg'],
             'OriginalDataset':      ['dataset_robert']
 }
 
 ind  = IndexManager()
 
-print(ind.index.info())
+# print(ind.index.info())
 
-# Split Tags fields
-# tagList = []
-# f = lambda x: tagList.extend(x.split('-'))
-# ind.index['Tags'].apply(f)
-# tagList = list(dict.fromkeys(tagList))
-print(ind.get_unique_tags())
+print("\n\n")
+print("Entry 0")
+ind.add_entry(newEntry0)
+print(ind.index)
+input()
 
+print("\n\n")
+print("Entry 1")
+ind.add_entry(newEntry1)
+print(ind.index)
+input()
 
-# Print TagList
-# print(ind.index.loc[:,'Report'] == "registro_de_eventos")
-# print(ind.index['TagList'])
-# gr = ind.index.groupby(by=['TagList',], sort=False)
-print("")
-# for elem in gr.groups:
-#     print(elem)
-    # input()
-# print(gr.indices)
+print("\n\n")
+print("Entry 2")
+ind.add_entry(newEntry2)
+print(ind.index)
+input()
 
-
-
-# print("\n\n")
-# print("Entry 0")
-# ind.add_entry(newEntry0)
-# print(ind.index)
-# input()
-#
-# print("\n\n")
-# print("Entry 1")
-# ind.add_entry(newEntry1)
-# print(ind.index)
-# input()
-#
-# print("\n\n")
-# print("Entry 2")
-# ind.add_entry(newEntry2)
-# print(ind.index)
-# input()
-#
-# print("\n\n")
-# print("Entry 3")
-# ind.add_entry(newEntry3)
-# print(ind.index)
-# input()
+print("\n\n")
+print("Entry 3")
+ind.add_entry(newEntry3)
+print(ind.index)
+input()
 
 # ind.check_duplicates()
 # print(ind.index)

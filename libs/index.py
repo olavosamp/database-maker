@@ -10,9 +10,13 @@ import libs.dirs    as dirs
 
 class IndexManager:
     def __init__(self, path=dirs.index):
-        self.path          = Path(path)
-        self.indexExists   = False
-        self.bkpFolderName = "index_backup"
+        self.path               = Path(path)
+        self.indexExists        = False
+        self.bkpFolderName      = "index_backup"
+
+        self.duplicates_count   = 0
+        self.new_entries_count  = 0
+        self.originalLen        = 0
 
         self.validate_path()
 
@@ -26,8 +30,9 @@ class IndexManager:
                 try:
                     # Check if index DataFrame exists and is non-empty
                     self.index = pd.read_csv(pathList[0])
+                    self.originalLen = self.index.shape[0]
 
-                    if self.index.shape[0] > 0:
+                    if self.originalLen > 0:
                         self.indexExists = True
                 except pd.errors.EmptyDataError:
                     pass
@@ -42,61 +47,109 @@ class IndexManager:
             newEntry: Dict of lists. Keys are data columns, values are lists containing
                       the data
         '''
+        self.newEntryDf = pd.DataFrame.from_dict(newEntry)
+
+        # Save new frame path as FramePath and the old one as OriginalFramePath
+        newFramePath = "--".join([self.newEntryDf.loc[0, 'Report'], 'DVD-'+str(self.newEntryDf.loc[0, 'DVD']), self.newEntryDf.loc[0, 'FrameName']])
+        self.newEntryDf['OriginalFramePath'] = self.newEntryDf['FramePath']
+        self.newEntryDf['FramePath'] = newFramePath
+        # print(self.newEntryDf)
+        # input()
+
         if self.indexExists == True:
             # Append to existing df
-            newEntryDf = pd.DataFrame.from_dict(newEntry)
-
-            self.index = self.index.append(newEntryDf, sort=False, ignore_index=False).reset_index(drop=True)
+            self.index = self.index.append(self.newEntryDf, sort=False, ignore_index=False).reset_index(drop=True)
             self.check_duplicates()
         else:
             # Create df with new entry and write to disk as the index file
-            self.index = pd.DataFrame.from_dict(newEntry)
+            self.index = self.newEntryDf.copy()
             self.indexExists = True
 
 
     def check_duplicates(self):
         '''
-            Check for duplicated index entries
+            Check for duplicated index entries.
 
             Duplicate criteria:
                 Same Report, DVD and FrameName field.
 
         '''
-        check1     = self.index.duplicated(['Report'], keep=False)
-        check2     = self.index.duplicated(['DVD'], keep=False)
-        check3     = self.index.duplicated(['FrameName'], keep=False)
+        # check1     = self.index.duplicated(['Report'], keep=False)
+        # check2     = self.index.duplicated(['DVD'], keep=False)
+        # check3          = self.index.duplicated(['FrameName'], keep=False)
+        check3      = np.equal(self.index['FrameName'], self.newEntryDf['FrameName'])
+        # print(check3)
+        # input()
 
-        truthArray = np.array([check1, check2, check3]).T
-        mask       = np.all(truthArray, axis=1)
-        dupIndex   = np.squeeze(np.argwhere(mask == True))
+        # truthArray = np.array([check1, check2, check3]).T
+        truthArray      = np.array([check3]).T
 
-        print("Duplicate Indexes: ", dupIndex)
+        mask            = np.all(truthArray, axis=1)
+        dupNamesIndex   = np.squeeze(np.argwhere(mask == True))
+        print("Duplicate Names: ", dupNamesIndex)
+
 
         try:   # Dirty exception escape
-            len(dupIndex)
+            len(dupNamesIndex)
         except TypeError:
             print("Index vector broke. Probably no duplicates.")
             return -1
 
-        if len(dupIndex) > 0:
-            newTags     = self.index.loc[dupIndex[0], 'Tags'].split("-")
-            newDataset  = self.index.loc[dupIndex[0], 'OriginalDataset'].split("-")
-            for i in dupIndex[-1:-1:1]:
-                print("i: ", i)
-                print(self.index)
-                # Join duplicate and existing Tags fields
-                newTags.extend(self.index.loc[i, 'Tags'].split("-"))
-                # Join duplicate and existing OriginalDataset fields
-                newDataset.extend(self.index.loc[i, 'OriginalDataset'].split("-"))
+        if len(dupNamesIndex) > 1:
+            dupIndex = []
+            for i in dupNamesIndex:
+                # Check if other relevant fields are also duplicates
+                reportCheck = np.squeeze(self.index.loc[i, 'Report'] == self.newEntryDf['Report'])
+                dvdCheck    = np.squeeze(self.index.loc[i, 'DVD'] == self.newEntryDf['DVD'])
+                print("reportCheck: ", reportCheck)
+                print("dvdCheck: ", dvdCheck)
+                print("logical: ", reportCheck and dvdCheck)
 
-            # Get unique tags
-            newTags = list(dict.fromkeys(newTags))
-            # Save new Tag field with "-" as separator
-            self.index.loc[dupIndex[0], 'Tags'] = "-".join(newTags)
-            self.index.loc[dupIndex[0], 'OriginalDataset'] = "-".join(newDataset)
+                if reportCheck and dvdCheck:
+                    dupIndex.append(i)
 
-            # Drop duplicate entries
-            self.index = self.index.drop(dupIndex).reset_index(drop=True)
+            print("Duplicate Indexes: ", dupIndex)
+            if len(dupIndex) > 1:   # Entry is duplicate
+                input()
+                if len(dupIndex) > 2:
+                    raise ValueError("Found multiple duplicate entries. Duplicate check should only and always be run following a new addition.")
+                else:
+                    self.duplicates_count += len(dupIndex)-1
+                    baseIndex   = dupIndex[0]
+                    newIndex    = dupIndex[1]
+                    # reportCheck = self.index.loc[baseIndex, 'Report'] == self.index.loc[newIndex, 'Report']
+                    # dvdCheck    = self.index.loc[baseIndex, 'DVD'] == self.index.loc[newIndex, 'DVD']
+                    # if reportCheck and dvdCheck:
+                    print("i: ", newIndex)
+                    print("Existing entry: ",   self.index.loc[[baseIndex]])
+                    print("New entry: ",        self.newEntryDf)
+                    # print("Existing entry: ",   self.index.loc[[baseIndex]].drop(['FrameTime', 'OriginalDataset'], axis=1))
+                    # print("New entry: ",        self.newEntryDf.drop(['FrameTime', 'OriginalDataset'], axis=1))
+                    input()
+
+                    # Get duplicate and existing Tags list
+                    newTags     = self.index.loc[baseIndex, 'Tags'].split("-")
+                    newTags.extend(self.index.loc[newIndex, 'Tags'].split("-"))
+
+                    # Get duplicate and existing OriginalDataset list
+                    newDataset  = self.index.loc[baseIndex, 'OriginalDataset'].split("-")
+                    newDataset.extend(self.index.loc[newIndex, 'OriginalDataset'].split("-"))
+
+                    # Get unique tags and OriginalDataset
+                    newTags    = list(dict.fromkeys(newTags))
+                    newDataset = list(dict.fromkeys(newDataset))
+
+                    # Save new fields with "-" as separator
+                    self.index.loc[baseIndex, 'Tags'] = "-".join(newTags)
+                    self.index.loc[baseIndex, 'OriginalDataset'] = "-".join(newDataset)
+
+                    # Drop duplicate entry
+                    self.index = self.index.drop(dupIndex[1]).reset_index(drop=True)
+
+            else: # Entry is actually not duplicate
+                self.new_entries_count += 1
+        else:   # No duplicate candidates
+            self.new_entries_count += 1
 
 
     def make_backup(self):
@@ -151,6 +204,18 @@ class IndexManager:
         # print(self.index)
 
         self.index.to_csv(self.indexPath, index=False)
+        self.report_changes()
+
+    def report_changes(self):
+        print(self.originalLen)
+        print(self.index.shape[0])
+        print("Original Index had {} entries.\nNew Index has {} entries.".format(self.originalLen, self.index.shape[0]))
+
+        print("\nProcessed {} entries. Added {} and merged {} duplicates.\nSaved index to \n{}\
+                        \n".format(self.new_entries_count+self.duplicates_count,
+                            self.new_entries_count, self.duplicates_count,
+                            self.indexPath))
+
 
     def get_unique_tags(self):
         self.tagList = []

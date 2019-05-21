@@ -78,7 +78,7 @@ for path in pathList:
     # print('AbsoluteFrameNumber: ', absFrame)
     # print('RelativeFrameNumber: ', relFrame)
     # print('Tags: ', tags)
-    # # print('FramePath: ', str)
+    # print('FramePath: ', framePath)
     # print("OriginalDataset: ", originalDataset)
     # input()
 
