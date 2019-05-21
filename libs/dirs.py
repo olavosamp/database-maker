@@ -14,12 +14,15 @@ dataset             = root+sep+".."+sep+"datasets"+sep
 # converted           = root+".."+sep+"converted"+sep
 # registro_de_eventos = csv+sep+"registro_de_eventos"+sep
 
-def create_folder(path):
+def create_folder(path, verbose=False):
     try:
         os.makedirs(path)
-    except OSError:
+    except OSError as e:
         # Folder already exists or destFolder is invalid
-        pass
+        if verbose:
+            print(e)
+        else:
+            pass
 
 create_folder(images)
 # create_folder(demo)

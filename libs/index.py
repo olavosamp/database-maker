@@ -1,4 +1,5 @@
 import os
+import shutil
 import pandas       as pd
 import numpy        as np
 from   datetime     import datetime
@@ -8,15 +9,28 @@ from   glob         import glob
 import libs.dirs    as dirs
 
 
+def move_files_routine(source, destination):
+    if os.path.isfile(source):
+        shutil.copy2(source, destination)
+        return True
+    else:
+        return False
+    #     print("Source file not found:\n", source)
+
+
 class IndexManager:
-    def __init__(self, path=dirs.index):
+    def __init__(self, path=dirs.index, destFolder='auto'):
         self.path               = Path(path)
         self.indexExists        = False
         self.bkpFolderName      = "index_backup"
+        self.destFolder         = destFolder
 
         self.duplicates_count   = 0
         self.new_entries_count  = 0
         self.originalLen        = 0
+
+        # Get date and time for index and folder name
+        self.date = datetime.now()
 
         self.validate_path()
 
@@ -51,8 +65,9 @@ class IndexManager:
 
         # Save new frame path as FramePath and the old one as OriginalFramePath
         newFramePath = "--".join([self.newEntryDf.loc[0, 'Report'], 'DVD-'+str(self.newEntryDf.loc[0, 'DVD']), self.newEntryDf.loc[0, 'FrameName']])
+
         self.newEntryDf['OriginalFramePath'] = self.newEntryDf['FramePath']
-        self.newEntryDf['FramePath'] = newFramePath
+        self.newEntryDf['FramePath']         = newFramePath
 
         if self.indexExists == True:
             if self.check_duplicates() == True:
@@ -62,7 +77,6 @@ class IndexManager:
                 # If not duplicate, append to existing df
                 self.index = self.index.append(self.newEntryDf, sort=False, ignore_index=False).reset_index(drop=True)
                 self.new_entries_count += 1
-                # TODO: MOVE NEW FILE TO DEFINITIVE FOLDER
         else:
             # Create df with new entry
             self.index = self.newEntryDf.copy()
@@ -117,7 +131,6 @@ class IndexManager:
 
         else: # Entry is not duplicate
             return False
-            # self.new_entries_count += 1
 
 
     def make_backup(self):
@@ -127,15 +140,10 @@ class IndexManager:
         # Create backup folder
         dirs.create_folder(self.path.parent / self.bkpFolderName)
 
-        # print(str(self.path.parent.resolve()) + "\\*index*.csv")
-        # existingIndex = glob((str(self.path.parent.resolve()) + "\\*index*.csv").strip())
-
         existingIndex = self.path.parent.glob("*index*.csv")
         for entry in existingIndex:
             entry = Path(entry)
             newPath = self.path.parent / self.bkpFolderName / entry.name
-            # print(entry)
-            # input()
 
             # Check if dest path already exists
             # If True, create a new path by appending a number at the end
@@ -145,7 +153,6 @@ class IndexManager:
                 fileIndex += 1
 
             os.rename(entry, newPath)
-
 
 
     def write_index(self, auto_path=True):
@@ -159,20 +166,36 @@ class IndexManager:
         self.make_backup()
 
         if auto_path == True:
-            # Get date and time for index name
-            date = datetime.now()
-            newName = str(self.path.stem) +"_{}-{}-{}_{}-{}-{}".format(date.year, date.month,\
-             date.day, date.hour, date.minute, date.second)
+            newName = str(self.path.stem) +"_{}-{}-{}_{}-{}-{}".format(self.date.year, self.date.month,\
+             self.date.day, self.date.hour, self.date.minute, self.date.second)
 
             self.indexPath = self.path.with_name( newName + str(self.path.suffix))
         else:
             self.indexPath = self.path
 
-        # print(self.indexPath)
-        # print(self.index)
-
         self.index.to_csv(self.indexPath, index=False)
         self.report_changes()
+
+
+    def move_files(self):
+        '''
+            Try to move all files in index to a new folder specified by destFolder input.
+        '''
+        if self.destFolder == 'auto':
+            self.destFolder = Path(dirs.dataset+"compiled_dataset_{}-{}-{}_{}-{}-{}".format(self.date.year, self.date.month,\
+                            self.date.day, self.date.hour, self.date.minute, self.date.second))
+
+        dirs.create_folder(self.destFolder, verbose=True)
+
+        print("Moving {} files.".format(self.index.shape[0]))
+
+        f = lambda x: self.destFolder / x
+        self.frameDestPaths = self.index.loc[:, 'FramePath'].apply(f)
+
+        self.moveResults = list(map(move_files_routine, self.index.loc[:, 'OriginalFramePath'], self.frameDestPaths))
+        print("Found {} files.\nMoved {} files to folder\n{}\n{} files were not found.".format(\
+            len(self.moveResults), sum(self.moveResults), self.destFolder, len(self.moveResults)-sum(self.moveResults)))
+
 
     def report_changes(self):
         print(self.originalLen)

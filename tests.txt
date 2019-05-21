@@ -1,3 +1,0 @@
-get frames full:            ok
-get frames csv 1 video:
-get frames csv multi video: 
