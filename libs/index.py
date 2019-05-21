@@ -53,16 +53,20 @@ class IndexManager:
         newFramePath = "--".join([self.newEntryDf.loc[0, 'Report'], 'DVD-'+str(self.newEntryDf.loc[0, 'DVD']), self.newEntryDf.loc[0, 'FrameName']])
         self.newEntryDf['OriginalFramePath'] = self.newEntryDf['FramePath']
         self.newEntryDf['FramePath'] = newFramePath
-        # print(self.newEntryDf)
-        # input()
 
         if self.indexExists == True:
-            # Append to existing df
-            self.index = self.index.append(self.newEntryDf, sort=False, ignore_index=False).reset_index(drop=True)
-            self.check_duplicates()
+            if self.check_duplicates() == True:
+                # If duplicate, merge data with existing entry
+                self.duplicates_count += 1
+            else:
+                # If not duplicate, append to existing df
+                self.index = self.index.append(self.newEntryDf, sort=False, ignore_index=False).reset_index(drop=True)
+                self.new_entries_count += 1
+                # TODO: MOVE NEW FILE TO DEFINITIVE FOLDER
         else:
-            # Create df with new entry and write to disk as the index file
+            # Create df with new entry
             self.index = self.newEntryDf.copy()
+            self.new_entries_count += 1
             self.indexExists = True
 
 
@@ -74,82 +78,46 @@ class IndexManager:
                 Same Report, DVD and FrameName field.
 
         '''
-        # check1     = self.index.duplicated(['Report'], keep=False)
-        # check2     = self.index.duplicated(['DVD'], keep=False)
-        # check3          = self.index.duplicated(['FrameName'], keep=False)
-        check3      = np.equal(self.index['FrameName'], self.newEntryDf['FrameName'])
-        # print(check3)
-        # input()
+        mask            = np.equal(self.index['FramePath'], self.newEntryDf['FramePath']).values
+        dupNamesIndex   = np.squeeze(np.argwhere(mask == True)).tolist()
 
-        # truthArray = np.array([check1, check2, check3]).T
-        truthArray      = np.array([check3]).T
+        print("Duplicate names: ", dupNamesIndex)
 
-        mask            = np.all(truthArray, axis=1)
-        dupNamesIndex   = np.squeeze(np.argwhere(mask == True))
-        print("Duplicate Names: ", dupNamesIndex)
+        if np.size(dupNamesIndex) >= 1:
+            # There are duplicate entries (there should be only 1)
+            if np.size(dupNamesIndex) >= 2:
+                raise ValueError("Found multiple duplicate entries. Duplicate check should only and always be run following a new addition.")
+            else:
+                baseIndex   = np.ravel(dupNamesIndex)[0]
+                # print("i: ", baseIndex)
+                # print("\nExisting entry: \n",   self.index[['FramePath', 'OriginalDataset']].loc[[baseIndex]])
+                # print("\nNew entry: \n",        self.newEntryDf[['FramePath', 'OriginalDataset']])
+                # input()
 
+                # Get duplicate and existing Tags list
+                newTags     = self.index.loc[baseIndex, 'Tags'].split("-")
+                newTags.extend(self.newEntryDf.loc[0, 'Tags'].split("-"))
 
-        try:   # Dirty exception escape
-            len(dupNamesIndex)
-        except TypeError:
-            print("Index vector broke. Probably no duplicates.")
-            return -1
+                # Get duplicate and existing OriginalDataset list
+                newDataset  = self.index.loc[baseIndex, 'OriginalDataset'].split("-")
+                newDataset.extend(self.newEntryDf.loc[0,'OriginalDataset'].split("-"))
 
-        if len(dupNamesIndex) > 1:
-            dupIndex = []
-            for i in dupNamesIndex:
-                # Check if other relevant fields are also duplicates
-                reportCheck = np.squeeze(self.index.loc[i, 'Report'] == self.newEntryDf['Report'])
-                dvdCheck    = np.squeeze(self.index.loc[i, 'DVD'] == self.newEntryDf['DVD'])
-                print("reportCheck: ", reportCheck)
-                print("dvdCheck: ", dvdCheck)
-                print("logical: ", reportCheck and dvdCheck)
+                # Get unique tags and OriginalDataset
+                newTags    = list(dict.fromkeys(newTags))
+                newDataset = list(dict.fromkeys(newDataset))
 
-                if reportCheck and dvdCheck:
-                    dupIndex.append(i)
+                # Save new fields with "-" as separator
+                self.index.loc[baseIndex, 'Tags'] = "-".join(newTags)
+                self.index.loc[baseIndex, 'OriginalDataset'] = "-".join(newDataset)
 
-            print("Duplicate Indexes: ", dupIndex)
-            if len(dupIndex) > 1:   # Entry is duplicate
-                input()
-                if len(dupIndex) > 2:
-                    raise ValueError("Found multiple duplicate entries. Duplicate check should only and always be run following a new addition.")
-                else:
-                    self.duplicates_count += len(dupIndex)-1
-                    baseIndex   = dupIndex[0]
-                    newIndex    = dupIndex[1]
-                    # reportCheck = self.index.loc[baseIndex, 'Report'] == self.index.loc[newIndex, 'Report']
-                    # dvdCheck    = self.index.loc[baseIndex, 'DVD'] == self.index.loc[newIndex, 'DVD']
-                    # if reportCheck and dvdCheck:
-                    print("i: ", newIndex)
-                    print("Existing entry: ",   self.index.loc[[baseIndex]])
-                    print("New entry: ",        self.newEntryDf)
-                    # print("Existing entry: ",   self.index.loc[[baseIndex]].drop(['FrameTime', 'OriginalDataset'], axis=1))
-                    # print("New entry: ",        self.newEntryDf.drop(['FrameTime', 'OriginalDataset'], axis=1))
-                    input()
+                return True
 
-                    # Get duplicate and existing Tags list
-                    newTags     = self.index.loc[baseIndex, 'Tags'].split("-")
-                    newTags.extend(self.index.loc[newIndex, 'Tags'].split("-"))
+                # Drop duplicate entry
+                # self.index = self.index.drop(newIndex).reset_index(drop=True)
 
-                    # Get duplicate and existing OriginalDataset list
-                    newDataset  = self.index.loc[baseIndex, 'OriginalDataset'].split("-")
-                    newDataset.extend(self.index.loc[newIndex, 'OriginalDataset'].split("-"))
-
-                    # Get unique tags and OriginalDataset
-                    newTags    = list(dict.fromkeys(newTags))
-                    newDataset = list(dict.fromkeys(newDataset))
-
-                    # Save new fields with "-" as separator
-                    self.index.loc[baseIndex, 'Tags'] = "-".join(newTags)
-                    self.index.loc[baseIndex, 'OriginalDataset'] = "-".join(newDataset)
-
-                    # Drop duplicate entry
-                    self.index = self.index.drop(dupIndex[1]).reset_index(drop=True)
-
-            else: # Entry is actually not duplicate
-                self.new_entries_count += 1
-        else:   # No duplicate candidates
-            self.new_entries_count += 1
+        else: # Entry is not duplicate
+            return False
+            # self.new_entries_count += 1
 
 
     def make_backup(self):
