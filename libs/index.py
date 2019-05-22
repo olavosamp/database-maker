@@ -79,9 +79,9 @@ class IndexManager:
                 self.new_entries_count += 1
         else:
             # Create df with new entry
-            self.index = self.newEntryDf.copy()
+            self.index              = self.newEntryDf.copy()
+            self.indexExists        = True
             self.new_entries_count += 1
-            self.indexExists = True
 
 
     def check_duplicates(self):
@@ -126,9 +126,6 @@ class IndexManager:
 
                 return True
 
-                # Drop duplicate entry
-                # self.index = self.index.drop(newIndex).reset_index(drop=True)
-
         else: # Entry is not duplicate
             return False
 
@@ -155,11 +152,15 @@ class IndexManager:
             os.rename(entry, newPath)
 
 
-    def write_index(self, auto_path=True):
+    def write_index(self, auto_path=True, prompt=True):
         '''
             Create a backup of old index and write current index DataFrame to a csv file.
             auto_path == True appends date and time to index path
         '''
+        if prompt:
+            print("\n\nReally write index to file?\nPress any key to continue, Ctrl-C to cancel.\n")
+            input()
+
         # Create destination folder
         dirs.create_folder(self.path.parent)
 
@@ -193,6 +194,8 @@ class IndexManager:
         self.frameDestPaths = self.index.loc[:, 'FramePath'].apply(f)
 
         self.moveResults = list(map(move_files_routine, self.index.loc[:, 'OriginalFramePath'], self.frameDestPaths))
+
+        # Report results
         print("Found {} files.\nMoved {} files to folder\n{}\n{} files were not found.".format(\
             len(self.moveResults), sum(self.moveResults), self.destFolder, len(self.moveResults)-sum(self.moveResults)))
 
@@ -216,3 +219,8 @@ class IndexManager:
         self.tagList = list(dict.fromkeys(self.tagList))
 
         return self.tagList
+
+
+    def append_tag(self, entryIndex, newTag):
+        self.index.at[entryIndex, 'Tags'] += "-"+newTag
+        print(self.index.at[entryIndex, 'Tags'])
