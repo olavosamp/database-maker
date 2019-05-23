@@ -1,0 +1,28 @@
+index criado a partir dos datasets
+
+12042019_dataset_eventos_handpick_2
+12042019_dataset_eventos_TCO
+12042019_dataset_handpicked_Events_1.1
+dataset_handpicked
+dataset_registro_de_eventos
+dataset_registro_tags_2019-02_rev1
+
+as imagens das bases foram registradas em uma entrada por imagem. imagens
+duplicadas foram incorporadas em apenas uma entrada cada, fundindo os campos
+Tags e OriginalDataset.
+
+index dataset atual:
+main_index_2019-5-21_0-6-46.csv
+2666 entradas
+
+----------------------
+
+2019-05-22
+
+adicionei tag ignore_train em 45 imagens da pasta datasets/datasets_roberto_delete.
+motivo: imagens ruins para treino das classes anodo e flange.
+
+index dataset atual:
+main_index_2019-5-22_20-9-39.csv
+
+---------------------
