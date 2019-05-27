@@ -39,4 +39,4 @@ for path in pathList:
 
 print(len(pathList))
 
-# ind.write_index()
+ind.write_index()

@@ -178,10 +178,12 @@ class IndexManager:
         self.report_changes()
 
 
-    def move_files(self):
+    def move_files(self, destFolder='auto'):
         '''
             Try to move all files in index to a new folder specified by destFolder input.
         '''
+        self.destFolder = destFolder
+
         if self.destFolder == 'auto':
             self.destFolder = Path(dirs.dataset+"compiled_dataset_{}-{}-{}_{}-{}-{}".format(self.date.year, self.date.month,\
                             self.date.day, self.date.hour, self.date.minute, self.date.second))
