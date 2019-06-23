@@ -106,4 +106,4 @@ for path in pathList:
     #     print(e, ": ", entry[e])
     ind.add_entry(entry)
 
-ind.write_index()
+ind.write_index(prompt=False)

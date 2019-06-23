@@ -34,3 +34,19 @@ videoFormats = ['wmv', 'mpg', 'vob', 'avi', ]
 
 # SSIM comparison threshold
 ssimLim = 0.600
+
+# Fields of each entry in Index DataFrames
+indexEntryColumns = [
+            'VideoPath',
+            'Report',
+            'DVD',
+            'VideoName',
+            'EventId',
+            'FrameTime',
+            'AbsoluteFrameNumber',
+            'RelativeFrameNumber',
+            'Tags',
+            'FramePath',
+            'FrameName',
+            'OriginalDataset',
+]

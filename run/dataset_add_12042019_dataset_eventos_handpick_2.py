@@ -111,4 +111,4 @@ for path in pathList:
     }
     ind.add_entry(entry)
 
-ind.write_index()
+ind.write_index(prompt=False)

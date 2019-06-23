@@ -21,7 +21,7 @@ for path in pathList:
     relPath = path.relative_to(datasetPath)
 
     # Get VideoPath field
-    videoPath = "/".join(relPath.parts[:-2])
+    videoPath = "/".join(relPath.parts[1:-2])
 
     # Get Report field
     report = relPath.parts[1]
@@ -99,4 +99,4 @@ for path in pathList:
     }
     ind.add_entry(entry)
 
-ind.write_index()
+ind.write_index(prompt=False)
