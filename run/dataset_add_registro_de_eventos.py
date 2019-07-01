@@ -1,9 +1,10 @@
-from pathlib        import Path
-from libs.index     import IndexManager
-
-import libs.dirs    as dirs
 import pandas       as pd
+from pathlib        import Path
 from glob           import glob
+
+from libs.index     import IndexManager
+import libs.commons as commons
+import libs.dirs    as dirs
 
 ind = IndexManager()
 
@@ -35,13 +36,15 @@ for path in pathList:
 
     # Get VideoName field, dont get dvd name in this field. Add extension if missing
     # print(relPath.suffix)
-    if Path(videoPath).suffix == '':
+    videoName = Path(relPath.parts[-3])
+    if videoName.suffix not in commons.videoFormats:
+        ext = ''
         # print("SUFFIX NOT FOUND")
         if str(relPath.name).find("VTS") != -1:
             ext = "VOB"
         elif str(relPath.name).find("Dive") != -1:
             ext = "wmv"
-        videoName = str(relPath.parts[-3])+"."+ext
+        videoName = str(videoName)+"."+ext
         videoPath = "/".join(relPath.parts[1:-2])+"."+ext
     else:
         videoName = str(relPath.parts[-3])
