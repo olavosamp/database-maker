@@ -33,8 +33,19 @@ for path in pathList:
     else:
         dvd = str(path)[dvdIndex+4]
 
-    # Get VideoName field, dont get dvd name in this field
-    videoName = relPath.parts[-3]
+    # Get VideoName field, dont get dvd name in this field. Add extension if missing
+    # print(relPath.suffix)
+    if Path(videoPath).suffix == '':
+        # print("SUFFIX NOT FOUND")
+        if str(relPath.name).find("VTS") != -1:
+            ext = "VOB"
+        elif str(relPath.name).find("Dive") != -1:
+            ext = "wmv"
+        videoName = str(relPath.parts[-3])+"."+ext
+        videoPath = "/".join(relPath.parts[1:-2])+"."+ext
+    else:
+        videoName = str(relPath.parts[-3])
+
 
     # Get EventId field
     # Find number after "ID". Make exception because of VIDEO strings
@@ -72,7 +83,7 @@ for path in pathList:
 
 
     # print('VideoPath ', videoPath)
-    # print('Repor ', report)
+    # print('Report ', report)
     # print("dvd: ", dvd)
     # print("videoname: ", videoName)
     # print('EventId: ', eventId)
