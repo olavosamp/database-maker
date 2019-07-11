@@ -69,7 +69,7 @@ def color_filter(image, filter='r', filter_strenght=1.5):
     return image
 
 
-def image_grid(path, targetPath="image_grid.jpg", upperCrop=0, lowerCrop=0, show=False, save=True):
+def image_grid(path, targetPath="image_grid.jpg", predictionsPath=None, upperCrop=0, lowerCrop=0, show=False, save=True):
     '''
         Creates a square grid of images randomly samples from available files on path.
 
@@ -87,12 +87,15 @@ def image_grid(path, targetPath="image_grid.jpg", upperCrop=0, lowerCrop=0, show
     targetPath = Path(targetPath)
     files = glob(str(path)+'**'+dirs.sep+'*.jpg', recursive=True)
     numImages         = len(files)
+    numImages         = np.clip(numImages, None, 25)
     squareNumImages = get_perfect_square(numImages)
 
     files = np.random.choice(files, size=squareNumImages, replace=False)
 
     # Create fake predictions DataFrame
     predictions = pd.DataFrame(files)
+    if predictionsPath == None:
+        predictions['Prediction'] = np.zeros(squareNumImages)
     predictions['Prediction'] = np.random.choice([0, 1], size=squareNumImages, p=[0.8, 0.2])
 
     # Square Grid
@@ -115,8 +118,8 @@ def image_grid(path, targetPath="image_grid.jpg", upperCrop=0, lowerCrop=0, show
             im = im.crop((0, upperCrop, imageDim[0], imageDim[1] - lowerCrop))
 
             # Apply color filter if image has wrong prediction
-            if predictions.loc[index, "Prediction"] == 1:
-                im = color_filter(im, filter='r', filter_strenght=3.5)
+            # if predictions.loc[index, "Prediction"] == 1:
+            #     im = color_filter(im, filter='r', filter_strenght=3.5)
 
             im.thumbnail(imageDim)
             im_grid.paste(im, (i,j))
