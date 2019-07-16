@@ -5,3 +5,4 @@ python -m run.dataset_add_dataset_handpicked
 python -m run.dataset_add_dataset_registro_tags_2019-02_rev1
 python -m run.dataset_add_registro_de_eventos
 python -m run.dataset_delete_robert_events
+python -m run.dataset_move_files

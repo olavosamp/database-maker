@@ -5,7 +5,8 @@ import libs.dirs    as dirs
 import pandas       as pd
 from glob           import glob
 
-path1 = dirs.csv+'main_index_2019-5-21_0-6-46.csv'
+# path1 = dirs.csv+'main_index_2019-5-21_0-6-46.csv'
+path1 = dirs.index
 
 ind1  = IndexManager(path=path1)
 print(ind1.index.info())
