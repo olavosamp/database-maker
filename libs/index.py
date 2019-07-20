@@ -2,28 +2,36 @@ import os
 import shutil
 import pandas       as pd
 import numpy        as np
+from   tqdm         import tqdm
 from   datetime     import datetime
 from   pathlib      import Path
 from   glob         import glob
 
 import libs.dirs    as dirs
+from libs.utils     import file_hash
 
 
 def move_files_routine(source, destination):
+    '''
+        Wrapper function for shutil.copy2().
+        Arguments: source, destination filepaths
+        Returns: True if operation was successful and False if it failed.
+    '''
     if os.path.isfile(source):
         shutil.copy2(source, destination)
         return True
     else:
+        #     print("Source file not found:\n", source)
         return False
-    #     print("Source file not found:\n", source)
 
 
 class IndexManager:
-    def __init__(self, path=dirs.index, destFolder='auto'):
+    def __init__(self, path=dirs.index, destFolder='auto', verbose=True):
         self.path               = Path(path)
         self.indexExists        = False
         self.bkpFolderName      = "index_backup"
         self.destFolder         = destFolder
+        self.verbose            = verbose
 
         self.duplicates_count   = 0
         self.new_entries_count  = 0
@@ -33,6 +41,24 @@ class IndexManager:
         self.date = datetime.now()
 
         self.validate_path()
+
+
+    def get_index_len(self):
+        ''' Returns integer representing number of entries in index, 
+        or None, if index doesn't exists.'''
+        if self.indexExists:
+            return self.index.shape[0]
+        else:
+            return 0
+
+
+    def get_video_path_list(self):
+        ''' Returns list with unique videos in the dataset.
+        '''
+        if self.indexExists:
+            return list(dict.fromkeys(self.index['VideoPath']))
+        else:
+            return []
 
 
     def validate_path(self):
@@ -54,34 +80,98 @@ class IndexManager:
             raise ValueError("Invalid index path.")
 
 
+    @staticmethod
+    def get_new_frame_path(entry):
+        if entry.loc[0, 'DVD'] is None:
+            # Put a DVD-X indicator in frame path
+            newFramePath = "--".join(
+                [entry.loc[0, 'Report'],
+                entry.loc[0, 'FrameName']])
+        else:
+            # Don't put any DVD indicator in path
+            newFramePath = "--".join(
+                [entry.loc[0, 'Report'],
+                'DVD-'+str(entry.loc[0, 'DVD']),
+                entry.loc[0, 'FrameName']])
+        return newFramePath
+
+
     def add_entry(self, newEntry):
         '''
-            Adds new entry to index by appending a line to the existing DataFrame or
-            creating a new DataFrame with one line.
-            newEntry: Dict of lists. Keys are data columns, values are lists containing
-                      the data
+            Adds new entry to index by appending new entries to the existing DataFrame or
+            creating a new DataFrame.
+
+            Arguments:
+                newEntry: Single entry or list of entries. Each entry is a Dict of lists. Keys are data columns, values are lists containing
+                          the data
         '''
-        self.newEntryDf = pd.DataFrame.from_dict(newEntry)
+        # If input is a single entry
+        if type(newEntry) is dict:
+            self.newEntryDf = pd.DataFrame.from_dict(newEntry)
 
-        # Save new frame path as FramePath and the old one as OriginalFramePath
-        newFramePath = "--".join([self.newEntryDf.loc[0, 'Report'], 'DVD-'+str(self.newEntryDf.loc[0, 'DVD']), self.newEntryDf.loc[0, 'FrameName']])
+            # Save new frame path as FramePath and the old one as OriginalFramePath
+            # TODO: Guarantee that FramePath is only formatted outside IndexManager
 
-        self.newEntryDf['OriginalFramePath'] = self.newEntryDf['FramePath']
-        self.newEntryDf['FramePath']         = newFramePath
+            # If this is a new entry, OriginalFramePath and FramePath will be the same
+            # FramePath should only be changed if the file is actually moved
+            self.newEntryDf['OriginalFramePath'] = self.newEntryDf['FramePath']
+            self.newEntryDf['FramePath']         = str(self.newEntryDf.loc[0, 'FrameName'])
 
-        if self.indexExists == True:
-            if self.check_duplicates() == True:
-                # If duplicate, merge data with existing entry
-                self.duplicates_count += 1
+            if self.indexExists:
+                if self.check_duplicates() == True:
+                    # If duplicate, merge data with existing entry
+                    self.duplicates_count += 1
+                else:
+                    # If not duplicate, append to existing df
+                    self.index = self.index.append(self.newEntryDf, sort=False,
+                                                    ignore_index=False).reset_index(drop=True)
+                    self.new_entries_count += 1
             else:
-                # If not duplicate, append to existing df
-                self.index = self.index.append(self.newEntryDf, sort=False, ignore_index=False).reset_index(drop=True)
+                # Create df with new entry
+                self.index              = self.newEntryDf.copy()
+                self.indexExists        = True
                 self.new_entries_count += 1
-        else:
-            # Create df with new entry
+
+        # If input is a list of entries
+        elif type(newEntry) is list:
+            if self.indexExists:
+                raise ValueError(
+                    "Adding entry from list unsupported for existing index.\
+                    Please backup and delete current index and try again."                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              )
+            numEntries = np.shape(newEntry)[0]
+
+            # If index does not exist, proceed
+            self.newEntryDf = pd.DataFrame(newEntry)
+
+            # Save new frame path as FramePath and the old one as OriginalFramePath
+            for i in range(numEntries):
+                # TODO: Guarantee that FramePath is only formatted outside IndexManager
+                # frameName = self.newEntryDf.loc[i, 'FrameName']
+                # newFramePath = frameName
+
+                self.newEntryDf.loc[i, 'OriginalFramePath'] = self.newEntryDf.loc[i, 'FramePath']
+                # TODO: Guarantee that FramePath is only modified in move_files, when the files are
+                #  actually moved
+                # self.newEntryDf.loc[i, 'FramePath']         = newFramePath
+
             self.index              = self.newEntryDf.copy()
             self.indexExists        = True
-            self.new_entries_count += 1
+
+            # TODO: Fix duplicates verification. Decide what to do when there are dups in list add
+            # dupIndex = self.index.duplicated(subset="FramePath")
+            # # Obs: this is not the same check used in check_duplicates
+            # dupDf = self.index.loc[dupIndex, :]
+            # print(dupDf)
+            # print(dupDf.shape)
+            # print(np.shape(dupIndex))
+            # print(np.sum(dupIndex))
+            # exit()
+
+            # if self.check_duplicates():
+            #     raise ValueError("Duplicates entries found. Cannot process.")
+            self.new_entries_count += numEntries
+
+        return self.newEntryDf
 
 
     def check_duplicates(self):
@@ -95,7 +185,9 @@ class IndexManager:
         mask            = np.equal(self.index['FramePath'], self.newEntryDf['FramePath']).values
         dupNamesIndex   = np.squeeze(np.argwhere(mask == True)).tolist()
 
-        print("Duplicate names: ", dupNamesIndex)
+        if self.verbose:
+            if np.size(dupNamesIndex) > 0:
+                print("Duplicate names: ", dupNamesIndex)
 
         if np.size(dupNamesIndex) >= 1:
             # There are duplicate entries (there should be only 1)
@@ -178,39 +270,61 @@ class IndexManager:
         self.report_changes()
 
 
-    def move_files(self, destFolder='auto'):
+    def move_files(self, destFolder='auto', write=True):
         '''
             Try to move all files in index to a new folder specified by destFolder input.
         '''
+        assert self.indexExists, "Index does not exist. Cannot move files."
+
         self.destFolder = destFolder
 
         if self.destFolder == 'auto':
-            self.destFolder = Path(dirs.dataset+"compiled_dataset_{}-{}-{}_{}-{}-{}".format(self.date.year, self.date.month,\
-                            self.date.day, self.date.hour, self.date.minute, self.date.second))
+            self.destFolder = Path(dirs.dataset + "compiled_dataset_{}-{}-{}_{}-{}-{}".format(
+                              self.date.year, self.date.month, self.date.day,
+                              self.date.hour, self.date.minute, self.date.second))
 
         dirs.create_folder(self.destFolder, verbose=True)
 
         print("Moving {} files.".format(self.index.shape[0]))
 
-        f = lambda x: self.destFolder / x
-        self.frameDestPaths = self.index.loc[:, 'FramePath'].apply(f)
+        def func_add_dest_folder(x): return self.destFolder / x
+        self.frameDestPaths = self.index.loc[:, 'FrameName'].apply(func_add_dest_folder)
 
         self.moveResults = list(map(move_files_routine, self.index.loc[:, 'OriginalFramePath'], self.frameDestPaths))
 
+        self.notFoundList = self.frameDestPaths[np.logical_not(self.moveResults)]
+        print(self.notFoundList)
+        self.notFoundList.to_csv(self.destFolder / "not_found_list.csv")
+
+        for i in range(self.get_index_len()):
+            self.index.loc[i, "OriginalFramePath"] = self.index.loc[i, "FramePath"]
+            self.index.loc[i, "FramePath"] = self.frameDestPaths[i]
+
+        if write:
+            self.write_index(prompt=False)
+
         # Report results
-        print("Found {} files.\nMoved {} files to folder\n{}\n{} files were not found.".format(\
-            len(self.moveResults), sum(self.moveResults), self.destFolder, len(self.moveResults)-sum(self.moveResults)))
+        print(
+            "Found {} files.\n\
+            Moved {} files to folder\n\
+            {}\
+            \n{} files were not found."
+            .format(len(self.moveResults), sum(self.moveResults),
+                    self.destFolder,
+                    len(self.moveResults) - sum(self.moveResults)))
+        return self.moveResults
 
 
     def report_changes(self):
-        print(self.originalLen)
-        print(self.index.shape[0])
-        print("Original Index had {} entries.\nNew Index has {} entries.".format(self.originalLen, self.index.shape[0]))
+        print(
+            "Original Index had {} entries.\nNew Index has {} entries.".format(
+                self.originalLen, self.index.shape[0]))
 
-        print("\nProcessed {} entries. Added {} and merged {} duplicates.\nSaved index to \n{}\
-                        \n".format(self.new_entries_count+self.duplicates_count,
-                            self.new_entries_count, self.duplicates_count,
-                            self.indexPath))
+        print(
+            "\nProcessed {} entries. Added {} and merged {} duplicates.\nSaved index to \n{}\n"
+            .format(self.new_entries_count + self.duplicates_count,
+                    self.new_entries_count, self.duplicates_count,
+                    self.indexPath))
 
 
     def get_unique_tags(self):
@@ -226,3 +340,20 @@ class IndexManager:
     def append_tag(self, entryIndex, newTag):
         self.index.at[entryIndex, 'Tags'] += "-"+newTag
         print(self.index.at[entryIndex, 'Tags'])
+
+
+    def get_video_hash_list(self):
+        ''' 
+            Returns DataFrame with columns 'VideoPath', containing all unique video paths in the index,
+            and 'VideoHash', containing the respective file hashes.
+        '''
+        if self.indexExists:
+            self.hashDf = pd.DataFrame({'VideoPath': self.get_video_path_list()})
+
+            numVideos = self.hashDf.shape[0]
+            for i in tqdm(range(numVideos)):
+                self.hashDf.loc[i, 'VideoHash'] = file_hash(self.hashDf.loc[i, 'VideoPath'])
+        else:
+            self.hashDf = None
+
+        return self.hashDf
