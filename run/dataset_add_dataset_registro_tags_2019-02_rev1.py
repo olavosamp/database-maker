@@ -36,7 +36,10 @@ for path in pathList:
         videoName += ".wmv"
 
     # Get VideoPath field
-    videoPath = report / Path("DVD-" + dvd) / Path(videoName)
+    if dvd != None:
+        videoPath = report / Path("DVD-" + dvd) / Path(videoName)
+    else:
+        videoPath = report / Path(videoName)
 
     # Get EventId field
     # Find number after "ID". Make exception because of VIDEO strings

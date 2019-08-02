@@ -35,9 +35,11 @@ for path in pathList:
 
     # Get VideoName field, dont get dvd name in this field
     videoName = relPath.parts[-3]
-    if str(videoName).find("OS-6000427923 - SVTab17-001 - Rev 0 - COMPLETO") != -1:
-        videoName = str(videoName).replace("- Rev 0 - ", "- Rev. 0 - ")
-        videoPath = str(videoPath).replace("- Rev 0 - ", "- Rev. 0 - ")
+    
+    # The following fix was made obsolete, but kept for reference
+    # if str(videoName).find("OS-6000427923 - SVTab17-001 - Rev 0 - COMPLETO") != -1:
+    #     videoName = str(videoName).replace("- Rev 0 - ", "- Rev. 0 - ")
+    #     videoPath = str(videoPath).replace("- Rev 0 - ", "- Rev. 0 - ")
 
     # Get EventId field
     # Find number after "ID". Make exception because of VIDEO strings

@@ -79,7 +79,6 @@ for path in pathList:
     originalDataset = "12042019_dataset_eventos_handpick_2"
 
     # Get FramePath field
-    # TODO: Move each frame to a permanent dataset folder and use this path as FramePath
     framePath = str(path)
 
     # print('VideoPath ', videoPath)
@@ -102,7 +101,7 @@ for path in pathList:
     'VideoName':            [videoName],
     'EventId':              [eventId],
     'FrameTime':            [None],
-    'AbsoluteFrameNumber':  [None],
+    'AbsoluteFrameNumber':  [absFrame],
     'RelativeFrameNumber':  [relFrame],
     'Tags':                 [tags],
     'FramePath':            [framePath],

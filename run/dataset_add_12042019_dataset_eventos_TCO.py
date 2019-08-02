@@ -66,7 +66,6 @@ for path in pathList:
     originalDataset = "12042019_dataset_eventos_TCO"
 
     # Get FramePath field
-    # TODO: Move each frame to a permanent dataset folder and use this path as FramePath
     framePath = str(path)
 
     # print('VideoPath ', videoPath)
